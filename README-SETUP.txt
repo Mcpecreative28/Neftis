@@ -64,3 +64,9 @@ V5 UI refinements
 - Custom colors use an in-app palette and HEX editor instead of the browser/Android native color dialog.
 - Wide-screen layouts receive separate spacing, hero, card, and sidebar sizing rules.
 - Existing theme presets, local preference persistence, and the V2 visual direction are preserved.
+
+NEFTIS V6 — TOOLS LIBRARY
+- The Tools page now contains six working browser-side utilities: Text Formatter, Base64 Converter, JSON Inspector, Word Counter, Unit Converter, and Color Converter.
+- These utilities run locally in the browser; no API key, database, or additional package is required.
+- Base64 conversion uses UTF-8-safe browser APIs. JSON errors and invalid color/unit input are surfaced in the tool workspace.
+- Replace the project files with this ZIP's contents and allow Vercel to run the existing Next.js build.
