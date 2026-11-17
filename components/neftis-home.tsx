@@ -73,6 +73,9 @@ export default function NeftisHome() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState("night");
   const [customAccent, setCustomAccent] = useState("#d4f36a");
+  const [customBackground, setCustomBackground] = useState("");
+  const [customPanel, setCustomPanel] = useState("");
+  const [customText, setCustomText] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [language, setLanguage] = useState<LocaleCode>("id");
@@ -82,22 +85,54 @@ export default function NeftisHome() {
       const savedLanguage = localStorage.getItem("neftis-language") as LocaleCode | null;
       const savedTheme = localStorage.getItem("neftis-theme");
       const savedAccent = localStorage.getItem("neftis-custom-accent");
+      const savedBackground = localStorage.getItem("neftis-custom-background");
+      const savedPanel = localStorage.getItem("neftis-custom-panel");
+      const savedText = localStorage.getItem("neftis-custom-text");
       if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
       if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
       if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
-    } catch {}
+      if (savedBackground && /^#[0-9a-f]{6}$/i.test(savedBackground)) setCustomBackground(savedBackground);
+      if (savedPanel && /^#[0-9a-f]{6}$/i.test(savedPanel)) setCustomPanel(savedPanel);
+      if (savedText && /^#[0-9a-f]{6}$/i.test(savedText)) setCustomText(savedText);
+    } catch (error) {
+      console.warn("Neftis preferences could not be restored.", error);
+    }
   }, []);
   useEffect(() => {
     const selected = themes.find(([id]) => id === theme) ?? themes[0];
     const root = document.documentElement;
-    root.style.setProperty("--bg", selected[2]);
+    const background = customBackground || selected[2];
+    const hex = background.replace("#", "");
+    const brightness = hex.length === 6 ? (parseInt(hex.slice(0,2),16)*299 + parseInt(hex.slice(2,4),16)*587 + parseInt(hex.slice(4,6),16)*114)/1000 : 24;
+    const isLight = brightness > 155;
+    root.style.setProperty("--bg", background);
+    root.style.setProperty("--surface", customPanel || `color-mix(in srgb, ${background} 88%, ${isLight ? "#000" : "#fff"})`);
+    root.style.setProperty("--surface-2", `color-mix(in srgb, var(--surface) 78%, ${isLight ? "#000" : "#fff"})`);
+    root.style.setProperty("--line", `color-mix(in srgb, ${isLight ? "#000" : "#fff"} 15%, ${background})`);
+    root.style.setProperty("--text", customText || (isLight ? "#20231f" : "#f0f0ec"));
+    root.style.setProperty("--muted", isLight ? "#60665e" : "#a1a5ae");
+    root.style.setProperty("--dim", isLight ? "#858b81" : "#737986");
+    const accentHex = customAccent.replace("#", "");
+    const accentBrightness = (parseInt(accentHex.slice(0,2),16)*299 + parseInt(accentHex.slice(2,4),16)*587 + parseInt(accentHex.slice(4,6),16)*114)/1000;
     root.style.setProperty("--accent", customAccent);
-    root.style.setProperty("--accent-ink", theme === "paper" || theme === "parchment" ? "#171a10" : "#171a10");
+    root.style.setProperty("--accent-ink", accentBrightness > 155 ? "#171a10" : "#ffffff");
+    root.style.setProperty("--shadow", isLight ? "0 18px 50px #25301a18" : "0 18px 50px #0005");
     root.dataset.theme = theme;
+    root.dataset.scheme = isLight ? "light" : "dark";
     root.lang = language;
-    document.documentElement.style.colorScheme = theme === "paper" || theme === "parchment" ? "light" : "dark";
-    try { localStorage.setItem("neftis-theme", theme); localStorage.setItem("neftis-custom-accent", customAccent); localStorage.setItem("neftis-language", language); } catch {}
-  }, [theme, customAccent, language]);
+    root.dir = language === "ar" ? "rtl" : "ltr";
+    root.style.colorScheme = isLight ? "light" : "dark";
+    try {
+      localStorage.setItem("neftis-theme", theme);
+      localStorage.setItem("neftis-custom-accent", customAccent);
+      localStorage.setItem("neftis-language", language);
+      localStorage.setItem("neftis-custom-background", customBackground);
+      localStorage.setItem("neftis-custom-panel", customPanel);
+      localStorage.setItem("neftis-custom-text", customText);
+    } catch (error) {
+      console.warn("Neftis preferences could not be saved.", error);
+    }
+  }, [theme, customAccent, customBackground, customPanel, customText, language]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -107,8 +142,10 @@ export default function NeftisHome() {
   const [toast, setToast] = useState("");
   const localizedTitles: Record<PageKey,string> = {home:t.overview,ai:t.ai,tools:t.tools,community:t.community,learn:t.learn,games:t.games,achievements:t.achievements,services:t.services};
 
-  const searchable = useMemo(() => [...navPrimary, ...navPersonal].filter((item) =>
-    item.label.toLowerCase().includes(query.toLowerCase())), [query]);
+  const searchable = useMemo(() => [...navPrimary, ...navPersonal].map((item) => ({
+    ...item,
+    label: localizedTitles[item.id],
+  })).filter((item) => item.label.toLowerCase().includes(query.toLowerCase())), [query, language]);
 
   function navigate(next: PageKey) {
     setPage(next);
@@ -129,7 +166,7 @@ export default function NeftisHome() {
   }
 
   return (
-    <div className={`app-shell ${theme === "paper" || theme === "parchment" ? "light-theme" : ""}`} dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className="app-shell" dir={language === "ar" ? "rtl" : "ltr"}>
       <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark">N<span>/</span></span>
@@ -164,7 +201,7 @@ export default function NeftisHome() {
             </div>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
-              {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes"><div className="preference-menu-title">COLOR THEMES</div><div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);}} title={name}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div><label className="custom-color">Custom accent <input type="color" value={customAccent} onChange={(e) => {setCustomAccent(e.target.value);setTheme("night");}} /></label><button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setLanguage("id");}}>Reset preferences</button></div>}
+              {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes"><div className="preference-menu-title">COLOR THEMES</div><div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div><div className="custom-colors"><label>Accent <input aria-label="Accent color" type="color" value={customAccent} onChange={(e) => setCustomAccent(e.target.value)} /></label><label>Background <input aria-label="Background color" type="color" value={customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116")} onChange={(e) => setCustomBackground(e.target.value)} /></label><label>Panel <input aria-label="Panel color" type="color" value={customPanel || "#20232b"} onChange={(e) => setCustomPanel(e.target.value)} /></label><label>Text <input aria-label="Text color" type="color" value={customText || "#f0f0ec"} onChange={(e) => setCustomText(e.target.value)} /></label></div><button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");}}>Reset preferences</button></div>}
             </div>
             <button className="sign-in-button" onClick={() => notify("Login akan diaktifkan setelah modul autentikasi selesai.")}>{t.signIn}</button>
           </div>
