@@ -43,3 +43,10 @@ PENTING
 
 VERSI
 Neftis Core Foundation — Visual Direction: AifalxzGen1-inspired dashboard
+
+
+PREFERENCES UPDATE
+- 15 interface language options (navigation and primary controls translated).
+- 25 color presets plus custom accent picker.
+- Language, theme, and accent are saved in localStorage.
+- Arabic enables RTL layout direction.
