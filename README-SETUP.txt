@@ -50,3 +50,10 @@ PREFERENCES UPDATE
 - 25 color presets plus custom accent picker.
 - Language, theme, and accent are saved in localStorage.
 - Arabic enables RTL layout direction.
+
+
+V4 preference system
+- Theme presets now update the full CSS token set: background, surface, secondary surface, borders, text, muted text, accent, and shadows.
+- Custom colors: accent, background, panel, and text. Preferences persist in local storage.
+- Theme state is applied at the document root so shared components inherit the same palette.
+- Locale selection updates the document language/direction and localized navigation/search labels. The current translation dictionary still does not cover every long-form page paragraph; remaining page-copy localization is a separate content pass.
