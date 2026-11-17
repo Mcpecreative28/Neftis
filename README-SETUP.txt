@@ -57,3 +57,10 @@ V4 preference system
 - Custom colors: accent, background, panel, and text. Preferences persist in local storage.
 - Theme state is applied at the document root so shared components inherit the same palette.
 - Locale selection updates the document language/direction and localized navigation/search labels. The current translation dictionary still does not cover every long-form page paragraph; remaining page-copy localization is a separate content pass.
+
+V5 UI refinements
+- Arabic mode now mirrors the desktop shell and mobile navigation, applies Arabic-friendly font fallbacks, and uses right-aligned Arabic hero copy.
+- Theme menu uses a compact, scrollable swatch grid to reduce screen coverage.
+- Custom colors use an in-app palette and HEX editor instead of the browser/Android native color dialog.
+- Wide-screen layouts receive separate spacing, hero, card, and sidebar sizing rules.
+- Existing theme presets, local preference persistence, and the V2 visual direction are preserved.
