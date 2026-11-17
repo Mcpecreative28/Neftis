@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type PageKey = "home" | "ai" | "tools" | "community" | "learn" | "games" | "achievements" | "services";
 
@@ -27,17 +27,85 @@ const pageTitles: Record<PageKey, string> = {
   learn: "Knowledge room", games: "Arcade", achievements: "Achievements", services: "Services",
 };
 
+
+type LocaleCode = "id"|"en"|"ar"|"zh"|"ja"|"ko"|"es"|"pt"|"fr"|"de"|"hi"|"ru"|"tr"|"th"|"vi";
+const languages: {code: LocaleCode; name: string; native: string}[] = [
+  {code:"id",name:"Indonesian",native:"Bahasa Indonesia"},{code:"en",name:"English",native:"English"},
+  {code:"ar",name:"Arabic",native:"العربية"},{code:"zh",name:"Chinese",native:"中文"},
+  {code:"ja",name:"Japanese",native:"日本語"},{code:"ko",name:"Korean",native:"한국어"},
+  {code:"es",name:"Spanish",native:"Español"},{code:"pt",name:"Portuguese",native:"Português"},
+  {code:"fr",name:"French",native:"Français"},{code:"de",name:"German",native:"Deutsch"},
+  {code:"hi",name:"Hindi",native:"हिन्दी"},{code:"ru",name:"Russian",native:"Русский"},
+  {code:"tr",name:"Turkish",native:"Türkçe"},{code:"th",name:"Thai",native:"ไทย"},
+  {code:"vi",name:"Vietnamese",native:"Tiếng Việt"}
+];
+const translations: Record<LocaleCode, Record<string,string>> = {
+ id:{overview:"Ringkasan",ai:"Neftis AI",tools:"Pustaka alat",community:"Komunitas",learn:"Pengetahuan",games:"Arkade",achievements:"Pencapaian",services:"Layanan",workspace:"RUANG KERJA",yourSpace:"RUANG KAMU",search:"Cari apa saja",signIn:"Masuk",openAI:"Buka Neftis AI",explore:"Jelajahi alat",commons:"RUANG BERSAMA",begin:"Tempat untuk memulai"},
+ en:{overview:"Overview",ai:"Neftis AI",tools:"Tools library",community:"Community",learn:"Knowledge",games:"Arcade",achievements:"Achievements",services:"Services",workspace:"WORKSPACE",yourSpace:"YOUR SPACE",search:"Search anything",signIn:"Sign in",openAI:"Open Neftis AI",explore:"Explore tools",commons:"THE COMMONS",begin:"A place to begin"},
+ ar:{overview:"نظرة عامة",ai:"ذكاء نيفتيس",tools:"مكتبة الأدوات",community:"المجتمع",learn:"المعرفة",games:"الألعاب",achievements:"الإنجازات",services:"الخدمات",workspace:"مساحة العمل",yourSpace:"مساحتك",search:"ابحث عن أي شيء",signIn:"تسجيل الدخول",openAI:"افتح Neftis AI",explore:"استكشف الأدوات",commons:"المساحة المشتركة",begin:"مكان للبدء"},
+ zh:{overview:"概览",ai:"Neftis 人工智能",tools:"工具库",community:"社区",learn:"知识",games:"游戏",achievements:"成就",services:"服务",workspace:"工作区",yourSpace:"你的空间",search:"搜索任何内容",signIn:"登录",openAI:"打开 Neftis AI",explore:"探索工具",commons:"共享空间",begin:"从这里开始"},
+ ja:{overview:"概要",ai:"Neftis AI",tools:"ツールライブラリ",community:"コミュニティ",learn:"ナレッジ",games:"アーケード",achievements:"実績",services:"サービス",workspace:"ワークスペース",yourSpace:"あなたのスペース",search:"何でも検索",signIn:"ログイン",openAI:"Neftis AIを開く",explore:"ツールを見る",commons:"共有スペース",begin:"ここから始める"},
+ ko:{overview:"개요",ai:"Neftis AI",tools:"도구 라이브러리",community:"커뮤니티",learn:"지식",games:"아케이드",achievements:"업적",services:"서비스",workspace:"워크스페이스",yourSpace:"내 공간",search:"무엇이든 검색",signIn:"로그인",openAI:"Neftis AI 열기",explore:"도구 둘러보기",commons:"공유 공간",begin:"시작하기"},
+ es:{overview:"Resumen",ai:"Neftis AI",tools:"Biblioteca de herramientas",community:"Comunidad",learn:"Conocimiento",games:"Arcade",achievements:"Logros",services:"Servicios",workspace:"ESPACIO DE TRABAJO",yourSpace:"TU ESPACIO",search:"Buscar",signIn:"Iniciar sesión",openAI:"Abrir Neftis AI",explore:"Explorar herramientas",commons:"ESPACIO COMÚN",begin:"Un lugar para empezar"},
+ pt:{overview:"Visão geral",ai:"Neftis AI",tools:"Biblioteca de ferramentas",community:"Comunidade",learn:"Conhecimento",games:"Arcade",achievements:"Conquistas",services:"Serviços",workspace:"ESPAÇO DE TRABALHO",yourSpace:"SEU ESPAÇO",search:"Pesquisar",signIn:"Entrar",openAI:"Abrir Neftis AI",explore:"Explorar ferramentas",commons:"ESPAÇO COMUM",begin:"Um lugar para começar"},
+ fr:{overview:"Aperçu",ai:"Neftis AI",tools:"Bibliothèque d’outils",community:"Communauté",learn:"Connaissances",games:"Arcade",achievements:"Réussites",services:"Services",workspace:"ESPACE DE TRAVAIL",yourSpace:"VOTRE ESPACE",search:"Tout rechercher",signIn:"Connexion",openAI:"Ouvrir Neftis AI",explore:"Explorer les outils",commons:"ESPACE COMMUN",begin:"Un lieu pour commencer"},
+ de:{overview:"Übersicht",ai:"Neftis AI",tools:"Werkzeugbibliothek",community:"Community",learn:"Wissen",games:"Arcade",achievements:"Erfolge",services:"Dienste",workspace:"ARBEITSBEREICH",yourSpace:"DEIN BEREICH",search:"Alles durchsuchen",signIn:"Anmelden",openAI:"Neftis AI öffnen",explore:"Tools entdecken",commons:"GEMEINSCHAFT",begin:"Ein Ort zum Starten"},
+ hi:{overview:"अवलोकन",ai:"Neftis AI",tools:"टूल लाइब्रेरी",community:"समुदाय",learn:"ज्ञान",games:"आर्केड",achievements:"उपलब्धियाँ",services:"सेवाएँ",workspace:"कार्यस्थान",yourSpace:"आपकी जगह",search:"कुछ भी खोजें",signIn:"साइन इन",openAI:"Neftis AI खोलें",explore:"टूल देखें",commons:"साझा स्थान",begin:"शुरू करने की जगह"},
+ ru:{overview:"Обзор",ai:"Neftis AI",tools:"Библиотека инструментов",community:"Сообщество",learn:"Знания",games:"Аркада",achievements:"Достижения",services:"Сервисы",workspace:"РАБОЧЕЕ ПРОСТРАНСТВО",yourSpace:"ВАШЕ ПРОСТРАНСТВО",search:"Поиск",signIn:"Войти",openAI:"Открыть Neftis AI",explore:"Изучить инструменты",commons:"ОБЩЕЕ ПРОСТРАНСТВО",begin:"Место для начала"},
+ tr:{overview:"Genel bakış",ai:"Neftis AI",tools:"Araç kütüphanesi",community:"Topluluk",learn:"Bilgi",games:"Oyunlar",achievements:"Başarılar",services:"Hizmetler",workspace:"ÇALIŞMA ALANI",yourSpace:"ALANINIZ",search:"Her şeyi ara",signIn:"Giriş yap",openAI:"Neftis AI'ı aç",explore:"Araçları keşfet",commons:"ORTAK ALAN",begin:"Başlamak için bir yer"},
+ th:{overview:"ภาพรวม",ai:"Neftis AI",tools:"คลังเครื่องมือ",community:"ชุมชน",learn:"ความรู้",games:"เกม",achievements:"ความสำเร็จ",services:"บริการ",workspace:"พื้นที่ทำงาน",yourSpace:"พื้นที่ของคุณ",search:"ค้นหาทุกอย่าง",signIn:"เข้าสู่ระบบ",openAI:"เปิด Neftis AI",explore:"สำรวจเครื่องมือ",commons:"พื้นที่ส่วนรวม",begin:"เริ่มต้นที่นี่"},
+ vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
+};
+const themes = [
+ ["night","Night","#101116","#d4f36a"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
+ ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
+ ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
+ ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
+ ["matcha","Matcha","#20251a","#c8df91"],["graphite","Graphite","#171b20","#b8c5d2"],["cobalt","Cobalt","#101b32","#78a9ff"],
+ ["plum","Plum","#25172b","#e0a8ed"],["mint","Mint","#10251f","#8de5c1"],["clay","Clay","#2a211b","#dca77e"],
+ ["aurora","Aurora","#101e27","#8ce6d1"],["parchment","Parchment","#eee5cf","#8d9c57"],["obsidian","Obsidian","#08090d","#a9c4ff"],
+ ["sakura","Sakura","#2b1b28","#ffb5d2"],["ember","Ember","#281912","#ff9a62"],["glacier","Glacier","#10232d","#9be4ef"],
+ ["solar","Solar","#251d10","#f0bd55"]
+] as const;
+
 export default function NeftisHome() {
   const [page, setPage] = useState<PageKey>("home");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [theme, setTheme] = useState("night");
+  const [customAccent, setCustomAccent] = useState("#d4f36a");
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [language, setLanguage] = useState<LocaleCode>("id");
+  const t = translations[language];
+  useEffect(() => {
+    try {
+      const savedLanguage = localStorage.getItem("neftis-language") as LocaleCode | null;
+      const savedTheme = localStorage.getItem("neftis-theme");
+      const savedAccent = localStorage.getItem("neftis-custom-accent");
+      if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
+      if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
+      if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    const selected = themes.find(([id]) => id === theme) ?? themes[0];
+    const root = document.documentElement;
+    root.style.setProperty("--bg", selected[2]);
+    root.style.setProperty("--accent", customAccent);
+    root.style.setProperty("--accent-ink", theme === "paper" || theme === "parchment" ? "#171a10" : "#171a10");
+    root.dataset.theme = theme;
+    root.lang = language;
+    document.documentElement.style.colorScheme = theme === "paper" || theme === "parchment" ? "light" : "dark";
+    try { localStorage.setItem("neftis-theme", theme); localStorage.setItem("neftis-custom-accent", customAccent); localStorage.setItem("neftis-language", language); } catch {}
+  }, [theme, customAccent, language]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [language, setLanguage] = useState<"ID" | "EN">("ID");
+
   const [message, setMessage] = useState("");
   const [sentMessages, setSentMessages] = useState<string[]>([]);
   const [activeFilter, setActiveFilter] = useState("All tools");
   const [toast, setToast] = useState("");
+  const localizedTitles: Record<PageKey,string> = {home:t.overview,ai:t.ai,tools:t.tools,community:t.community,learn:t.learn,games:t.games,achievements:t.achievements,services:t.services};
 
   const searchable = useMemo(() => [...navPrimary, ...navPersonal].filter((item) =>
     item.label.toLowerCase().includes(query.toLowerCase())), [query]);
@@ -61,22 +129,22 @@ export default function NeftisHome() {
   }
 
   return (
-    <div className={`app-shell ${theme === "light" ? "light-theme" : ""}`}>
+    <div className={`app-shell ${theme === "paper" || theme === "parchment" ? "light-theme" : ""}`} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark">N<span>/</span></span>
           <span className="brand-name">neftis<span>.</span><small>DIGITAL COMMONS</small></span>
         </a>
-        <div className="workspace-label">WORKSPACE <span>PUBLIC</span></div>
+        <div className="workspace-label">{t.workspace} <span>PUBLIC</span></div>
         <nav className="primary-nav" aria-label="Main navigation">
           {navPrimary.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}>
-            <span className="nav-icon">{item.icon}</span><span>{item.label}</span>{item.isNew && <b className="nav-new">NEW</b>}
+            <span className="nav-icon">{item.icon}</span><span>{(item.id === "home" ? t.overview : item.id === "ai" ? t.ai : item.id === "tools" ? t.tools : item.id === "community" ? t.community : item.id === "learn" ? t.learn : item.id === "games" ? t.games : item.id === "achievements" ? t.achievements : t.services)}</span>{item.isNew && <b className="nav-new">NEW</b>}
           </button>)}
         </nav>
         <div className="sidebar-divider" />
-        <div className="workspace-label">YOUR SPACE</div>
+        <div className="workspace-label">{t.yourSpace}</div>
         <nav className="primary-nav" aria-label="Personal navigation">
-          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon">{item.icon}</span><span>{item.label}</span></button>)}
+          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon">{item.icon}</span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
         </nav>
         <div className="sidebar-bottom">
           <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
@@ -87,12 +155,18 @@ export default function NeftisHome() {
       <main className="main-area">
         <header className="topbar">
           <button className="icon-button mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Open navigation">☰</button>
-          <div className="breadcrumbs"><span>NEFTIS</span><i>/</i><strong>{pageTitles[page]}</strong></div>
+          <div className="breadcrumbs"><span>NEFTIS</span><i>/</i><strong>{localizedTitles[page]}</strong></div>
           <div className="topbar-actions">
-            <button className="search-trigger" onClick={() => setSearchOpen(true)}><span>⌕</span><span>Search anything</span><kbd>⌘ K</kbd></button>
-            <button className="icon-button" onClick={() => setLanguage(language === "ID" ? "EN" : "ID")} aria-label="Switch language">{language}</button>
-            <button className="icon-button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Toggle theme">◐</button>
-            <button className="sign-in-button" onClick={() => notify("Login akan diaktifkan setelah modul autentikasi selesai.")}>Sign in</button>
+            <button className="search-trigger" onClick={() => setSearchOpen(true)}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
+            <div className="preference-wrap">
+              <button className="icon-button preference-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language">{language.toUpperCase()}⌄</button>
+              {languageOpen && <div className="preference-menu language-menu" role="listbox" aria-label="Languages">{languages.map((item) => <button key={item.code} className={language === item.code ? "selected" : ""} onClick={() => {setLanguage(item.code);setLanguageOpen(false);}}><span>{item.native}</span><small>{item.name}</small></button>)}</div>}
+            </div>
+            <div className="preference-wrap">
+              <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
+              {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes"><div className="preference-menu-title">COLOR THEMES</div><div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);}} title={name}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div><label className="custom-color">Custom accent <input type="color" value={customAccent} onChange={(e) => {setCustomAccent(e.target.value);setTheme("night");}} /></label><button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setLanguage("id");}}>Reset preferences</button></div>}
+            </div>
+            <button className="sign-in-button" onClick={() => notify("Login akan diaktifkan setelah modul autentikasi selesai.")}>{t.signIn}</button>
           </div>
         </header>
 
@@ -104,7 +178,7 @@ export default function NeftisHome() {
                   <div className="eyebrow"><span className="eyebrow-line" /><span>A PUBLIC DIGITAL SPACE</span><span className="eyebrow-index">NEF—001</span></div>
                   <h1>Make room<br />for <em>what&apos;s next.</em></h1>
                   <p>A shared place to explore useful tools, think with AI, exchange ideas, and learn something new.</p>
-                  <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>Open Neftis AI <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>Explore tools <span>→</span></button></div>
+                  <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
                   <div className="hero-footnote"><span className="pulse-dot" /> OPEN ACCESS · BUILT FOR SHARING</div>
                 </div>
                 <div className="hero-art" aria-label="Abstract orbital graphic">
@@ -116,7 +190,7 @@ export default function NeftisHome() {
                   <div className="art-bottomline"><span>CONNECTED BY CURIOSITY</span><span>NEF—01</span></div>
                 </div>
               </div>
-              <div className="section-heading"><div><span className="section-kicker">THE COMMONS</span><h2>A place to begin</h2></div><span className="section-count">01 / 04</span></div>
+              <div className="section-heading"><div><span className="section-kicker">{t.commons}</span><h2>{t.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol">{space.icon}</div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
               <div className="lower-grid">
                 <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">YOUR ACTIVITY</span><h3>Recent activity</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>Your activity will appear here as you explore.</p></div></div></section>
