@@ -78,8 +78,13 @@ export default function NeftisHome() {
   const [customText, setCustomText] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
+  const [colorTarget, setColorTarget] = useState<"accent" | "background" | "panel" | "text" | null>(null);
+  const [draftColor, setDraftColor] = useState("#d4f36a");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
+  const colorPalette = ["#d4f36a", "#a99aff", "#83d9d2", "#ffabc5", "#ffad78", "#f3d36b", "#9be4ef", "#8de5c1", "#f0f0ec", "#b8c5d2", "#17191f", "#101116", "#201c32", "#10231d", "#f1eee5", "#ffffff"];
+  const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
+  const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
   useEffect(() => {
     try {
       const savedLanguage = localStorage.getItem("neftis-language") as LocaleCode | null;
@@ -147,6 +152,18 @@ export default function NeftisHome() {
     label: localizedTitles[item.id],
   })).filter((item) => item.label.toLowerCase().includes(query.toLowerCase())), [query, language]);
 
+  function openColorEditor(target: "accent" | "background" | "panel" | "text") {
+    setColorTarget(target);
+    setDraftColor(colorValues[target]);
+  }
+  function applyCustomColor() {
+    if (!/^#[0-9a-f]{6}$/i.test(draftColor)) return;
+    if (colorTarget === "accent") setCustomAccent(draftColor);
+    if (colorTarget === "background") setCustomBackground(draftColor);
+    if (colorTarget === "panel") setCustomPanel(draftColor);
+    if (colorTarget === "text") setCustomText(draftColor);
+    setColorTarget(null);
+  }
   function navigate(next: PageKey) {
     setPage(next);
     setMenuOpen(false);
@@ -166,7 +183,7 @@ export default function NeftisHome() {
   }
 
   return (
-    <div className="app-shell" dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark">N<span>/</span></span>
@@ -201,7 +218,14 @@ export default function NeftisHome() {
             </div>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
-              {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes"><div className="preference-menu-title">COLOR THEMES</div><div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div><div className="custom-colors"><label>Accent <input aria-label="Accent color" type="color" value={customAccent} onChange={(e) => setCustomAccent(e.target.value)} /></label><label>Background <input aria-label="Background color" type="color" value={customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116")} onChange={(e) => setCustomBackground(e.target.value)} /></label><label>Panel <input aria-label="Panel color" type="color" value={customPanel || "#20232b"} onChange={(e) => setCustomPanel(e.target.value)} /></label><label>Text <input aria-label="Text color" type="color" value={customText || "#f0f0ec"} onChange={(e) => setCustomText(e.target.value)} /></label></div><button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");}}>Reset preferences</button></div>}
+              {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes">
+                <div className="preference-menu-head"><div><span className="section-kicker">APPEARANCE</span><strong>Color themes</strong></div><button className="menu-close" onClick={() => setThemeOpen(false)} aria-label="Close themes">×</button></div>
+                <div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name} aria-pressed={theme === id}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div>
+                <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
+                <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
+                {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
+                <button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
+              </div>}
             </div>
             <button className="sign-in-button" onClick={() => notify("Login akan diaktifkan setelah modul autentikasi selesai.")}>{t.signIn}</button>
           </div>
@@ -212,9 +236,9 @@ export default function NeftisHome() {
             <section className="page-view active">
               <div className="hero-grid">
                 <div className="hero-copy">
-                  <div className="eyebrow"><span className="eyebrow-line" /><span>A PUBLIC DIGITAL SPACE</span><span className="eyebrow-index">NEF—001</span></div>
-                  <h1>Make room<br />for <em>what&apos;s next.</em></h1>
-                  <p>A shared place to explore useful tools, think with AI, exchange ideas, and learn something new.</p>
+                  <div className="eyebrow"><span className="eyebrow-line" /><span>{language === "ar" ? "مساحة رقمية عامة" : "A PUBLIC DIGITAL SPACE"}</span><span className="eyebrow-index">NEF—001</span></div>
+                  <h1>{language === "ar" ? <>اترك مساحة<br />لـ <em>ما هو قادم.</em></> : <>Make room<br />for <em>what&apos;s next.</em></>}</h1>
+                  <p>{language === "ar" ? "مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة." : "A shared place to explore useful tools, think with AI, exchange ideas, and learn something new."}</p>
                   <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
                   <div className="hero-footnote"><span className="pulse-dot" /> OPEN ACCESS · BUILT FOR SHARING</div>
                 </div>
@@ -227,7 +251,7 @@ export default function NeftisHome() {
                   <div className="art-bottomline"><span>CONNECTED BY CURIOSITY</span><span>NEF—01</span></div>
                 </div>
               </div>
-              <div className="section-heading"><div><span className="section-kicker">{t.commons}</span><h2>{t.begin}</h2></div><span className="section-count">01 / 04</span></div>
+              <div className="section-heading"><div><span className="section-kicker">{t.commons}</span><h2>{language === "ar" ? "اكتشف مساحتك" : t.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol">{space.icon}</div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
               <div className="lower-grid">
                 <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">YOUR ACTIVITY</span><h3>Recent activity</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>Your activity will appear here as you explore.</p></div></div></section>
