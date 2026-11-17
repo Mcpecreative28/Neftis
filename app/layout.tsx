@@ -2,26 +2,17 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Neftis — A world of digital possibilities",
-  description:
-    "An open digital ecosystem for ideas, tools, knowledge, and intelligent experiences.",
+  title: "Neftis — Digital Commons",
+  description: "An open digital ecosystem for AI, tools, community, and knowledge.",
   applicationName: "Neftis",
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#0a0b12",
+  themeColor: "#101116",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="id"><body>{children}</body></html>;
 }
