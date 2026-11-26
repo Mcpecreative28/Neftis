@@ -1,42 +1,37 @@
-NEFTIS V6 — APP ROUTER FOUNDATION
-=================================
+NEFTIS V6 — FOUNDATION REBUILD
+================================
 
-Paket ini memindahkan fondasi V5 ke struktur route Next.js App Router tanpa mengganti bahasa visual utamanya.
+Development branch: rebuild/platform-foundation
+Production branch: main (do not modify until review and explicit approval)
 
-ROUTE PUBLIK
-- /                 Overview
-- /ai               Neftis AI
-- /tools            Tools library
-- /community        Community
-- /learn            Knowledge room
-- /games            Arcade
-- /achievements     Achievements
-- /services         Services
+CURRENT BASE
+- Next.js App Router with the existing Neftis V6 visual shell.
+- Public routes under app/(public); route-group name does not appear in URLs.
+- Root app/layout.tsx owns the document <html> and <body>.
+- The public overview route is app/(public)/page.tsx.
+- Existing theme, language, RTL, and tools UI are preserved while the foundation is rebuilt.
 
-STRUKTUR UTAMA
-- app/(public)/             Route group publik; nama group tidak muncul di URL.
-- app/layout.tsx            Root layout dan metadata.
-- app/globals.css           CSS V5 dipertahankan, dengan tambahan styling Tools.
-- components/layout/        Shell utama dan navigasi berbasis URL.
-- components/tools/         Enam utilitas Tools yang sudah ada di repository.
+TARGET ROUTES
+- /, /ai, /tools, /games, /learn, /community, /services
+- /login, /register
+- /dashboard, /profile, /settings, /admin
 
-PREFERENSI V5 YANG DIPERTAHANKAN
-- neftis-language
-- neftis-theme
-- neftis-custom-accent
-- neftis-custom-background
-- neftis-custom-panel
-- neftis-custom-text
-- 15 pilihan bahasa, 25 tema, editor warna kustom, dan arah RTL Arab.
+TARGET SERVICES (NOT CONNECTED YET)
+- Better Auth + Google/GitHub OAuth
+- Neon PostgreSQL + Drizzle ORM
+- AI provider adapters, encrypted BYOK connections, and usage quotas
+- Private Cloudflare R2 object storage for documents, images, and videos
+- Browser camera capture with file-picker fallback
 
-DEPLOY
-1. Ekstrak ZIP.
-2. Upload seluruh isi folder neftis-v6 ke root repository GitHub Neftis pada branch main.
-3. Commit perubahan. Vercel akan menjalankan deployment otomatis jika integrasi repository aktif.
-4. Framework preset: Next.js. Root directory: ./ . Build/install/output gunakan default.
+LOCAL DEVELOPMENT
+1. Install dependencies with npm install.
+2. Copy .env.example to .env.local and fill only local development credentials.
+3. Start with npm run dev.
+4. Run npm run lint and npm run build before considering a change verified.
 
-CATATAN IMPLEMENTASI
-- Navigasi halaman publik sekarang memakai URL App Router, bukan hanya state lokal.
-- Tools berisi Text formatter, Base64 converter, JSON inspector, Word counter, Unit converter, dan Color converter.
-- AI, login, database, komunitas dinamis, kuota, dan layanan server belum dihubungkan pada paket fondasi ini.
-- File ini belum lolos `next build` karena dependensi tidak tersedia di lingkungan pembuatan ZIP dan akses registry tidak tersedia. Verifikasi build produksi masih diperlukan di Vercel.
+DEPLOYMENT
+- Deploy from the development branch only when you want a Vercel preview.
+- Configure server-side environment variables in Vercel; never commit real secrets.
+- Do not merge into main until build, lint, migrations, authentication, quotas, and upload security are verified.
+
+See docs/architecture.md for the agreed structure, service boundaries, upload design, and security invariants.
