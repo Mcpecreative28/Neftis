@@ -17,7 +17,7 @@ TARGET ROUTES
 - /dashboard, /profile, /settings, /admin
 
 TARGET SERVICES (NOT CONNECTED YET)
-- Better Auth + Google/GitHub OAuth
+- Neon Managed Better Auth (email/password + Google; GitHub after OAuth app credentials are configured)
 - Neon PostgreSQL + Drizzle ORM
 - AI provider adapters, encrypted BYOK connections, and usage quotas
 - Private Cloudflare R2 object storage for documents, images, and videos
@@ -25,7 +25,7 @@ TARGET SERVICES (NOT CONNECTED YET)
 
 LOCAL DEVELOPMENT
 1. Install dependencies with npm install.
-2. Copy .env.example to .env.local and fill only local development credentials.
+2. Copy .env.example to .env.local. Add the pooled Neon `DATABASE_URL` from the Console and generate `NEON_AUTH_COOKIE_SECRET` (at least 32 characters).
 3. Start with npm run dev.
 4. Run npm run lint and npm run build before considering a change verified.
 
