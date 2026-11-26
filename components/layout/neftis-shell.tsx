@@ -175,6 +175,24 @@ export default function NeftisShell() {
 
   const [message, setMessage] = useState("");
   const [sentMessages, setSentMessages] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<File[]>([]);
+  const [selectedModel, setSelectedModel] = useState("auto");
+  const [responseStyle, setResponseStyle] = useState("balanced");
+  const [responseLanguage, setResponseLanguage] = useState("id");
+  function addAttachments(files: FileList | null) {
+    if (!files?.length) return;
+    const accepted = Array.from(files).filter((file) => {
+      const valid = /^(image\/(jpeg|png|webp|gif)|video\/(mp4|webm)|application\/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document|vnd.openxmlformats-officedocument.spreadsheetml.sheet|vnd.ms-excel|vnd.ms-powerpoint|vnd.openxmlformats-officedocument.presentationml.presentation)|text\/(plain|markdown|csv)|application\/(json|zip))$/i.test(file.type)
+        || /\.(pdf|docx?|xlsx?|pptx?|txt|md|csv|json|zip|jpe?g|png|webp|gif|mp4|webm)$/i.test(file.name);
+      if (!valid) notify("Format file ini belum didukung.");
+      return valid;
+    }).slice(0, 8 - attachments.length);
+    setAttachments((current) => [...current, ...accepted]);
+  }
+  function formatFileSize(bytes: number) {
+    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
   const [toast, setToast] = useState("");
   const localizedTitles: Record<PageKey,string> = {home:t.overview,ai:t.ai,tools:t.tools,community:t.community,learn:t.learn,games:t.games,achievements:t.achievements,services:t.services};
 
@@ -294,7 +312,43 @@ export default function NeftisShell() {
             </section>
           </>}
 
-          {page === "ai" && <section className="page-view active"><div className="page-intro"><div><span className="section-kicker">01 / INTELLIGENCE</span><h1>Neftis <em>AI</em></h1><p>A calm workspace for thinking, exploring, and making progress.</p></div><div className="intro-side-label">CONVERSATION SPACE<br />GEMINI PROVIDER / PLANNED</div></div><div className="chat-layout"><aside className="chat-history panel"><div className="history-head"><strong>History</strong><button className="small-plus" onClick={() => setSentMessages([])}>+</button></div><div className="history-item selected">◌ <span>Preview conversation</span></div><div className="history-note">Chat history will be stored after account setup.</div></aside><div className="chat-main panel"><div className="chat-toolbar"><div><span className="online-indicator" /><strong>Neftis Assistant</strong><small>Preview mode</small></div><button className="text-button" onClick={() => setSentMessages([])}>Clear</button></div><div className="chat-messages"><div className="assistant-welcome"><div className="assistant-orb">✳</div><span className="section-kicker">NEFTIS / ASSISTANT</span><h2>What are we<br /><em>working on?</em></h2><p>Ask a question, explore an idea, or start with one of these prompts.</p><div className="prompt-chips">{["Organize a project", "Explain a topic", "Find a useful tool"].map((prompt) => <button key={prompt} onClick={() => setMessage(prompt)}>{prompt} ↗</button>)}</div></div>{sentMessages.map((text, index) => <div className="activity-row" key={`${text}-${index}`}>↗ {text}<small>LOCAL PREVIEW</small></div>)}</div><form className="chat-composer" onSubmit={sendMessage}><textarea rows={2} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Ask anything..." /><div className="composer-bottom"><span>Preview mode · AI endpoint not connected yet</span><button className="send-button" type="submit">↑</button></div></form></div><aside className="chat-context panel"><span className="section-kicker">SESSION CONTEXT</span><h3>Conversation setup</h3><label>Response style</label><select defaultValue="balanced"><option value="balanced">Balanced</option><option>Concise</option><option>Detailed</option><option>Creative</option></select><label>Response language</label><select defaultValue="id"><option value="id">Bahasa Indonesia</option><option value="en">English</option></select><p className="context-footnote">AI settings will be configurable in your workspace.</p></aside></div></section>}
+          {page === "ai" && <section className="page-view active ai-workspace">
+            <div className="page-intro"><div><span className="section-kicker">01 / INTELLIGENCE</span><h1>Neftis <em>AI</em></h1><p>A calm workspace for thinking, exploring, and making progress.</p></div><div className="intro-side-label">WORKSPACE STATUS<br />LOCAL PREVIEW · PROVIDER NOT CONNECTED</div></div>
+            <div className="chat-layout">
+              <aside className="chat-history panel">
+                <div className="history-head"><strong>Conversations</strong><button className="small-plus" aria-label="New conversation" onClick={() => {setSentMessages([]);setMessage("");setAttachments([]);}}>+</button></div>
+                <button className="history-item selected" type="button"><span aria-hidden="true">◌</span><span>New conversation</span></button>
+                <div className="history-note">Your saved conversations will appear here after account and database setup.</div>
+                <div className="history-foot"><span className="history-foot-dot" /> Private workspace planned</div>
+              </aside>
+              <div className="chat-main panel">
+                <div className="chat-toolbar"><div><span className="online-indicator" /><strong>Neftis Assistant</strong><small>Local preview</small></div><button className="text-button" type="button" onClick={() => {setSentMessages([]);setMessage("");setAttachments([]);}}>Clear chat</button></div>
+                <div className="chat-messages">
+                  {sentMessages.length === 0 ? <div className="assistant-welcome"><div className="assistant-orb">✳</div><span className="section-kicker">NEFTIS / ASSISTANT</span><h2>What are we<br /><em>working on?</em></h2><p>Start with a question or choose a prompt. Your workspace is being prepared for connected AI providers.</p><div className="prompt-chips">{["Help me plan a project", "Explain a difficult topic", "Review this document"].map((prompt) => <button type="button" key={prompt} onClick={() => setMessage(prompt)}>{prompt} ↗</button>)}</div></div> : sentMessages.map((text, index) => <div className="chat-bubble user" key={`${text}-${index}`}><span className="bubble-label">YOU · LOCAL PREVIEW</span>{text}</div>)}
+                </div>
+                <form className="chat-composer ai-composer" onSubmit={sendMessage}>
+                  {attachments.length > 0 && <div className="attachment-queue"><div className="attachment-queue-head"><strong>{attachments.length} attachment{attachments.length > 1 ? "s" : ""}</strong><button type="button" onClick={() => setAttachments([])}>Remove all</button></div><div className="attachment-list">{attachments.map((file, index) => <div className="attachment-chip" key={`${file.name}-${file.lastModified}-${index}`}><span className="attachment-type">{file.type.startsWith("image/") ? "▧" : file.type.startsWith("video/") ? "▶" : "▤"}</span><span className="attachment-name"><strong>{file.name}</strong><small>{formatFileSize(file.size)}</small></span><button type="button" aria-label={`Remove ${file.name}`} onClick={() => setAttachments((current) => current.filter((_, i) => i !== index))}>×</button></div>)}</div></div>}
+                  <textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message Neftis AI…" aria-label="Message Neftis AI" />
+                  <div className="composer-bottom">
+                    <div className="composer-tools">
+                      <label className="composer-tool" title="Attach documents, images or videos"><span>＋</span><span>Attach</span><input type="file" multiple accept=".pdf,.doc,.docx,.txt,.md,.csv,.xls,.xlsx,.ppt,.pptx,.json,.zip,image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" onChange={(e) => {addAttachments(e.target.files);e.currentTarget.value="";}} /></label>
+                      <label className="composer-tool" title="Take a photo using your device camera"><span>◎</span><span>Camera</span><input type="file" accept="image/*" capture="environment" onChange={(e) => {addAttachments(e.target.files);e.currentTarget.value="";}} /></label>
+                      <span className="composer-hint">Up to 8 files · Local preview only</span>
+                    </div>
+                    <button className="send-button" type="submit" aria-label="Send message">↑</button>
+                  </div>
+                  <p className="composer-disclaimer">Preview only. Messages and attachments are not uploaded or sent to an AI provider yet.</p>
+                </form>
+              </div>
+              <aside className="chat-context panel"><span className="section-kicker">SESSION CONTEXT</span><h3>Conversation setup</h3>
+                <label htmlFor="ai-model">Model</label><select id="ai-model" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}><option value="auto">Automatic (planned)</option><option value="gemini">Google Gemini (planned)</option><option value="custom">Connected model (planned)</option></select>
+                <label htmlFor="ai-style">Response style</label><select id="ai-style" value={responseStyle} onChange={(e) => setResponseStyle(e.target.value)}><option value="balanced">Balanced</option><option value="concise">Concise</option><option value="detailed">Detailed</option><option value="creative">Creative</option></select>
+                <label htmlFor="ai-language">Response language</label><select id="ai-language" value={responseLanguage} onChange={(e) => setResponseLanguage(e.target.value)}><option value="id">Bahasa Indonesia</option><option value="en">English</option><option value="auto">Follow conversation</option></select>
+                <div className="context-status"><span className="status-dot" /><div><strong>Provider not connected</strong><small>Connect an API key in AI Connections to enable responses.</small></div></div>
+                <p className="context-footnote">Model and response preferences are interface previews until account settings are connected.</p>
+              </aside>
+            </div>
+          </section>}
 
           {page === "tools" && <ToolsLibrary language={language} />}
 
