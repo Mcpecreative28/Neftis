@@ -317,3 +317,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (prefers-reduced-motion: reduce) {
   .feature-card, .tool-card, .service-card, .learn-card, .community-post { transition: none; }
 }
+
+@media(max-width:760px){
+  .sidebar-backdrop{position:fixed;inset:0;border:0;padding:0;background:#05060999;backdrop-filter:blur(2px);z-index:19;cursor:pointer}
+  .sidebar{z-index:21}
+  .sidebar.open{box-shadow:0 24px 80px #0008}
+}
