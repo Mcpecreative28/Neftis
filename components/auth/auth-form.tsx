@@ -33,7 +33,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         return;
       }
 
-      router.replace("/dashboard");
+      router.replace("/ai");
       router.refresh();
     } catch {
       setError("Unable to connect right now. Please try again.");
@@ -49,7 +49,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/ai",
       });
 
       if (result.error) {
