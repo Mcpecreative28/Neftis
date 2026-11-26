@@ -195,7 +195,7 @@ export default function NeftisShell() {
 
   return (
     <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
-      <aside className={`sidebar ${menuOpen ? "open" : ""}`}>
+      <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark">N<span>/</span></span>
           <span className="brand-name">neftis<span>.</span><small>DIGITAL COMMONS</small></span>
@@ -217,9 +217,11 @@ export default function NeftisShell() {
         </div>
       </aside>
 
+      {menuOpen && <button className="sidebar-backdrop" aria-label="Close navigation" onClick={() => setMenuOpen(false)} />}
+
       <main className="main-area">
         <header className="topbar">
-          <button className="icon-button mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Open navigation">☰</button>
+          <button className="icon-button mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="neftis-sidebar">☰</button>
           <div className="breadcrumbs"><span>NEFTIS</span><i>/</i><strong>{localizedTitles[page]}</strong></div>
           <div className="topbar-actions">
             <button className="search-trigger" onClick={() => setSearchOpen(true)}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
