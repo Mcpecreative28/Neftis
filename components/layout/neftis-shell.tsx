@@ -153,6 +153,26 @@ export default function NeftisShell() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
+  useEffect(() => {
+    function handleGlobalKeydown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen(true);
+        setLanguageOpen(false);
+        setThemeOpen(false);
+      }
+      if (event.key === "Escape") {
+        setSearchOpen(false);
+        setLanguageOpen(false);
+        setThemeOpen(false);
+        setColorTarget(null);
+        setMenuOpen(false);
+      }
+    }
+    window.addEventListener("keydown", handleGlobalKeydown);
+    return () => window.removeEventListener("keydown", handleGlobalKeydown);
+  }, []);
+
   const [message, setMessage] = useState("");
   const [sentMessages, setSentMessages] = useState<string[]>([]);
   const [toast, setToast] = useState("");
@@ -224,10 +244,10 @@ export default function NeftisShell() {
           <button className="icon-button mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="neftis-sidebar">☰</button>
           <div className="breadcrumbs"><span>NEFTIS</span><i>/</i><strong>{localizedTitles[page]}</strong></div>
           <div className="topbar-actions">
-            <button className="search-trigger" onClick={() => setSearchOpen(true)}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
+            <button className="search-trigger" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label={t.search}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language">{language.toUpperCase()}⌄</button>
-              {languageOpen && <div className="preference-menu language-menu" role="listbox" aria-label="Languages">{languages.map((item) => <button key={item.code} className={language === item.code ? "selected" : ""} onClick={() => {setLanguage(item.code);setLanguageOpen(false);}}><span>{item.native}</span><small>{item.name}</small></button>)}</div>}
+              {languageOpen && <div className="preference-menu language-menu" role="listbox" aria-label="Languages">{languages.map((item) => <button key={item.code} role="option" aria-selected={language === item.code} className={language === item.code ? "selected" : ""} onClick={() => {setLanguage(item.code);setLanguageOpen(false);}}><span>{item.native}</span><small>{item.name}</small></button>)}</div>}
             </div>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
@@ -290,7 +310,7 @@ export default function NeftisShell() {
         </div>
       </main>
 
-      {searchOpen && <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}><section className="modal panel" role="dialog" aria-modal="true" aria-label="Search Neftis"><div className="modal-head"><span className="section-kicker">NEFTIS / SEARCH</span><button className="icon-button" onClick={() => setSearchOpen(false)}>×</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search spaces..." />{searchable.map((item) => <button className="search-result" key={item.id} onClick={() => navigate(item.id)}>{item.label}<span>OPEN ↗</span></button>)}</section></div>}
+      {searchOpen && <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}><section className="modal panel" role="dialog" aria-modal="true" aria-label="Search Neftis"><div className="modal-head"><span className="section-kicker">NEFTIS / SEARCH</span><button className="icon-button" onClick={() => setSearchOpen(false)}>×</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search spaces..." aria-label="Search Neftis spaces" />{searchable.length ? searchable.map((item) => <button className="search-result" key={item.id} onClick={() => navigate(item.id)}>{item.label}<span>OPEN ↗</span></button>) : <p className="empty-state">No matching spaces.</p> }</section></div>}
       {toast && <div className="toast show" role="status">{toast}</div>}
     </div>
   );
