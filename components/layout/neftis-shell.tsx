@@ -278,7 +278,7 @@ export default function NeftisShell() {
                 <button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
-            <button className="sign-in-button" onClick={() => notify("Login akan diaktifkan setelah modul autentikasi selesai.")}>{t.signIn}</button>
+            <button className="sign-in-button" onClick={() => router.push("/login")}>{t.signIn}</button>
           </div>
         </header>
 
