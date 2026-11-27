@@ -9,6 +9,11 @@ import {
 export const dynamic = "force-dynamic";
 const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).{12,128}$/;
 
+async function getAuthHandlers() {
+  const { auth } = await import("@/lib/auth/server");
+  return auth.handler();
+}
+
 async function verifyTurnstile(request: Request) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const secretKey = process.env.TURNSTILE_SECRET_KEY;
