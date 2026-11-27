@@ -5,7 +5,7 @@ export type ProviderConfig = {
   name: string;
   baseUrl: string;
   kind: "openai" | "anthropic" | "google";
-  keyHeader: "bearer" | "anthropic" | "google";
+  keyHeader: "bearer" | "anthropic" | "google" | "x-api-key" | "none";
 };
 
 export const providers: Record<ProviderId, ProviderConfig> = {
@@ -16,7 +16,7 @@ export const providers: Record<ProviderId, ProviderConfig> = {
   anthropic: { id: "anthropic", name: "Anthropic", baseUrl: "https://api.anthropic.com/v1", kind: "anthropic", keyHeader: "anthropic" },
   openai: { id: "openai", name: "OpenAI", baseUrl: "https://api.openai.com/v1", kind: "openai", keyHeader: "bearer" },
   google: { id: "google", name: "Google AI Studio", baseUrl: "https://generativelanguage.googleapis.com/v1beta", kind: "google", keyHeader: "google" },
-  "custom-openai": { id: "custom-openai", name: "Custom OpenAI-compatible", baseUrl: "", kind: "openai", keyHeader: "bearer" },
+  "custom-openai": { id: "custom-openai", name: "Custom API / Telegram Gateway", baseUrl: "", kind: "openai", keyHeader: "bearer" },
   groq: { id: "groq", name: "Groq", baseUrl: "https://api.groq.com/openai/v1", kind: "openai", keyHeader: "bearer" },
   together: { id: "together", name: "Together AI", baseUrl: "https://api.together.xyz/v1", kind: "openai", keyHeader: "bearer" },
   deepseek: { id: "deepseek", name: "DeepSeek", baseUrl: "https://api.deepseek.com", kind: "openai", keyHeader: "bearer" },
@@ -43,9 +43,21 @@ export function detectProvider(apiKey: string): ProviderId | null {
   return null;
 }
 
-export function resolveProvider(providerId: ProviderId, customBaseUrl?: string): ProviderConfig {
+export function resolveProvider(
+  providerId: ProviderId,
+  customBaseUrl?: string,
+  customProtocol?: "openai" | "anthropic" | "google",
+  customAuthMode?: "bearer" | "x-api-key" | "none",
+): ProviderConfig {
   const base = providers[providerId];
-  return { ...base, baseUrl: providerId === "custom-openai" ? validateBaseUrl(customBaseUrl ?? "") : base.baseUrl };
+  if (providerId !== "custom-openai") return base;
+  return {
+    ...base,
+    name: "Custom API / Telegram Gateway",
+    baseUrl: validateBaseUrl(customBaseUrl ?? ""),
+    kind: customProtocol ?? "openai",
+    keyHeader: customAuthMode ?? "bearer",
+  };
 }
 
 export function validateBaseUrl(value: string): string {
@@ -65,19 +77,22 @@ export function validateBaseUrl(value: string): string {
 export function providerHeaders(provider: ProviderConfig, apiKey: string): Record<string, string> {
   if (provider.keyHeader === "anthropic") return { "x-api-key": apiKey, "anthropic-version": "2023-06-01" };
   if (provider.keyHeader === "google") return { "x-goog-api-key": apiKey };
+  if (provider.keyHeader === "x-api-key") return { "x-api-key": apiKey };
+  if (provider.keyHeader === "none") return {};
   return { Authorization: `Bearer ${apiKey}` };
 }
 
-export function normalizeModels(providerId: ProviderId, payload: unknown) {
+export function normalizeModels(providerId: ProviderId, payload: unknown, protocol?: ProviderConfig["kind"]) {
   const body = payload as { data?: unknown[]; models?: unknown[] };
-  const rows = providerId === "google" ? body.models : body.data;
+  const rows = (providerId === "google" || (providerId === "custom-openai" && protocol === "google")) ? body.models : body.data;
   if (!Array.isArray(rows)) return [];
   return rows.flatMap((entry) => {
     if (!entry || typeof entry !== "object") return [];
     const item = entry as Record<string, unknown>;
     const rawId = typeof item.id === "string" ? item.id : typeof item.name === "string" ? item.name : "";
-    const id = providerId === "google" ? rawId.replace(/^models\//, "") : rawId;
-    if (!id || (providerId === "google" && !id.startsWith("gemini"))) return [];
+    const isGoogle = providerId === "google" || (providerId === "custom-openai" && protocol === "google");
+    const id = isGoogle ? rawId.replace(/^models\//, "") : rawId;
+    if (!id || (isGoogle && !id.startsWith("gemini"))) return [];
     const reasoning = item.reasoning as { efforts?: unknown; default_effort?: unknown } | undefined;
     const efforts = Array.isArray(reasoning?.efforts) ? reasoning.efforts.filter((value): value is string => typeof value === "string") : [];
     return [{ id, name: typeof item.name === "string" ? item.name.replace(/^models\//, "") : id, reasoningEfforts: efforts, defaultReasoning: typeof reasoning?.default_effort === "string" ? reasoning.default_effort : null }];
