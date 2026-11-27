@@ -1460,3 +1460,16 @@ input,textarea,select{color:var(--text);accent-color:var(--accent)}input:not([ty
 .service-arrow{font-size:20px;color:var(--accent)}
 @media(max-width:900px){.community-desk,.learning-hero{grid-template-columns:1fr}.community-sidebar{grid-template-columns:repeat(2,minmax(0,1fr))}.arcade-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.community-feed{padding:16px;min-height:380px}.community-sidebar{grid-template-columns:1fr}.learning-feature{grid-template-columns:1fr;gap:12px;padding:19px;min-height:0}.learning-feature>.section-kicker{position:static}.learning-feature>div:last-of-type{padding:0}.learning-orbit{width:92px;height:92px;margin:8px auto}.learning-orbit span{font-size:32px}.learning-note{padding:18px}.learning-library-head{align-items:start;flex-direction:column}.learning-path-list article{grid-template-columns:35px minmax(0,1fr);gap:10px}.learning-path-status{grid-column:2;justify-self:start}.arcade-intro{grid-template-columns:1fr;padding:20px}.arcade-emblem{width:130px;height:130px}.arcade-emblem span{font-size:50px}.arcade-grid{grid-template-columns:1fr}.arcade-card{display:grid;grid-template-columns:120px 1fr}.arcade-card-art{height:100%;min-height:150px}.arcade-card-copy{padding:14px}.arcade-card-copy p{min-height:0}.milestone-hero{padding:21px;align-items:flex-start}.milestone-stamp{width:86px;height:86px}.milestone-stamp span{font-size:24px}.milestone-stamp small{font-size:6px}.milestone-collection article{grid-template-columns:34px 1fr auto;gap:9px}.milestone-collection article>span{font-size:21px}.service-directory article{grid-template-columns:36px minmax(0,1fr) 20px;gap:10px;padding:18px 5px}.service-index{font-size:23px}.service-directory h3{font-size:18px}}
+
+.home-principles{display:grid;grid-template-columns:minmax(230px,.7fr) minmax(0,1.3fr);gap:34px;padding:34px 0 42px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:26px 0 34px}
+.home-principles-heading h2{font:400 clamp(30px,3.6vw,43px)/1.02 Georgia,serif;letter-spacing:-.05em;margin:13px 0}
+.home-principles-heading h2 em{font-weight:400;color:var(--accent)}
+.home-principles-heading p{max-width:310px;color:var(--muted);font-size:11px;line-height:1.8}
+.home-principles-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.home-principles-grid article{min-height:190px;padding:16px;border:1px solid var(--line);border-radius:13px;background:var(--surface);display:flex;flex-direction:column}
+.home-principles-grid article>span{font-size:8px;letter-spacing:.13em;color:var(--muted)}
+.principle-symbol{font-size:28px;color:var(--accent);margin:20px 0 8px}
+.home-principles-grid h3{font:400 17px Georgia,serif;margin:0 0 6px}
+.home-principles-grid p{font-size:9px;line-height:1.7;color:var(--muted);margin:0}
+@media(max-width:850px){.home-principles{grid-template-columns:1fr;gap:20px}.home-principles-heading p{max-width:520px}}
+@media(max-width:560px){.home-principles-grid{grid-template-columns:1fr}.home-principles-grid article{min-height:0}.principle-symbol{margin:13px 0 5px}}
