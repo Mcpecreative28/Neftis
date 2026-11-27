@@ -239,14 +239,6 @@ export default function NeftisShell() {
     setToast(text);
     window.setTimeout(() => setToast(""), 2200);
   }
-  function sendMessage(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!message.trim()) return;
-    setSentMessages((current) => [...current, message.trim()]);
-    setMessage("");
-    notify("Pesan disimpan di sesi pratinjau.");
-  }
-
   return (
     <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
