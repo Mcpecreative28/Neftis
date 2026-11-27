@@ -26,7 +26,7 @@ function passwordIssue(value: string) {
   if (!/[A-Z]/.test(value)) return "Tambahkan setidaknya satu huruf kapital.";
   if (!/[a-z]/.test(value)) return "Tambahkan setidaknya satu huruf kecil.";
   if (!/[0-9]/.test(value)) return "Tambahkan setidaknya satu angka.";
-  if (!/[^A-Za-z0-9]/.test(value)) return "Tambahkan setidaknya satu simbol.";
+  if (!/[^A-Za-z0-9\s]/.test(value)) return "Tambahkan setidaknya satu simbol.";
   if (value.length > 128) return "Kata sandi maksimal 128 karakter.";
   return "";
 }
@@ -301,7 +301,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 ["Huruf kapital", /[A-Z]/.test(password)],
                 ["Huruf kecil", /[a-z]/.test(password)],
                 ["Angka", /[0-9]/.test(password)],
-                ["Simbol", /[^A-Za-z0-9]/.test(password)],
+                ["Simbol", /[^A-Za-z0-9\s]/.test(password)],
               ].map(([label, valid]) => <li key={label as string} className={valid ? "is-valid" : ""}><span>{valid ? "✓" : "○"}</span>{label}</li>)}
             </ul>}
             {turnstileSiteKey && <div className="auth-turnstile" ref={captchaContainer} />}
