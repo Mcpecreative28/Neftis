@@ -66,7 +66,7 @@ export default function AIWorkspace() {
           ...(baseUrl.trim() ? { provider: "custom-openai" } : {}),
           ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
-            displayName: customName.trim(),
+            displayName: new URL(baseUrl.trim()).hostname,
             protocol: customProtocol,
             authMode: customAuthMode,
           } : {}),
