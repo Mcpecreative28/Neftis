@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth/server";
 import {
   getLoginFingerprint,
   getLoginLock,
@@ -8,7 +7,6 @@ import {
 } from "@/lib/auth/login-attempts";
 
 export const dynamic = "force-dynamic";
-const handlers = auth.handler();
 const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).{12,128}$/;
 
 async function verifyTurnstile(request: Request) {
@@ -42,10 +40,18 @@ async function verifyTurnstile(request: Request) {
   }
 }
 
-export const GET = handlers.GET;
-export const PUT = handlers.PUT;
-export const PATCH = handlers.PATCH;
-export const DELETE = handlers.DELETE;
+export async function GET(request: Request, context: { params: Promise<{ path: string[] }> }) {
+  return (await getAuthHandlers()).GET(request, context);
+}
+export async function PUT(request: Request, context: { params: Promise<{ path: string[] }> }) {
+  return (await getAuthHandlers()).PUT(request, context);
+}
+export async function PATCH(request: Request, context: { params: Promise<{ path: string[] }> }) {
+  return (await getAuthHandlers()).PATCH(request, context);
+}
+export async function DELETE(request: Request, context: { params: Promise<{ path: string[] }> }) {
+  return (await getAuthHandlers()).DELETE(request, context);
+}
 
 export async function POST(request: Request) {
   const path = new URL(request.url).pathname;
@@ -92,7 +98,7 @@ export async function POST(request: Request) {
 
   const authPath = new URL(request.url).pathname.replace("/api/auth/", "");
   const context = { params: Promise.resolve({ path: authPath.split("/").filter(Boolean) }) };
-  const response = await handlers.POST(request, context);
+  const response = await (await getAuthHandlers()).POST(request, context);
   if (isEmailLogin && fingerprint) {
     try {
       if (response.status === 401) await recordLoginFailure(fingerprint);
