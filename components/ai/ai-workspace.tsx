@@ -9,7 +9,7 @@ type Connection = {
   id: string; provider: Provider; apiKey: string; baseUrl: string; models: Model[];
   modelId: string; reasoning: string; healthy: boolean;
   protocol: "openai" | "anthropic" | "google";
-  authMode?: "bearer" | "x-api-key" | "none";
+  authMode?: "bearer" | "x-api-key" | "google-key" | "none";
 };
 
 const providerNames: Provider[] = [
@@ -31,7 +31,7 @@ export default function AIWorkspace() {
   const [baseUrl, setBaseUrl] = useState("");
   const [customName, setCustomName] = useState("Telegram / Community API");
   const [customProtocol, setCustomProtocol] = useState<"openai" | "anthropic" | "google">("openai");
-  const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "none">("bearer");
+  const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "google-key" | "none">("bearer");
   const [providerChoices, setProviderChoices] = useState<Provider[]>(providerNames);
   const [needsProvider, setNeedsProvider] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -193,7 +193,7 @@ export default function AIWorkspace() {
                 <label className="ai-field"><span>NAMA LAYANAN</span><input value={customName} onChange={(event) => setCustomName(event.target.value)} maxLength={48} placeholder="Contoh: Telegram AI Free" /></label>
                 <label className="ai-field ai-field-wide"><span>BASE URL (HTTPS)</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://gateway.example.com/v1" required /><small>Gunakan Base URL yang diberikan penyedia token. Neftis akan mencoba membaca daftar model dari endpoint tersebut.</small></label>
                 <label className="ai-field"><span>PROTOKOL API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
-                <label className="ai-field"><span>METODE TOKEN</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "none")}><option value="bearer">Authorization: Bearer</option><option value="x-api-key">x-api-key</option><option value="none">Tanpa header autentikasi</option></select></label>
+                <label className="ai-field"><span>METODE TOKEN</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="bearer">Authorization: Bearer</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header autentikasi</option></select></label>
               </>}
             </div>
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
