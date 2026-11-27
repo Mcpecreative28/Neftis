@@ -1356,3 +1356,13 @@ input,textarea,select{color:var(--text);accent-color:var(--accent)}input:not([ty
 .auth-turnstile{min-height:65px;display:flex;justify-content:flex-start;align-items:center}
 @media(max-width:700px){.account-dashboard-hero{grid-template-columns:1fr;padding:48px 0 30px}.account-dashboard-orbit{display:none}.account-dashboard-grid{grid-template-columns:1fr}.account-dash-card{min-height:150px;padding:18px}.account-dash-card strong{margin-top:18px}.account-profile-sheet{padding:17px;gap:15px}}
 @media(max-width:360px){.topbar{padding:0 6px;gap:4px;justify-content:flex-start;min-width:0}.mobile-brand{font-size:13px;gap:5px;min-width:0}.mobile-brand-mark{width:25px;height:25px;flex:none}.mobile-menu{width:29px;min-width:29px;padding:0;flex:none}.breadcrumbs{display:none}.topbar-actions{gap:3px;flex:none;min-width:0}.search-trigger{width:30px;min-width:30px;padding:0}.preference-trigger{min-width:31px;padding:0 4px}.language-trigger>span:not(.preference-chevron){display:none}.sign-in-button{min-width:40px;padding:0 7px;font-size:10px}}
+
+.auth-password-checks{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;color:var(--muted);font-size:9px}
+.auth-password-checks li{display:flex;align-items:center;gap:6px;min-width:0}
+.auth-password-checks li>span{width:14px;height:14px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;font-size:8px;flex:none}
+.auth-password-checks li.is-valid{color:#65b98b}
+.auth-password-checks li.is-valid>span{border-color:#65b98b;background:#65b98b18}
+.ai-manual-provider{grid-column:1/-1;justify-self:start;border:1px dashed var(--line);border-radius:9px;background:transparent;color:var(--accent);padding:10px 13px;font-size:10px;cursor:pointer}
+.ai-manual-provider:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.ai-field small{display:block;color:var(--muted);font-size:9px;line-height:1.6;margin-top:5px}
+@media(max-width:480px){.auth-password-checks{grid-template-columns:1fr 1fr}.account-dashboard-footer{flex-direction:column}}
