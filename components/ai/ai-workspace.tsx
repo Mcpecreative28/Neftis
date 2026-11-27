@@ -2,12 +2,14 @@
 
 import { FormEvent, useMemo, useState } from "react";
 
-type Provider = { id: string; name: string };
+type Provider = { id: string; name: string; kind?: "openai" | "anthropic" | "google"; keyHeader?: string };
 type Model = { id: string; name: string; reasoningEfforts: string[]; defaultReasoning: string | null };
 type Message = { role: "user" | "assistant"; content: string };
 type Connection = {
   id: string; provider: Provider; apiKey: string; baseUrl: string; models: Model[];
   modelId: string; reasoning: string; healthy: boolean;
+  protocol: "openai" | "anthropic" | "google";
+  authMode?: "bearer" | "x-api-key" | "none";
 };
 
 const providerNames: Provider[] = [
@@ -20,13 +22,16 @@ const providerNames: Provider[] = [
   { id: "fireworks", name: "Fireworks AI" }, { id: "siliconflow", name: "SiliconFlow" },
   { id: "novita", name: "Novita AI" }, { id: "perplexity", name: "Perplexity" },
   { id: "xai", name: "xAI" }, { id: "nvidia", name: "NVIDIA NIM" },
-  { id: "custom-openai", name: "Custom OpenAI-compatible" },
+  { id: "custom-openai", name: "Custom API / Telegram Gateway" },
 ];
 
 export default function AIWorkspace() {
   const [apiKey, setApiKey] = useState("");
   const [providerChoice, setProviderChoice] = useState("auto");
   const [baseUrl, setBaseUrl] = useState("");
+  const [customName, setCustomName] = useState("Telegram / Community API");
+  const [customProtocol, setCustomProtocol] = useState<"openai" | "anthropic" | "google">("openai");
+  const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "none">("bearer");
   const [providerChoices, setProviderChoices] = useState<Provider[]>(providerNames);
   const [needsProvider, setNeedsProvider] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -58,14 +63,19 @@ export default function AIWorkspace() {
         body: JSON.stringify({
           apiKey: apiKey.trim(),
           ...(providerChoice !== "auto" ? { provider: providerChoice } : {}),
-          ...(providerChoice === "custom-openai" ? { baseUrl: baseUrl.trim() } : {}),
+          ...(providerChoice === "custom-openai" ? {
+            baseUrl: baseUrl.trim(),
+            displayName: customName.trim(),
+            protocol: customProtocol,
+            authMode: customAuthMode,
+          } : {}),
         }),
       });
       const result = await response.json();
       if (result.needsProvider) {
         setProviderChoices(result.providers ?? providerNames);
         setNeedsProvider(true);
-        setError("Format token belum dikenali otomatis. Pilih provider yang menerbitkan token ini.");
+        setError("Token belum dikenali. Pilih layanan atau gunakan gateway dengan Base URL khusus.");
         return;
       }
       if (!response.ok) throw new Error(result.error ?? "Provider tidak dapat dihubungkan.");
@@ -73,10 +83,13 @@ export default function AIWorkspace() {
         id: crypto.randomUUID(), provider: result.provider, apiKey: apiKey.trim(),
         baseUrl: result.provider.baseUrl ?? "", models: result.models ?? [],
         modelId: result.models?.[0]?.id ?? "", reasoning: "", healthy: true,
+        protocol: result.provider.kind ?? "openai",
+        authMode: result.provider.id === "custom-openai" ? customAuthMode : undefined,
       };
       setConnections((items) => [...items, entry]);
       setActiveConnectionId(entry.id);
       setApiKey(""); setBaseUrl(""); setProviderChoice("auto"); setNeedsProvider(false);
+      setCustomName("Telegram / Community API"); setCustomProtocol("openai"); setCustomAuthMode("bearer");
       setNotice(`${entry.provider.name} terhubung · ${entry.models.length} model ditemukan.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Koneksi provider gagal.");
@@ -109,6 +122,7 @@ export default function AIWorkspace() {
     setMessages(nextMessages); setDraft(""); setSending(true); setError(""); setNotice("");
     const ordered = connections.filter((item) => item.modelId).map((item) => ({
       id: item.id, provider: item.provider.id, apiKey: item.apiKey, baseUrl: item.baseUrl,
+      protocol: item.protocol, ...(item.authMode ? { authMode: item.authMode } : {}),
       model: item.modelId, ...(item.reasoning ? { reasoning: item.reasoning } : {}),
     }));
     try {
@@ -170,15 +184,21 @@ export default function AIWorkspace() {
           </div>
 
           <form className="ai-connect-form ai-add-connection" onSubmit={connect}>
-            <div className="ai-form-title"><span>01 / ADD CONNECTION</span><strong>Tambahkan provider</strong></div>
+            <div className="ai-form-title"><span>01 / ADD CONNECTION</span><strong>Tambahkan token AI</strong></div>
             <div className="ai-form-grid">
               <label className="ai-field ai-field-wide"><span>API TOKEN</span><input type="password" autoComplete="off" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setError(""); setNeedsProvider(false); }} placeholder="Tempel token API di sini" /></label>
-              <label className="ai-field"><span>DETEKSI PROVIDER</span><select value={providerChoice} onChange={(event) => { setProviderChoice(event.target.value); setNeedsProvider(false); setError(""); }}><option value="auto">Deteksi otomatis</option>{providerChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-              {selectedProvider === "custom-openai" && <label className="ai-field ai-field-wide"><span>BASE URL (HTTPS)</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://api.example.com/v1" required /><small>Untuk endpoint OpenAI-compatible yang menyediakan /models dan /chat/completions.</small></label>}
+              {(needsProvider || providerChoice !== "auto") && <label className="ai-field"><span>JENIS KONEKSI</span><select value={providerChoice} onChange={(event) => { setProviderChoice(event.target.value); setNeedsProvider(false); setError(""); }}><option value="auto">Deteksi otomatis</option>{providerChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>}
+              {providerChoice === "auto" && !needsProvider && <button type="button" className="ai-manual-provider" onClick={() => setProviderChoice("custom-openai")}>Gunakan token + Base URL khusus ↗</button>}
+              {selectedProvider === "custom-openai" && <>
+                <label className="ai-field"><span>NAMA LAYANAN</span><input value={customName} onChange={(event) => setCustomName(event.target.value)} maxLength={48} placeholder="Contoh: Telegram AI Free" /></label>
+                <label className="ai-field ai-field-wide"><span>BASE URL (HTTPS)</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://gateway.example.com/v1" required /><small>Gunakan Base URL yang diberikan penyedia token. Neftis akan mencoba membaca daftar model dari endpoint tersebut.</small></label>
+                <label className="ai-field"><span>PROTOKOL API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
+                <label className="ai-field"><span>METODE TOKEN</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "none")}><option value="bearer">Authorization: Bearer</option><option value="x-api-key">x-api-key</option><option value="none">Tanpa header autentikasi</option></select></label>
+              </>}
             </div>
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
             {notice && <p className="ai-inline-notice" role="status">{notice}</p>}
-            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || (selectedProvider === "custom-openai" && !baseUrl.trim())}>{connecting ? "Memeriksa endpoint…" : "Validasi token & ambil model"} <span>↗</span></button><span>Token tidak disimpan permanen. Maksimal 8 koneksi per sesi.</span></div>
+            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || (selectedProvider === "custom-openai" && !baseUrl.trim())}>{connecting ? "Memeriksa endpoint…" : "Validasi token & ambil model"} <span>↗</span></button><span>Token hanya aktif selama tab ini terbuka · Maks. 8 koneksi.</span></div>
           </form>
 
           {activeConnection ? (
