@@ -31,10 +31,9 @@ const pageTitles: Record<PageKey, string> = {
 };
 
 
-type LocaleCode = "id"|"en"|"ar"|"zh"|"ja"|"ko"|"es"|"pt"|"fr"|"de"|"hi"|"ru"|"tr"|"th"|"vi";
+type LocaleCode = "id"|"en"|"zh"|"ja"|"ko"|"es"|"pt"|"fr"|"de"|"hi"|"ru"|"tr"|"th"|"vi";
 const languages: {code: LocaleCode; name: string; native: string}[] = [
-  {code:"id",name:"Indonesian",native:"Bahasa Indonesia"},{code:"en",name:"English",native:"English"},
-  {code:"ar",name:"Arabic",native:"العربية"},{code:"zh",name:"Chinese",native:"中文"},
+  {code:"id",name:"Indonesian",native:"Bahasa Indonesia"},{code:"en",name:"English",native:"English"},{code:"zh",name:"Chinese",native:"中文"},
   {code:"ja",name:"Japanese",native:"日本語"},{code:"ko",name:"Korean",native:"한국어"},
   {code:"es",name:"Spanish",native:"Español"},{code:"pt",name:"Portuguese",native:"Português"},
   {code:"fr",name:"French",native:"Français"},{code:"de",name:"German",native:"Deutsch"},
@@ -45,7 +44,6 @@ const languages: {code: LocaleCode; name: string; native: string}[] = [
 const translations: Record<LocaleCode, Record<string,string>> = {
  id:{overview:"Ringkasan",ai:"Neftis AI",tools:"Pustaka alat",community:"Komunitas",learn:"Pengetahuan",games:"Arkade",achievements:"Pencapaian",services:"Layanan",workspace:"RUANG KERJA",yourSpace:"RUANG KAMU",search:"Cari apa saja",signIn:"Masuk",openAI:"Buka Neftis AI",explore:"Jelajahi alat",commons:"RUANG BERSAMA",begin:"Tempat untuk memulai"},
  en:{overview:"Overview",ai:"Neftis AI",tools:"Tools library",community:"Community",learn:"Knowledge",games:"Arcade",achievements:"Achievements",services:"Services",workspace:"WORKSPACE",yourSpace:"YOUR SPACE",search:"Search anything",signIn:"Sign in",openAI:"Open Neftis AI",explore:"Explore tools",commons:"THE COMMONS",begin:"A place to begin"},
- ar:{overview:"نظرة عامة",ai:"ذكاء نيفتيس",tools:"مكتبة الأدوات",community:"المجتمع",learn:"المعرفة",games:"الألعاب",achievements:"الإنجازات",services:"الخدمات",workspace:"مساحة العمل",yourSpace:"مساحتك",search:"ابحث عن أي شيء",signIn:"تسجيل الدخول",openAI:"افتح Neftis AI",explore:"استكشف الأدوات",commons:"المساحة المشتركة",begin:"مكان للبدء"},
  zh:{overview:"概览",ai:"Neftis 人工智能",tools:"工具库",community:"社区",learn:"知识",games:"游戏",achievements:"成就",services:"服务",workspace:"工作区",yourSpace:"你的空间",search:"搜索任何内容",signIn:"登录",openAI:"打开 Neftis AI",explore:"探索工具",commons:"共享空间",begin:"从这里开始"},
  ja:{overview:"概要",ai:"Neftis AI",tools:"ツールライブラリ",community:"コミュニティ",learn:"ナレッジ",games:"アーケード",achievements:"実績",services:"サービス",workspace:"ワークスペース",yourSpace:"あなたのスペース",search:"何でも検索",signIn:"ログイン",openAI:"Neftis AIを開く",explore:"ツールを見る",commons:"共有スペース",begin:"ここから始める"},
  ko:{overview:"개요",ai:"Neftis AI",tools:"도구 라이브러리",community:"커뮤니티",learn:"지식",games:"아케이드",achievements:"업적",services:"서비스",workspace:"워크스페이스",yourSpace:"내 공간",search:"무엇이든 검색",signIn:"로그인",openAI:"Neftis AI 열기",explore:"도구 둘러보기",commons:"공유 공간",begin:"시작하기"},
@@ -60,12 +58,15 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["atelier","Atelier","#f3f0e8","#cf6848"],
- ["night","Midnight","#11151c","#d6e5a0"],
- ["forest","Moss","#17251e","#b9d38b"],
- ["ocean","Ocean","#102630","#72d7d0"],
- ["lavender","Lavender","#efedf5","#7967a8"],
- ["mono","Monochrome","#f4f4f0","#24272b"],
+ ["night","Night","#101116","#d4f36a"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
+ ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
+ ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
+ ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
+ ["matcha","Matcha","#20251a","#c8df91"],["graphite","Graphite","#171b20","#b8c5d2"],["cobalt","Cobalt","#101b32","#78a9ff"],
+ ["plum","Plum","#25172b","#e0a8ed"],["mint","Mint","#10251f","#8de5c1"],["clay","Clay","#2a211b","#dca77e"],
+ ["aurora","Aurora","#101e27","#8ce6d1"],["parchment","Parchment","#eee5cf","#8d9c57"],["obsidian","Obsidian","#08090d","#a9c4ff"],
+ ["sakura","Sakura","#2b1b28","#ffb5d2"],["ember","Ember","#281912","#ff9a62"],["glacier","Glacier","#10232d","#9be4ef"],
+ ["solar","Solar","#251d10","#f0bd55"]
 ] as const;
 
 
@@ -73,7 +74,6 @@ type HomeCopy = { eyebrow:string; headlineTop:string; headlineAccent:string; des
 const homeCopy: Partial<Record<LocaleCode,HomeCopy>> = {
  id:{eyebrow:"RUANG DIGITAL TERBUKA",headlineTop:"Buka ruang untuk",headlineAccent:"hal berikutnya.",description:"Tempat bersama untuk menemukan alat berguna, berpikir bersama AI, bertukar gagasan, dan mempelajari hal baru.",section:"RUANG BERSAMA",begin:"Mulai jelajahi",activity:"AKTIVITASMU",recent:"Aktivitas terbaru",activityEmpty:"Aktivitasmu akan muncul di sini saat kamu menjelajahi Neftis.",community:"JEJAK KOMUNITAS",fromCommunity:"Dari komunitas",question:"Alat kecil apa yang paling menghemat waktumu?",questionDesc:"Bagikan utilitas sederhana yang membuat pekerjaan sehari-hari lebih mudah.",footer:"© NEFTIS / RUANG DIGITAL",footerNote:"TERBUKA UNTUK SEMUA · DIBUAT UNTUK DIJELAJAHI"},
  en:{eyebrow:"AN OPEN DIGITAL SPACE",headlineTop:"Make room for",headlineAccent:"what comes next.",description:"A shared place to discover useful tools, think with AI, exchange ideas, and learn something new.",section:"THE COMMONS",begin:"A place to begin",activity:"YOUR ACTIVITY",recent:"Recent activity",activityEmpty:"Your activity will appear here as you explore Neftis.",community:"COMMUNITY SIGNAL",fromCommunity:"From the community",question:"What small tool saves you the most time?",questionDesc:"Share the little utilities that make everyday work easier.",footer:"© NEFTIS / DIGITAL COMMONS",footerNote:"OPEN BY DESIGN · MADE TO EXPLORE"},
- ar:{eyebrow:"مساحة رقمية مفتوحة",headlineTop:"اترك مساحة",headlineAccent:"لما هو قادم.",description:"مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة.",section:"المساحة المشتركة",begin:"ابدأ الاستكشاف",activity:"نشاطك",recent:"النشاط الأخير",activityEmpty:"سيظهر نشاطك هنا أثناء استكشاف نيفتيس.",community:"إشارات المجتمع",fromCommunity:"من المجتمع",question:"ما الأداة الصغيرة التي توفر معظم وقتك؟",questionDesc:"شارك الأدوات البسيطة التي تجعل العمل اليومي أسهل.",footer:"© NEFTIS / مساحة رقمية",footerNote:"مفتوح للجميع · صُمم للاستكشاف"},
  zh:{eyebrow:"开放的数字空间",headlineTop:"为下一步",headlineAccent:"留出空间。",description:"在这里发现实用工具、借助 AI 思考、交流想法，并学习新知识。",section:"共享空间",begin:"从这里开始",activity:"你的动态",recent:"最近动态",activityEmpty:"探索 Neftis 时，你的动态会显示在这里。",community:"社区动态",fromCommunity:"来自社区",question:"哪款小工具最能帮你节省时间？",questionDesc:"分享让日常工作更轻松的小工具。",footer:"© NEFTIS / 数字共享空间",footerNote:"开放共享 · 探索更多"},
  ja:{eyebrow:"ひらかれたデジタル空間",headlineTop:"次の可能性に",headlineAccent:"余白をつくろう。",description:"便利なツールを見つけ、AIと考え、アイデアを交換し、新しいことを学べる共有スペース。",section:"共有スペース",begin:"ここから始める",activity:"あなたのアクティビティ",recent:"最近のアクティビティ",activityEmpty:"Neftisを探索すると、ここに履歴が表示されます。",community:"コミュニティ",fromCommunity:"コミュニティから",question:"一番時間を節約してくれる小さなツールは？",questionDesc:"日々の作業を楽にする便利なツールを共有しましょう。",footer:"© NEFTIS / デジタルコモンズ",footerNote:"誰にでも開かれた場所 · 探索しよう"},
  ko:{eyebrow:"열린 디지털 공간",headlineTop:"다음 가능성을 위한",headlineAccent:"여백을 만드세요.",description:"유용한 도구를 발견하고 AI와 함께 생각하며 아이디어를 나누고 새로운 것을 배우는 공간입니다.",section:"공유 공간",begin:"여기서 시작하기",activity:"내 활동",recent:"최근 활동",activityEmpty:"Neftis를 둘러보면 활동이 여기에 표시됩니다.",community:"커뮤니티 소식",fromCommunity:"커뮤니티에서",question:"시간을 가장 많이 아껴주는 작은 도구는 무엇인가요?",questionDesc:"일상을 더 편하게 만드는 유용한 도구를 공유해 보세요.",footer:"© NEFTIS / 디지털 커먼즈",footerNote:"모두에게 열린 공간 · 자유롭게 탐색"},
@@ -173,7 +173,7 @@ export default function NeftisShell() {
     root.dataset.theme = theme;
     root.dataset.scheme = isLight ? "light" : "dark";
     root.lang = language;
-    root.dir = language === "ar" ? "rtl" : "ltr";
+    root.dir = "ltr";
     root.style.colorScheme = isLight ? "light" : "dark";
     try {
       localStorage.setItem("neftis-theme-v3", theme);
@@ -240,7 +240,7 @@ export default function NeftisShell() {
     window.setTimeout(() => setToast(""), 2200);
   }
   return (
-    <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
+    <div className="app-shell" lang={language} dir="ltr">
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
