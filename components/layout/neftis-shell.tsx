@@ -128,7 +128,6 @@ export default function NeftisShell() {
   }, [pathname]);
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
-  const [usagePeriod, setUsagePeriod] = useState("7d");
   const [theme, setTheme] = useState("atelier");
   const [customAccent, setCustomAccent] = useState("#cf6848");
   const [customBackground, setCustomBackground] = useState("");
@@ -330,19 +329,13 @@ export default function NeftisShell() {
               </div>
               <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
-              <section className="usage-section panel" aria-labelledby="usage-title">
-                <div className="usage-heading">
-                  <div><span className="section-kicker">ACCOUNT / AI ACTIVITY</span><h2 id="usage-title">Token usage</h2><p>Track AI consumption across your Neftis workspace.</p></div>
-                  <div className="usage-periods" role="group" aria-label="Usage time range">
-                    {[["1d","1 day"],["7d","7 days"],["14d","14 days"],["1m","1 month"],["1y","1 year"]].map(([value,label]) => <button type="button" key={value} className={usagePeriod === value ? "active" : ""} aria-pressed={usagePeriod === value} onClick={() => setUsagePeriod(value)}>{label}</button>)}
-                  </div>
+              <section className="home-principles">
+                <div className="home-principles-heading"><span className="section-kicker">A SIMPLE WAY TO BEGIN</span><h2>Explore first.<br/><em>Make something useful.</em></h2><p>Neftis menghubungkan alat, pengetahuan, dan ruang berbagi dalam satu tempat yang bisa kamu jelajahi sesuai kebutuhan.</p></div>
+                <div className="home-principles-grid">
+                  <article><span>01 / THINK</span><div className="principle-symbol">✳</div><h3>Think with AI</h3><p>Hubungkan layanan AI yang kamu pilih dan gunakan model sesuai kebutuhan.</p></article>
+                  <article><span>02 / MAKE</span><div className="principle-symbol">⌘</div><h3>Make with tools</h3><p>Temukan utilitas praktis untuk pekerjaan, eksperimen, dan ide kecil.</p></article>
+                  <article><span>03 / SHARE</span><div className="principle-symbol">◎</div><h3>Learn together</h3><p>Bangun pemahaman dan bagikan temuan yang bisa membantu orang lain.</p></article>
                 </div>
-                <div className="usage-metrics">
-                  <article><span>TOTAL TOKENS</span><strong>—</strong><small>Awaiting connected AI usage</small></article>
-                  <article><span>REQUESTS</span><strong>—</strong><small>No recorded requests yet</small></article>
-                  <article><span>ACTIVE MODELS</span><strong>—</strong><small>Provider connection pending</small></article>
-                </div>
-                <div className="usage-chart-empty"><div className="usage-chart-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 38h36M10 32l9-10 7 5 12-15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="38" cy="12" r="3" fill="currentColor"/></svg></div><strong>Usage analytics will appear here</strong><p>We’ll show real token traffic for the selected {usagePeriod === "1d" ? "day" : usagePeriod === "7d" ? "7-day" : usagePeriod === "14d" ? "14-day" : usagePeriod === "1m" ? "monthly" : "yearly"} period after AI requests are connected and recorded. No sample numbers are shown.</p></div>
               </section>
               <div className="lower-grid">
                 <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
