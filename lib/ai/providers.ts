@@ -1,4 +1,4 @@
-export type ProviderId = "tokenharbor" | "9router" | "openrouter" | "mecutinai" | "anthropic" | "openai" | "google" | "custom-openai";
+export type ProviderId = "tokenharbor" | "9router" | "openrouter" | "mecutinai" | "anthropic" | "openai" | "google" | "custom-openai" | "groq" | "together" | "deepseek" | "mistral" | "cerebras" | "fireworks" | "siliconflow" | "novita" | "perplexity" | "xai" | "nvidia";
 
 export type ProviderConfig = {
   id: ProviderId;
@@ -17,10 +17,21 @@ export const providers: Record<ProviderId, ProviderConfig> = {
   openai: { id: "openai", name: "OpenAI", baseUrl: "https://api.openai.com/v1", kind: "openai", keyHeader: "bearer" },
   google: { id: "google", name: "Google AI Studio", baseUrl: "https://generativelanguage.googleapis.com/v1beta", kind: "google", keyHeader: "google" },
   "custom-openai": { id: "custom-openai", name: "Custom OpenAI-compatible", baseUrl: "", kind: "openai", keyHeader: "bearer" },
+  groq: { id: "groq", name: "Groq", baseUrl: "https://api.groq.com/openai/v1", kind: "openai", keyHeader: "bearer" },
+  together: { id: "together", name: "Together AI", baseUrl: "https://api.together.xyz/v1", kind: "openai", keyHeader: "bearer" },
+  deepseek: { id: "deepseek", name: "DeepSeek", baseUrl: "https://api.deepseek.com", kind: "openai", keyHeader: "bearer" },
+  mistral: { id: "mistral", name: "Mistral AI", baseUrl: "https://api.mistral.ai/v1", kind: "openai", keyHeader: "bearer" },
+  cerebras: { id: "cerebras", name: "Cerebras", baseUrl: "https://api.cerebras.ai/v1", kind: "openai", keyHeader: "bearer" },
+  fireworks: { id: "fireworks", name: "Fireworks AI", baseUrl: "https://api.fireworks.ai/inference/v1", kind: "openai", keyHeader: "bearer" },
+  siliconflow: { id: "siliconflow", name: "SiliconFlow", baseUrl: "https://api.siliconflow.com/v1", kind: "openai", keyHeader: "bearer" },
+  novita: { id: "novita", name: "Novita AI", baseUrl: "https://api.novita.ai/v3/openai", kind: "openai", keyHeader: "bearer" },
+  perplexity: { id: "perplexity", name: "Perplexity", baseUrl: "https://api.perplexity.ai", kind: "openai", keyHeader: "bearer" },
+  xai: { id: "xai", name: "xAI", baseUrl: "https://api.x.ai/v1", kind: "openai", keyHeader: "bearer" },
+  nvidia: { id: "nvidia", name: "NVIDIA NIM", baseUrl: "https://integrate.api.nvidia.com/v1", kind: "openai", keyHeader: "bearer" },
 };
 
 export function detectProvider(apiKey: string): ProviderId | null {
-  if (apiKey.startsWith("thk_")) return "tokenharbor";
+  if (apiKey.startsWith("thk_")) return "tokenharbor";\n  if (apiKey.startsWith("gsk_")) return "groq";\n  if (apiKey.startsWith("csk-")) return "cerebras";
   if (apiKey.startsWith("sk-or-v1-")) return "openrouter";
   if (apiKey.startsWith("sk-ant-")) return "anthropic";
   if (apiKey.startsWith("AIza")) return "google";
@@ -42,7 +53,7 @@ export function validateBaseUrl(value: string): string {
   const blocked = host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") ||
     host === "metadata.google.internal" || /^127\./.test(host) || /^10\./.test(host) ||
     /^192\.168\./.test(host) || /^169\.254\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(host) || host === "::1" || host.startsWith("[fc") || host.startsWith("[fd") || host.startsWith("[fe80");
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host) || (host === "::1" || host === "[::1]") || host.startsWith("[fc") || host.startsWith("[fd") || host.startsWith("[fe80");
   if (url.protocol !== "https:" || blocked || url.username || url.password || url.search || url.hash) {
     throw new Error("Base URL harus HTTPS publik tanpa kredensial, query, atau fragment.");
   }
