@@ -77,6 +77,8 @@ export function validateBaseUrl(value: string): string {
 export function providerHeaders(provider: ProviderConfig, apiKey: string): Record<string, string> {
   if (provider.keyHeader === "anthropic") return { "x-api-key": apiKey, "anthropic-version": "2023-06-01" };
   if (provider.keyHeader === "google") return { "x-goog-api-key": apiKey };
+  if (provider.kind === "anthropic" && provider.keyHeader === "x-api-key") return { "x-api-key": apiKey, "anthropic-version": "2023-06-01" };
+  if (provider.kind === "anthropic" && provider.keyHeader === "bearer") return { Authorization: `Bearer ${apiKey}`, "anthropic-version": "2023-06-01" };
   if (provider.keyHeader === "x-api-key") return { "x-api-key": apiKey };
   if (provider.keyHeader === "none") return {};
   return { Authorization: `Bearer ${apiKey}` };
