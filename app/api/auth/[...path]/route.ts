@@ -109,3 +109,5 @@ export async function POST(request: Request) {
   }
   return response;
 }
+
+// Preview configuration refresh: Neon Auth initialization remains request-scoped.
