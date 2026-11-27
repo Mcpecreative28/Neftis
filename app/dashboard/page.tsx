@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth/server";
+import { signOutAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,7 @@ export default async function DashboardPage() {
         <Link href="/" className="account-dashboard-brand"><span>N</span> NEFTIS</Link>
         <nav aria-label="Account navigation">
           <Link href="/">Jelajahi Neftis</Link>
-          <Link href="/api/auth/sign-out">Keluar</Link>
+          <form action={signOutAction}><button type="submit">Keluar</button></form>
         </nav>
       </header>
 
@@ -44,9 +45,9 @@ export default async function DashboardPage() {
           <span>02 / UTILITIES</span><strong>Tools library</strong>
           <p>Gunakan alat digital untuk pekerjaan sehari-hari.</p><i>↗</i>
         </Link>
-        <Link href="/settings" className="account-dash-card">
-          <span>03 / PREFERENCES</span><strong>Pengaturan</strong>
-          <p>Kelola bahasa, tampilan, dan preferensi akun.</p><i>↗</i>
+        <Link href="/" className="account-dash-card">
+          <span>03 / PREFERENCES</span><strong>Tampilan Neftis</strong>
+          <p>Atur tema dan bahasa dari ruang utama.</p><i>↗</i>
         </Link>
         <Link href="/profile" className="account-dash-card">
           <span>04 / IDENTITY</span><strong>Profil</strong>
