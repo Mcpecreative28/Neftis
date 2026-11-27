@@ -6,8 +6,8 @@ type AttemptRow = { failed_attempts: number; locked_until: Date | string | null 
 let client: ReturnType<typeof neon> | undefined;
 
 function database() {
-  if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is required for login protection.");
-  client ??= neon(process.env.DATABASE_URL);
+  if (!process.env.NEFTIS_AUTH_GUARD_DATABASE_URL) throw new Error("NEFTIS_AUTH_GUARD_DATABASE_URL is required for login protection.");
+  client ??= neon(process.env.NEFTIS_AUTH_GUARD_DATABASE_URL);
   return client;
 }
 
