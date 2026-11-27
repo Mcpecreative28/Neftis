@@ -1,6 +1,6 @@
-export type ProviderId = "tokenharbor" | "9router" | "openrouter" | "mecutinai" | "anthropic" | "openai" | "google";
+export type ProviderId = "tokenharbor" | "9router" | "openrouter" | "mecutinai" | "anthropic" | "openai" | "google" | "custom-openai";
 
-type ProviderConfig = {
+export type ProviderConfig = {
   id: ProviderId;
   name: string;
   baseUrl: string;
@@ -16,6 +16,7 @@ export const providers: Record<ProviderId, ProviderConfig> = {
   anthropic: { id: "anthropic", name: "Anthropic", baseUrl: "https://api.anthropic.com/v1", kind: "anthropic", keyHeader: "anthropic" },
   openai: { id: "openai", name: "OpenAI", baseUrl: "https://api.openai.com/v1", kind: "openai", keyHeader: "bearer" },
   google: { id: "google", name: "Google AI Studio", baseUrl: "https://generativelanguage.googleapis.com/v1beta", kind: "google", keyHeader: "google" },
+  "custom-openai": { id: "custom-openai", name: "Custom OpenAI-compatible", baseUrl: "", kind: "openai", keyHeader: "bearer" },
 };
 
 export function detectProvider(apiKey: string): ProviderId | null {
@@ -27,6 +28,25 @@ export function detectProvider(apiKey: string): ProviderId | null {
   if (apiKey.startsWith("9r_")) return "9router";
   if (apiKey.startsWith("sk-proj-") || apiKey.startsWith("sk-svcacct-") || apiKey.startsWith("sk-")) return "openai";
   return null;
+}
+
+export function resolveProvider(providerId: ProviderId, customBaseUrl?: string): ProviderConfig {
+  const base = providers[providerId];
+  return { ...base, baseUrl: providerId === "custom-openai" ? validateBaseUrl(customBaseUrl ?? "") : base.baseUrl };
+}
+
+export function validateBaseUrl(value: string): string {
+  let url: URL;
+  try { url = new URL(value.trim()); } catch { throw new Error("Base URL tidak valid."); }
+  const host = url.hostname.toLowerCase();
+  const blocked = host === "localhost" || host.endsWith(".localhost") || host.endsWith(".local") ||
+    host === "metadata.google.internal" || /^127\./.test(host) || /^10\./.test(host) ||
+    /^192\.168\./.test(host) || /^169\.254\./.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host) || host === "::1" || host.startsWith("[fc") || host.startsWith("[fd") || host.startsWith("[fe80");
+  if (url.protocol !== "https:" || blocked || url.username || url.password || url.search || url.hash) {
+    throw new Error("Base URL harus HTTPS publik tanpa kredensial, query, atau fragment.");
+  }
+  return url.toString().replace(/\/+$/, "");
 }
 
 export function providerHeaders(provider: ProviderConfig, apiKey: string): Record<string, string> {
@@ -46,13 +66,8 @@ export function normalizeModels(providerId: ProviderId, payload: unknown) {
     const id = providerId === "google" ? rawId.replace(/^models\//, "") : rawId;
     if (!id || (providerId === "google" && !id.startsWith("gemini"))) return [];
     const reasoning = item.reasoning as { efforts?: unknown; default_effort?: unknown } | undefined;
-    const efforts = Array.isArray(reasoning?.efforts) ? reasoning!.efforts.filter((value): value is string => typeof value === "string") : [];
-    return [{
-      id,
-      name: typeof item.name === "string" ? item.name.replace(/^models\//, "") : id,
-      reasoningEfforts: efforts,
-      defaultReasoning: typeof reasoning?.default_effort === "string" ? reasoning.default_effort : null,
-    }];
+    const efforts = Array.isArray(reasoning?.efforts) ? reasoning.efforts.filter((value): value is string => typeof value === "string") : [];
+    return [{ id, name: typeof item.name === "string" ? item.name.replace(/^models\//, "") : id, reasoningEfforts: efforts, defaultReasoning: typeof reasoning?.default_effort === "string" ? reasoning.default_effort : null }];
   }).sort((a, b) => a.id.localeCompare(b.id));
 }
 
