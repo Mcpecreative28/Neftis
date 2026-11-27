@@ -250,6 +250,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
               <input
                 type="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                maxLength={320}
                 placeholder="you@example.com"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
