@@ -70,6 +70,27 @@ const themes = [
  ["solar","Solar","#251d10","#f0bd55"]
 ] as const;
 
+
+type HomeCopy = { eyebrow:string; headlineTop:string; headlineAccent:string; description:string; section:string; begin:string; activity:string; recent:string; activityEmpty:string; community:string; fromCommunity:string; question:string; questionDesc:string; footer:string; footerNote:string };
+const homeCopy: Partial<Record<LocaleCode,HomeCopy>> = {
+ id:{eyebrow:"RUANG DIGITAL TERBUKA",headlineTop:"Buka ruang untuk",headlineAccent:"hal berikutnya.",description:"Tempat bersama untuk menemukan alat berguna, berpikir bersama AI, bertukar gagasan, dan mempelajari hal baru.",section:"RUANG BERSAMA",begin:"Mulai jelajahi",activity:"AKTIVITASMU",recent:"Aktivitas terbaru",activityEmpty:"Aktivitasmu akan muncul di sini saat kamu menjelajahi Neftis.",community:"JEJAK KOMUNITAS",fromCommunity:"Dari komunitas",question:"Alat kecil apa yang paling menghemat waktumu?",questionDesc:"Bagikan utilitas sederhana yang membuat pekerjaan sehari-hari lebih mudah.",footer:"© NEFTIS / RUANG DIGITAL",footerNote:"TERBUKA UNTUK SEMUA · DIBUAT UNTUK DIJELAJAHI"},
+ en:{eyebrow:"AN OPEN DIGITAL SPACE",headlineTop:"Make room for",headlineAccent:"what comes next.",description:"A shared place to discover useful tools, think with AI, exchange ideas, and learn something new.",section:"THE COMMONS",begin:"A place to begin",activity:"YOUR ACTIVITY",recent:"Recent activity",activityEmpty:"Your activity will appear here as you explore Neftis.",community:"COMMUNITY SIGNAL",fromCommunity:"From the community",question:"What small tool saves you the most time?",questionDesc:"Share the little utilities that make everyday work easier.",footer:"© NEFTIS / DIGITAL COMMONS",footerNote:"OPEN BY DESIGN · MADE TO EXPLORE"},
+ ar:{eyebrow:"مساحة رقمية مفتوحة",headlineTop:"اترك مساحة",headlineAccent:"لما هو قادم.",description:"مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة.",section:"المساحة المشتركة",begin:"ابدأ الاستكشاف",activity:"نشاطك",recent:"النشاط الأخير",activityEmpty:"سيظهر نشاطك هنا أثناء استكشاف نيفتيس.",community:"إشارات المجتمع",fromCommunity:"من المجتمع",question:"ما الأداة الصغيرة التي توفر معظم وقتك؟",questionDesc:"شارك الأدوات البسيطة التي تجعل العمل اليومي أسهل.",footer:"© NEFTIS / مساحة رقمية",footerNote:"مفتوح للجميع · صُمم للاستكشاف"},
+ zh:{eyebrow:"开放的数字空间",headlineTop:"为下一步",headlineAccent:"留出空间。",description:"在这里发现实用工具、借助 AI 思考、交流想法，并学习新知识。",section:"共享空间",begin:"从这里开始",activity:"你的动态",recent:"最近动态",activityEmpty:"探索 Neftis 时，你的动态会显示在这里。",community:"社区动态",fromCommunity:"来自社区",question:"哪款小工具最能帮你节省时间？",questionDesc:"分享让日常工作更轻松的小工具。",footer:"© NEFTIS / 数字共享空间",footerNote:"开放共享 · 探索更多"},
+ ja:{eyebrow:"ひらかれたデジタル空間",headlineTop:"次の可能性に",headlineAccent:"余白をつくろう。",description:"便利なツールを見つけ、AIと考え、アイデアを交換し、新しいことを学べる共有スペース。",section:"共有スペース",begin:"ここから始める",activity:"あなたのアクティビティ",recent:"最近のアクティビティ",activityEmpty:"Neftisを探索すると、ここに履歴が表示されます。",community:"コミュニティ",fromCommunity:"コミュニティから",question:"一番時間を節約してくれる小さなツールは？",questionDesc:"日々の作業を楽にする便利なツールを共有しましょう。",footer:"© NEFTIS / デジタルコモンズ",footerNote:"誰にでも開かれた場所 · 探索しよう"},
+ ko:{eyebrow:"열린 디지털 공간",headlineTop:"다음 가능성을 위한",headlineAccent:"여백을 만드세요.",description:"유용한 도구를 발견하고 AI와 함께 생각하며 아이디어를 나누고 새로운 것을 배우는 공간입니다.",section:"공유 공간",begin:"여기서 시작하기",activity:"내 활동",recent:"최근 활동",activityEmpty:"Neftis를 둘러보면 활동이 여기에 표시됩니다.",community:"커뮤니티 소식",fromCommunity:"커뮤니티에서",question:"시간을 가장 많이 아껴주는 작은 도구는 무엇인가요?",questionDesc:"일상을 더 편하게 만드는 유용한 도구를 공유해 보세요.",footer:"© NEFTIS / 디지털 커먼즈",footerNote:"모두에게 열린 공간 · 자유롭게 탐색"},
+ es:{eyebrow:"UN ESPACIO DIGITAL ABIERTO",headlineTop:"Haz espacio para",headlineAccent:"lo que viene.",description:"Un lugar compartido para descubrir herramientas útiles, pensar con IA, intercambiar ideas y aprender.",section:"ESPACIO COMÚN",begin:"Un lugar para empezar",activity:"TU ACTIVIDAD",recent:"Actividad reciente",activityEmpty:"Tu actividad aparecerá aquí mientras exploras Neftis.",community:"SEÑAL DE LA COMUNIDAD",fromCommunity:"De la comunidad",question:"¿Qué pequeña herramienta te ahorra más tiempo?",questionDesc:"Comparte utilidades que facilitan el trabajo diario.",footer:"© NEFTIS / ESPACIO DIGITAL",footerNote:"ABIERTO PARA TODOS · HECHO PARA EXPLORAR"},
+ pt:{eyebrow:"UM ESPAÇO DIGITAL ABERTO",headlineTop:"Abra espaço para",headlineAccent:"o que vem a seguir.",description:"Um lugar compartilhado para descobrir ferramentas úteis, pensar com IA, trocar ideias e aprender.",section:"ESPAÇO COMUM",begin:"Um lugar para começar",activity:"SUA ATIVIDADE",recent:"Atividade recente",activityEmpty:"Sua atividade aparecerá aqui enquanto você explora o Neftis.",community:"SINAL DA COMUNIDADE",fromCommunity:"Da comunidade",question:"Qual pequena ferramenta mais economiza seu tempo?",questionDesc:"Compartilhe utilitários que facilitam o trabalho diário.",footer:"© NEFTIS / ESPAÇO DIGITAL",footerNote:"ABERTO A TODOS · FEITO PARA EXPLORAR"},
+ fr:{eyebrow:"UN ESPACE NUMÉRIQUE OUVERT",headlineTop:"Faites place à",headlineAccent:"la suite.",description:"Un espace partagé pour découvrir des outils utiles, réfléchir avec l’IA, échanger des idées et apprendre.",section:"ESPACE COMMUN",begin:"Un lieu pour commencer",activity:"VOTRE ACTIVITÉ",recent:"Activité récente",activityEmpty:"Votre activité apparaîtra ici à mesure que vous explorez Neftis.",community:"ÉCHO DE LA COMMUNAUTÉ",fromCommunity:"De la communauté",question:"Quel petit outil vous fait gagner le plus de temps ?",questionDesc:"Partagez les utilitaires qui simplifient le quotidien.",footer:"© NEFTIS / ESPACE NUMÉRIQUE",footerNote:"OUVERT À TOUS · FAIT POUR EXPLORER"},
+ de:{eyebrow:"EIN OFFENER DIGITALER RAUM",headlineTop:"Schaffe Raum für",headlineAccent:"das, was kommt.",description:"Ein gemeinsamer Ort, um nützliche Tools zu entdecken, mit KI zu denken, Ideen auszutauschen und Neues zu lernen.",section:"GEMEINSCHAFT",begin:"Hier beginnt es",activity:"DEINE AKTIVITÄTEN",recent:"Letzte Aktivitäten",activityEmpty:"Deine Aktivitäten erscheinen hier, wenn du Neftis erkundest.",community:"STIMME DER COMMUNITY",fromCommunity:"Aus der Community",question:"Welches kleine Tool spart dir am meisten Zeit?",questionDesc:"Teile kleine Helfer, die den Alltag leichter machen.",footer:"© NEFTIS / DIGITALER GEMEINSCHAFTSRAUM",footerNote:"OFFEN FÜR ALLE · ZUM ENTDECKEN"},
+ hi:{eyebrow:"एक खुली डिजिटल जगह",headlineTop:"आने वाले कल के लिए",headlineAccent:"जगह बनाएं।",description:"उपयोगी टूल खोजें, AI के साथ सोचें, विचार साझा करें और कुछ नया सीखें।",section:"साझा स्थान",begin:"यहाँ से शुरू करें",activity:"आपकी गतिविधि",recent:"हाल की गतिविधि",activityEmpty:"Neftis एक्सप्लोर करने पर आपकी गतिविधि यहाँ दिखेगी।",community:"समुदाय की झलक",fromCommunity:"समुदाय से",question:"कौन-सा छोटा टूल आपका सबसे अधिक समय बचाता है?",questionDesc:"रोज़मर्रा के काम आसान बनाने वाले टूल साझा करें।",footer:"© NEFTIS / डिजिटल कॉमन्स",footerNote:"सबके लिए खुला · खोजने के लिए बना"},
+ ru:{eyebrow:"ОТКРЫТОЕ ЦИФРОВОЕ ПРОСТРАНСТВО",headlineTop:"Освободите место",headlineAccent:"для нового.",description:"Общее пространство для полезных инструментов, идей, общения с ИИ и новых знаний.",section:"ОБЩЕЕ ПРОСТРАНСТВО",begin:"Начать отсюда",activity:"ВАША АКТИВНОСТЬ",recent:"Недавняя активность",activityEmpty:"Здесь появится ваша активность по мере знакомства с Neftis.",community:"СИГНАЛ СООБЩЕСТВА",fromCommunity:"От сообщества",question:"Какой небольшой инструмент экономит вам больше всего времени?",questionDesc:"Делитесь утилитами, которые упрощают повседневные задачи.",footer:"© NEFTIS / ЦИФРОВОЕ ПРОСТРАНСТВО",footerNote:"ОТКРЫТО ДЛЯ ВСЕХ · СОЗДАНО ДЛЯ ИССЛЕДОВАНИЯ"},
+ tr:{eyebrow:"AÇIK BİR DİJİTAL ALAN",headlineTop:"Yeniliklere",headlineAccent:"yer açın.",description:"Yararlı araçları keşfetmek, yapay zekâyla düşünmek, fikir alışverişi yapmak ve öğrenmek için ortak bir alan.",section:"ORTAK ALAN",begin:"Buradan başlayın",activity:"ETKİNLİĞİNİZ",recent:"Son etkinlikler",activityEmpty:"Neftis'i keşfettikçe etkinliğiniz burada görünecek.",community:"TOPLULUKTAN",fromCommunity:"Topluluktan",question:"En çok zaman kazandıran küçük aracınız hangisi?",questionDesc:"Günlük işleri kolaylaştıran araçları paylaşın.",footer:"© NEFTIS / DİJİTAL ALAN",footerNote:"HERKESE AÇIK · KEŞFETMEK İÇİN TASARLANDI"},
+ th:{eyebrow:"พื้นที่ดิจิทัลแบบเปิด",headlineTop:"เปิดพื้นที่ให้กับ",headlineAccent:"สิ่งใหม่ที่กำลังมา",description:"พื้นที่ส่วนกลางสำหรับค้นหาเครื่องมือที่มีประโยชน์ คิดร่วมกับ AI แลกเปลี่ยนไอเดีย และเรียนรู้สิ่งใหม่",section:"พื้นที่ส่วนกลาง",begin:"เริ่มต้นที่นี่",activity:"กิจกรรมของคุณ",recent:"กิจกรรมล่าสุด",activityEmpty:"กิจกรรมของคุณจะแสดงที่นี่เมื่อคุณสำรวจ Neftis",community:"เสียงจากชุมชน",fromCommunity:"จากชุมชน",question:"เครื่องมือเล็ก ๆ อะไรช่วยประหยัดเวลาของคุณได้มากที่สุด?",questionDesc:"แบ่งปันเครื่องมือที่ช่วยให้งานประจำวันง่ายขึ้น",footer:"© NEFTIS / พื้นที่ดิจิทัล",footerNote:"เปิดสำหรับทุกคน · สร้างเพื่อการค้นพบ"},
+ vi:{eyebrow:"KHÔNG GIAN SỐ MỞ",headlineTop:"Dành chỗ cho",headlineAccent:"những điều sắp tới.",description:"Không gian chung để khám phá công cụ hữu ích, tư duy cùng AI, trao đổi ý tưởng và học điều mới.",section:"KHÔNG GIAN CHUNG",begin:"Bắt đầu từ đây",activity:"HOẠT ĐỘNG CỦA BẠN",recent:"Hoạt động gần đây",activityEmpty:"Hoạt động sẽ xuất hiện tại đây khi bạn khám phá Neftis.",community:"TÍN HIỆU CỘNG ĐỒNG",fromCommunity:"Từ cộng đồng",question:"Công cụ nhỏ nào giúp bạn tiết kiệm thời gian nhất?",questionDesc:"Chia sẻ tiện ích giúp công việc hằng ngày dễ dàng hơn.",footer:"© NEFTIS / KHÔNG GIAN SỐ",footerNote:"MỞ CHO MỌI NGƯỜI · ĐƯỢC TẠO ĐỂ KHÁM PHÁ"}
+
+};
+
 const routeByPage: Record<PageKey, string> = {
   home: "/", ai: "/ai", tools: "/tools", community: "/community",
   learn: "/learn", games: "/games", achievements: "/achievements", services: "/services",
@@ -77,6 +98,21 @@ const routeByPage: Record<PageKey, string> = {
 const pageByRoute: Record<string, PageKey> = Object.fromEntries(
   Object.entries(routeByPage).map(([page, route]) => [route, page as PageKey]),
 ) as Record<string, PageKey>;
+
+
+function NeftisIcon({name}:{name:PageKey}) {
+ const paths:Record<PageKey,React.ReactNode>={
+  home:<><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></>,
+  ai:<><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1"/><circle cx="12" cy="12" r="3"/></>,
+  tools:<><path d="m14 7 3-3 4 4-3 3M13 8 5 16a2.8 2.8 0 1 0 4 4l8-8"/><path d="m5 5 4 4"/></>,
+  community:<><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5v1"/></>,
+  learn:<><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H12v17H5.5A2.5 2.5 0 0 0 3 22z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H12v17h6.5A2.5 2.5 0 0 1 21 22z"/></>,
+  games:<><path d="M6 8h12a4 4 0 0 1 3.8 5l-1.2 4a2 2 0 0 1-3.2 1l-2.4-2H9l-2.4 2a2 2 0 0 1-3.2-1l-1.2-4A4 4 0 0 1 6 8z"/><path d="M7 11v4M5 13h4M16 12h.01M18 14h.01"/></>,
+  achievements:<><path d="m12 3 2.5 5.2 5.7.8-4.1 4 .9 5.7-5-2.7-5 2.7.9-5.7-4.1-4 5.7-.8z"/></>,
+  services:<><path d="M7 17 17 7M8 7h9v9"/></>
+ };
+ return <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+}
 
 export default function NeftisShell() {
   const pathname = usePathname();
@@ -94,6 +130,7 @@ export default function NeftisShell() {
   const [draftColor, setDraftColor] = useState("#d4f36a");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
+  const copy = homeCopy[language] ?? homeCopy.en!;
   const colorPalette = ["#d4f36a", "#a99aff", "#83d9d2", "#ffabc5", "#ffad78", "#f3d36b", "#9be4ef", "#8de5c1", "#f0f0ec", "#b8c5d2", "#17191f", "#101116", "#201c32", "#10231d", "#f1eee5", "#ffffff"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
   const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
@@ -235,19 +272,19 @@ export default function NeftisShell() {
     <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
-          <span className="brand-mark">N<span>/</span></span>
+          <span className="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
           <span className="brand-name">neftis<span>.</span><small>DIGITAL COMMONS</small></span>
         </a>
         <div className="workspace-label">{t.workspace} <span>PUBLIC</span></div>
         <nav className="primary-nav" aria-label="Main navigation">
           {navPrimary.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}>
-            <span className="nav-icon">{item.icon}</span><span>{(item.id === "home" ? t.overview : item.id === "ai" ? t.ai : item.id === "tools" ? t.tools : item.id === "community" ? t.community : item.id === "learn" ? t.learn : item.id === "games" ? t.games : item.id === "achievements" ? t.achievements : t.services)}</span>{item.isNew && <b className="nav-new">NEW</b>}
+            <span className="nav-icon"><NeftisIcon name={item.id} /></span><span>{(item.id === "home" ? t.overview : item.id === "ai" ? t.ai : item.id === "tools" ? t.tools : item.id === "community" ? t.community : item.id === "learn" ? t.learn : item.id === "games" ? t.games : item.id === "achievements" ? t.achievements : t.services)}</span>{item.isNew && <b className="nav-new">NEW</b>}
           </button>)}
         </nav>
         <div className="sidebar-divider" />
         <div className="workspace-label">{t.yourSpace}</div>
         <nav className="primary-nav" aria-label="Personal navigation">
-          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon">{item.icon}</span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
+          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon"><NeftisIcon name={item.id} /></span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
         </nav>
         <div className="sidebar-bottom">
           <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
@@ -264,14 +301,14 @@ export default function NeftisShell() {
           <div className="topbar-actions">
             <button className="search-trigger" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label={t.search}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
             <div className="preference-wrap">
-              <button className="icon-button preference-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language">{language.toUpperCase()}⌄</button>
+              <button className="icon-button preference-trigger language-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>{language.toUpperCase()}</span><span className="preference-chevron">⌄</span></button>
               {languageOpen && <div className="preference-menu language-menu" role="listbox" aria-label="Languages">{languages.map((item) => <button key={item.code} role="option" aria-selected={language === item.code} className={language === item.code ? "selected" : ""} onClick={() => {setLanguage(item.code);setLanguageOpen(false);}}><span>{item.native}</span><small>{item.name}</small></button>)}</div>}
             </div>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
               {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes">
                 <div className="preference-menu-head"><div><span className="section-kicker">APPEARANCE</span><strong>Color themes</strong></div><button className="menu-close" onClick={() => setThemeOpen(false)} aria-label="Close themes">×</button></div>
-                <div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name} aria-pressed={theme === id}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div>
+                <div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name} aria-label={`${name} theme`} aria-pressed={theme === id}><span className="theme-swatch" style={{background:`linear-gradient(135deg, ${bg} 0 52%, ${accent} 52% 100%)`,borderColor:accent}}>{theme === id && <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}</span><span>{name}</span></button>)}</div>
                 <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
                 <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
                 {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
@@ -287,28 +324,28 @@ export default function NeftisShell() {
             <section className="page-view active">
               <div className="hero-grid">
                 <div className="hero-copy">
-                  <div className="eyebrow"><span className="eyebrow-line" /><span>{language === "ar" ? "مساحة رقمية عامة" : "A PUBLIC DIGITAL SPACE"}</span><span className="eyebrow-index">NEF—001</span></div>
-                  <h1>{language === "ar" ? <>اترك مساحة<br />لـ <em>ما هو قادم.</em></> : <>Make room<br />for <em>what&apos;s next.</em></>}</h1>
-                  <p>{language === "ar" ? "مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة." : "A shared place to explore useful tools, think with AI, exchange ideas, and learn something new."}</p>
+                  <div className="eyebrow"><span className="eyebrow-line" /><span>{copy.eyebrow}</span><span className="eyebrow-index">NEF—001</span></div>
+                  <h1>{copy.headlineTop}<br /><em>{copy.headlineAccent}</em></h1>
+                  <p>{copy.description}</p>
                   <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
                   <div className="hero-footnote"><span className="pulse-dot" /> OPEN ACCESS · BUILT FOR SHARING</div>
                 </div>
                 <div className="hero-art" aria-label="Abstract orbital graphic">
                   <div className="art-topline"><span>FIG. 01 / DIGITAL ECOSYSTEM</span><span>∞</span></div>
                   <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
-                  <div className="orbit-core">N<i /></div>
+                  <div className="orbit-core"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 37V11l28 26V11" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg><i /></div>
                   <span className="orbit-label label-a">IDEAS / 01</span><span className="orbit-label label-b">TOOLS / 02</span><span className="orbit-label label-c">PEOPLE / 03</span>
                   <div className="art-coordinates">NEFTIS<br />DIGITAL / 001</div>
                   <div className="art-bottomline"><span>CONNECTED BY CURIOSITY</span><span>NEF—01</span></div>
                 </div>
               </div>
-              <div className="section-heading"><div><span className="section-kicker">{t.commons}</span><h2>{language === "ar" ? "اكتشف مساحتك" : t.begin}</h2></div><span className="section-count">01 / 04</span></div>
-              <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol">{space.icon}</div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
+              <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
+              <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
               <div className="lower-grid">
-                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">YOUR ACTIVITY</span><h3>Recent activity</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>Your activity will appear here as you explore.</p></div></div></section>
-                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">COMMUNITY SIGNAL</span><h3>From the community</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>What small tool saves you the most time?</h4><p>A thread for sharing the little utilities that make a difference.</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
+                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
+                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.community}</span><h3>{copy.fromCommunity}</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>{copy.question}</h4><p>{copy.questionDesc}</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
               </div>
-              <footer className="page-footer"><span>© NEFTIS / DIGITAL COMMONS</span><span>OPEN BY DESIGN · MADE TO EXPLORE</span></footer>
+              <footer className="page-footer"><span>{copy.footer}</span><span>{copy.footerNote}</span></footer>
             </section>
           </>}
 
