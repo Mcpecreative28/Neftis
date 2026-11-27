@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/client";
@@ -10,6 +10,26 @@ type AuthFormProps = {
 };
 
 type SocialProvider = "google" | "github";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: Record<string, unknown>) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+function passwordIssue(value: string) {
+  if (value.length < 12) return "Gunakan minimal 12 karakter.";
+  if (!/[A-Z]/.test(value)) return "Tambahkan setidaknya satu huruf kapital.";
+  if (!/[a-z]/.test(value)) return "Tambahkan setidaknya satu huruf kecil.";
+  if (!/[0-9]/.test(value)) return "Tambahkan setidaknya satu angka.";
+  if (!/[^A-Za-z0-9]/.test(value)) return "Tambahkan setidaknya satu simbol.";
+  if (value.length > 128) return "Password maksimal 128 karakter.";
+  return "";
+}
 
 function GoogleMark() {
   return (
@@ -35,28 +55,84 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const captchaContainer = useRef<HTMLDivElement>(null);
+  const captchaWidget = useRef<string | null>(null);
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
   const isRegister = mode === "register";
 
+  useEffect(() => {
+    if (!turnstileSiteKey || !captchaContainer.current) return;
+    let cancelled = false;
+    const render = () => {
+      if (cancelled || !window.turnstile || !captchaContainer.current || captchaWidget.current) return;
+      captchaWidget.current = window.turnstile.render(captchaContainer.current, {
+        sitekey: turnstileSiteKey,
+        callback: (token: string) => setCaptchaToken(token),
+        "expired-callback": () => setCaptchaToken(""),
+        "error-callback": () => setCaptchaToken(""),
+      });
+    };
+    const existing = document.querySelector<HTMLScriptElement>('script[data-neftis-turnstile]');
+    if (window.turnstile) render();
+    else if (existing) existing.addEventListener("load", render, { once: true });
+    else {
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      script.dataset.neftisTurnstile = "true";
+      script.addEventListener("load", render, { once: true });
+      document.head.appendChild(script);
+    }
+    return () => {
+      cancelled = true;
+      if (captchaWidget.current) window.turnstile?.remove(captchaWidget.current);
+      captchaWidget.current = null;
+    };
+  }, [turnstileSiteKey]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSuccessMessage("");
+    if (isRegister) {
+      const issue = passwordIssue(password);
+      if (issue) { setError(issue); return; }
+      if (password !== confirmPassword) { setError("Konfirmasi password belum sama."); return; }
+    }
+    if (turnstileSiteKey && !captchaToken) { setError("Selesaikan verifikasi keamanan terlebih dahulu."); return; }
     setPending(true);
 
     try {
+      const fetchOptions = captchaToken ? { headers: { "x-captcha-response": captchaToken } } : undefined;
       const result = isRegister
-        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password })
-        : await authClient.signIn.email({ email: email.trim(), password });
+        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password, fetchOptions })
+        : await authClient.signIn.email({ email: email.trim(), password, fetchOptions });
 
       if (result.error) {
         setError(result.error.message || "Authentication failed. Please try again.");
+        setCaptchaToken("");
+        if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
         return;
       }
 
-      router.replace("/ai");
+      if (isRegister) {
+        setSuccessMessage("Akun berhasil dibuat. Periksa email untuk menyelesaikan verifikasi sebelum masuk.");
+        setPassword("");
+        setConfirmPassword("");
+        setCaptchaToken("");
+        if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
+        return;
+      }
+
+      router.replace("/dashboard");
       router.refresh();
     } catch {
       setError("Unable to connect right now. Please try again.");
@@ -72,7 +148,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const result = await authClient.signIn.social({
         provider,
-        callbackURL: "/ai",
+        callbackURL: "/dashboard",
       });
 
       if (result.error) {
@@ -186,7 +262,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <input
                   type={showPassword ? "text" : "password"}
                   autoComplete={isRegister ? "new-password" : "current-password"}
-                  placeholder="At least 8 characters"
+                  placeholder={isRegister ? "At least 12 characters" : "Your password"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   minLength={8}
@@ -198,7 +274,26 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </span>
             </label>
 
+            {isRegister && (
+              <label>
+                <span>Confirm password</span>
+                <span className="auth-password-wrap">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Repeat your password"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    maxLength={128}
+                    required
+                  />
+                </span>
+              </label>
+            )}
+            {isRegister && <div className="auth-password-rules">12+ karakter · huruf besar · huruf kecil · angka · simbol</div>}
+            {turnstileSiteKey && <div className="auth-turnstile" ref={captchaContainer} />}
             {error && <p className="auth-error" role="alert">{error}</p>}
+            {successMessage && <p className="auth-success" role="status">{successMessage}</p>}
 
             <button className="auth-submit auth-submit-v2" type="submit" disabled={pending}>
               <span>{pending ? "Please wait…" : isRegister ? "Create account" : "Sign in"}</span>
