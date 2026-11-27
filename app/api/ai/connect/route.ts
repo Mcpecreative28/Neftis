@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { detectProvider, normalizeModels, providerHeaders, providers, type ProviderId } from "@/lib/ai/providers";
 
@@ -26,9 +25,6 @@ export async function POST(request: Request) {
   const providerId = body.provider ?? detected;
   if (!providerId || !(providerId in providers)) {
     return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) }, { status: 200 });
-  }
-  if (detected && body.provider && detected !== body.provider) {
-    return NextResponse.json({ error: "The key prefix does not match the selected provider." }, { status: 400 });
   }
 
   const provider = providers[providerId];
