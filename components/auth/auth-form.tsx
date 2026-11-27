@@ -265,7 +265,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                   placeholder={isRegister ? "At least 12 characters" : "Your password"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  minLength={8}
+                  minLength={isRegister ? 12 : 1}
                   required
                 />
                 <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>
