@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsLibrary from "@/components/tools/tools-library";
 import AIWorkspace from "@/components/ai/ai-workspace";
+import { authClient } from "@/lib/auth/client";
 
 type PageKey = "home" | "ai" | "tools" | "community" | "learn" | "games" | "achievements" | "services";
 
@@ -58,7 +59,7 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["night","Night","#101116","#d4f36a"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
+ ["atelier","Atelier","#101116","#cf6848"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
  ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
  ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
  ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
@@ -115,9 +116,18 @@ function NeftisIcon({name}:{name:PageKey}) {
 export default function NeftisShell() {
   const pathname = usePathname();
   const router = useRouter();
+  const [sessionUser, setSessionUser] = useState<{ name?: string | null; email?: string | null } | null>(null);
+  useEffect(() => {
+    let active = true;
+    authClient.getSession().then(({ data }) => {
+      if (active) setSessionUser(data?.user ?? null);
+    }).catch(() => {
+      if (active) setSessionUser(null);
+    });
+    return () => { active = false; };
+  }, [pathname]);
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
-  const [usagePeriod, setUsagePeriod] = useState("7d");
   const [theme, setTheme] = useState("atelier");
   const [customAccent, setCustomAccent] = useState("#cf6848");
   const [customBackground, setCustomBackground] = useState("");
@@ -259,7 +269,7 @@ export default function NeftisShell() {
         </nav>
         <div className="sidebar-bottom">
           <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
-          <button className="profile-button" onClick={() => notify("Autentikasi akan tersedia pada tahap berikutnya.")}><span className="avatar">G</span><span><strong>Guest session</strong><small>Preview mode</small></span><span className="more">···</span></button>
+          <button className="profile-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}><span className="avatar">{sessionUser?.name?.slice(0, 1).toUpperCase() ?? "G"}</span><span><strong>{sessionUser?.name ?? "Guest session"}</strong><small>{sessionUser?.email ?? "Preview mode"}</small></span><span className="more">↗</span></button>
         </div>
       </aside>
 
@@ -287,7 +297,7 @@ export default function NeftisShell() {
                 <button className="reset-preferences" onClick={() => {setTheme("atelier");setCustomAccent("#cf6848");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
-            <button className="sign-in-button" onClick={() => router.push("/login")}>{t.signIn}</button>
+            <button className="sign-in-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}>{sessionUser ? "Dashboard" : t.signIn}</button>
           </div>
         </header>
 
@@ -319,19 +329,13 @@ export default function NeftisShell() {
               </div>
               <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
-              <section className="usage-section panel" aria-labelledby="usage-title">
-                <div className="usage-heading">
-                  <div><span className="section-kicker">ACCOUNT / AI ACTIVITY</span><h2 id="usage-title">Token usage</h2><p>Track AI consumption across your Neftis workspace.</p></div>
-                  <div className="usage-periods" role="group" aria-label="Usage time range">
-                    {[["1d","1 day"],["7d","7 days"],["14d","14 days"],["1m","1 month"],["1y","1 year"]].map(([value,label]) => <button type="button" key={value} className={usagePeriod === value ? "active" : ""} aria-pressed={usagePeriod === value} onClick={() => setUsagePeriod(value)}>{label}</button>)}
-                  </div>
+              <section className="home-principles">
+                <div className="home-principles-heading"><span className="section-kicker">A SIMPLE WAY TO BEGIN</span><h2>Explore first.<br/><em>Make something useful.</em></h2><p>Neftis menghubungkan alat, pengetahuan, dan ruang berbagi dalam satu tempat yang bisa kamu jelajahi sesuai kebutuhan.</p></div>
+                <div className="home-principles-grid">
+                  <article><span>01 / THINK</span><div className="principle-symbol">✳</div><h3>Think with AI</h3><p>Hubungkan layanan AI yang kamu pilih dan gunakan model sesuai kebutuhan.</p></article>
+                  <article><span>02 / MAKE</span><div className="principle-symbol">⌘</div><h3>Make with tools</h3><p>Temukan utilitas praktis untuk pekerjaan, eksperimen, dan ide kecil.</p></article>
+                  <article><span>03 / SHARE</span><div className="principle-symbol">◎</div><h3>Learn together</h3><p>Bangun pemahaman dan bagikan temuan yang bisa membantu orang lain.</p></article>
                 </div>
-                <div className="usage-metrics">
-                  <article><span>TOTAL TOKENS</span><strong>—</strong><small>Awaiting connected AI usage</small></article>
-                  <article><span>REQUESTS</span><strong>—</strong><small>No recorded requests yet</small></article>
-                  <article><span>ACTIVE MODELS</span><strong>—</strong><small>Provider connection pending</small></article>
-                </div>
-                <div className="usage-chart-empty"><div className="usage-chart-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 38h36M10 32l9-10 7 5 12-15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="38" cy="12" r="3" fill="currentColor"/></svg></div><strong>Usage analytics will appear here</strong><p>We’ll show real token traffic for the selected {usagePeriod === "1d" ? "day" : usagePeriod === "7d" ? "7-day" : usagePeriod === "14d" ? "14-day" : usagePeriod === "1m" ? "monthly" : "yearly"} period after AI requests are connected and recorded. No sample numbers are shown.</p></div>
               </section>
               <div className="lower-grid">
                 <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
@@ -348,15 +352,64 @@ export default function NeftisShell() {
 
                     {page === "tools" && <ToolsLibrary language={language} />}
 
-          {page === "community" && <section className="page-view active"><PageIntro number="03" title={<>The <em>commons</em></>} desc="A public board for questions, experiments, and shared discoveries." side={<>COMMUNITY BOARD<br />OPEN ACCESS</>} /><div className="community-compose panel"><div className="compose-mark">＋</div><div className="compose-body"><strong>Start a discussion</strong><p>Share a question or something useful you found.</p></div><button className="button button-outline" onClick={() => notify("Posting akan tersedia setelah autentikasi aktif.")}>Write a post</button></div><article className="community-post"><div className="post-meta"><span>COMMUNITY / INTRODUCTION</span><strong>OPEN DISCUSSION</strong></div><h3>Welcome to Neftis</h3><p>This is a preview of the community space. Sign-in and posting features will be connected in a later phase.</p></article></section>}
+          {page === "community" && <section className="page-view active community-space">
+            <PageIntro number="03" title={<>The <em>commons</em></>} desc="Tempat bertukar pertanyaan, pengalaman, dan temuan bersama." side={<>COMMUNITY BOARD<br />OPEN ACCESS</>} />
+            <div className="community-desk">
+              <main className="community-feed">
+                <div className="community-feed-bar"><div><span className="section-kicker">PUBLIC DISCUSSIONS</span><h2>Ruang percakapan</h2></div><span className="community-count">BELUM ADA THREAD</span></div>
+                <div className="community-empty-state"><div className="community-empty-mark">◎</div><span className="section-kicker">START WITH A QUESTION</span><h3>Belum ada percakapan di sini.</h3><p>Komunitas akan menjadi tempat berbagi proses, meminta masukan, dan menyimpan pengetahuan yang berguna. Masuk untuk bersiap berpartisipasi saat diskusi dibuka.</p><a className="button button-primary" href="/login">Masuk ke Neftis <span>↗</span></a></div>
+              </main>
+              <aside className="community-sidebar">
+                <section className="community-info-card"><span className="section-kicker">COMMUNITY NOTES</span><h3>Ruang yang sehat dimulai dari cara berbagi.</h3><ul><li>Berikan konteks saat bertanya.</li><li>Bagikan solusi yang bisa diulang.</li><li>Hormati privasi dan karya orang lain.</li></ul></section>
+                <section className="community-topic-card"><span className="section-kicker">TOPIC MAP</span><div><b>AI & prompts</b><b>Web & code</b><b>Digital tools</b><b>Learning</b><b>Ideas & projects</b></div></section>
+              </aside>
+            </div>
+          </section>}
 
-          {page === "learn" && <section className="page-view active"><PageIntro number="04" title={<>Knowledge <em>room</em></>} desc="Notes and guides for curious minds." side={<>FIELD NOTES<br />LEARN / SHARE</>} /><div className="learn-grid"><article className="learn-card learn-featured"><div className="learn-art"><span>FIELD NOTE / 001</span><div className="learn-art-shape">⌘</div><small>TOOLS · WORKFLOW</small></div><div className="learn-card-body"><span className="section-kicker">PRACTICAL GUIDE · 5 MIN</span><h3>Build a better digital workflow</h3><p>A simple framework for choosing tools, reducing friction, and keeping your work organized.</p><button className="text-link" onClick={() => notify("Artikel akan tersedia pada modul Knowledge.")}>Read field note ↗</button></div></article><article className="learn-card"><div className="learn-card-body"><span className="section-kicker">AI LITERACY · 4 MIN</span><h3>How to write a useful AI prompt</h3><p>Give an AI system the context it needs without overcomplicating the request.</p><button className="text-link" onClick={() => notify("Artikel akan tersedia pada modul Knowledge.")}>Read field note ↗</button></div><div className="learn-number">02</div></article><article className="learn-card"><div className="learn-card-body"><span className="section-kicker">WEB BASICS · 6 MIN</span><h3>What happens when a website loads?</h3><p>A plain-language tour of browsers, servers, assets, and the request cycle.</p><button className="text-link" onClick={() => notify("Artikel akan tersedia pada modul Knowledge.")}>Read field note ↗</button></div><div className="learn-number">03</div></article></div></section>}
+          {page === "learn" && <section className="page-view active learning-space">
+            <PageIntro number="04" title={<>Knowledge <em>room</em></>} desc="Panduan ringkas dan jalur belajar untuk memahami teknologi dengan lebih terarah." side={<>FIELD NOTES<br />LEARN / PRACTICE</>} />
+            <div className="learning-hero">
+              <section className="learning-feature"><span className="section-kicker">FEATURED LEARNING PATH / 001</span><div className="learning-orbit" aria-hidden="true"><span>AI</span></div><div><span className="learning-level">BEGINNER PATH · 4 TOPICS</span><h2>Memahami AI, dari dasar sampai praktik.</h2><p>Kenali cara kerja model, susun prompt yang jelas, pahami batasan, dan evaluasi hasil dengan kritis.</p></div><span className="learning-feature-index">01</span></section>
+              <aside className="learning-note"><span className="section-kicker">HOW TO LEARN HERE</span><h3>Pelan, jelas, dan bisa dipraktikkan.</h3><p>Setiap materi dirancang sebagai catatan singkat, bukan sekadar daftar istilah.</p><div className="learning-note-rule"><span>READ</span><i/><span>TRY</span><i/><span>REFLECT</span></div></aside>
+            </div>
+            <div className="learning-library-head"><div><span className="section-kicker">LEARNING LIBRARY</span><h2>Jelajahi bidang pengetahuan</h2></div><span>CURATED NOTES / 2026</span></div>
+            <div className="learning-path-list">
+              <article><span className="learning-path-number">01</span><div><span className="section-kicker">AI LITERACY</span><h3>Menulis prompt yang berguna</h3><p>Berikan konteks, tujuan, batasan, dan bentuk jawaban yang kamu butuhkan.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
+              <article><span className="learning-path-number">02</span><div><span className="section-kicker">WEB FUNDAMENTALS</span><h3>Bagaimana website dimuat?</h3><p>Kenali browser, DNS, server, request, response, dan aset halaman.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
+              <article><span className="learning-path-number">03</span><div><span className="section-kicker">DIGITAL WORKFLOW</span><h3>Membangun alur kerja yang rapi</h3><p>Pilih alat berdasarkan kebutuhan dan kurangi langkah yang tidak perlu.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
+            </div>
+          </section>}
 
-          {page === "games" && <section className="page-view active"><PageIntro number="05" title={<>The <em>arcade</em></>} desc="Small experiments for a short mental reset." side={<>PLAY MODE<br />NO SCORE PRESSURE</>} /><div className="game-panel panel"><div className="game-heading"><div><span className="section-kicker">GAME 001 / COMING SOON</span><h2>Signal Sequence</h2><p>A small collection of playful experiments is taking shape.</p></div><div className="game-score"><small>STATUS</small><strong>01</strong></div></div><div className="game-status">The arcade is being prepared.</div><div className="signal-grid"><button aria-label="Signal 1" /><button aria-label="Signal 2" /><button aria-label="Signal 3" /><button aria-label="Signal 4" /></div><div className="game-actions"><button className="button button-primary" onClick={() => notify("Game akan diaktifkan pada tahap Arcade.")}>Explore soon ↗</button></div></div></section>}
+          {page === "games" && <section className="page-view active arcade-space">
+            <PageIntro number="05" title={<>The <em>arcade</em></>} desc="Eksperimen kecil untuk jeda singkat dan tantangan ringan." side={<>PLAY MODE<br />SHORT SESSIONS</>} />
+            <div className="arcade-intro"><div><span className="section-kicker">NEFTIS ARCADE / COLLECTION 01</span><h2>Main sebentar.<br/><em>Segarkan pikiran.</em></h2><p>Permainan singkat sedang disiapkan sebagai bagian dari ruang Neftis. Setiap judul akan punya aturan sederhana dan progres yang jelas.</p></div><div className="arcade-emblem" aria-hidden="true"><span>◇</span><i/><i/><i/></div></div>
+            <div className="arcade-grid">
+              <article className="arcade-card arcade-memory"><div className="arcade-card-art"><span>▦</span><i/><i/><i/><i/></div><div className="arcade-card-copy"><span>01 / MEMORY</span><h3>Memory Grid</h3><p>Latih ingatan visual lewat pola yang berubah.</p><small>IN DEVELOPMENT</small></div></article>
+              <article className="arcade-card arcade-reaction"><div className="arcade-card-art"><span>◉</span><i/></div><div className="arcade-card-copy"><span>02 / REFLEX</span><h3>Reaction Test</h3><p>Ukur seberapa cepat kamu merespons sinyal.</p><small>IN DEVELOPMENT</small></div></article>
+              <article className="arcade-card arcade-pattern"><div className="arcade-card-art"><span>⌁</span><i/><i/><i/></div><div className="arcade-card-copy"><span>03 / PATTERN</span><h3>Signal Sequence</h3><p>Ikuti urutan dan temukan pola berikutnya.</p><small>IN DEVELOPMENT</small></div></article>
+            </div>
+          </section>}
 
-          {page === "achievements" && <section className="page-view active"><PageIntro number="06" title={<>Small <em>milestones</em></>} desc="Discoveries and contributions, collected as you explore." side={<>PERSONAL PROGRESS<br />PROFILE / PLANNED</>} /><div className="achievement-summary panel"><div><span className="section-kicker">COLLECTED</span><strong>0 / 6</strong></div><div className="achievement-progress"><div /></div><span className="achievement-percent">0%</span></div><div className="achievement-grid">{["First visit", "Curious mind", "Tool explorer", "Conversation starter", "Knowledge seeker", "Community member"].map((name, index) => <article className="achievement-card" key={name}><span className="achievement-icon">{["✧","✳","⌘","◎","▤","◇"][index]}</span><h3>{name}</h3><p>Keep exploring Neftis to unlock this milestone.</p><span className="achievement-state">NOT UNLOCKED</span></article>)}</div></section>}
+          {page === "achievements" && <section className="page-view active milestones-space">
+            <PageIntro number="06" title={<>Small <em>milestones</em></>} desc="Pencapaian akan mencatat perjalanan saat aktivitas akun mulai terhubung." side={<>PERSONAL PROGRESS<br />ACCOUNT / JOURNEY</>} />
+            <div className="milestone-hero"><div><span className="section-kicker">YOUR NEFTIS JOURNEY</span><h2>Setiap penemuan<br/>punya <em>jejak.</em></h2><p>Ruang ini akan mengumpulkan pencapaian dari aktivitas nyata—menjelajahi alat, mempelajari materi, dan berkontribusi pada komunitas.</p></div><div className="milestone-stamp"><span>✧</span><small>COLLECT<br/>AS YOU GO</small></div></div>
+            <div className="milestone-collection">
+              <article><span>01</span><div><b>Explorer</b><small>Jelajahi beberapa ruang Neftis.</small></div><i>LOCKED</i></article>
+              <article><span>02</span><div><b>Problem solver</b><small>Gunakan alat untuk menyelesaikan tugas.</small></div><i>LOCKED</i></article>
+              <article><span>03</span><div><b>Curious learner</b><small>Selesaikan catatan pembelajaran.</small></div><i>LOCKED</i></article>
+              <article><span>04</span><div><b>Community voice</b><small>Bagikan pengetahuan kepada komunitas.</small></div><i>LOCKED</i></article>
+            </div>
+          </section>}
 
-          {page === "services" && <section className="page-view active"><PageIntro number="07" title={<>Digital <em>services</em></>} desc="Useful support for ideas that need to move forward." side={<>SERVICE DIRECTORY<br />BY REQUEST</>} /><div className="service-grid">{[{no:"01 / WEB",name:"Web development",desc:"Responsive websites, landing pages, and small digital products."},{no:"02 / DIGITAL",name:"Digital utilities",desc:"Focused tools and workflow improvements for everyday tasks."},{no:"03 / KNOWLEDGE",name:"Learning resources",desc:"Clear technical explanations and practical learning material."}].map((item) => <article className="service-card" key={item.no}><span>{item.no}</span><h3>{item.name}</h3><p>{item.desc}</p><button className="text-link" onClick={() => notify("Detail layanan akan segera tersedia.")}>Explore service ↗</button></article>)}</div></section>}
+          {page === "services" && <section className="page-view active services-space">
+            <PageIntro number="07" title={<>Digital <em>services</em></>} desc="Dukungan praktis untuk ide dan kebutuhan digital yang ingin diwujudkan." side={<>SERVICE DIRECTORY<br />NEFTIS / STUDIO</>} />
+            <div className="services-lead"><span className="section-kicker">FROM IDEA TO DELIVERY</span><h2>Butuh bantuan untuk<br/><em>membangun sesuatu?</em></h2><p>Jelajahi jenis dukungan yang tersedia. Detail paket dan permintaan layanan akan ditambahkan setelah alur pemesanan siap.</p></div>
+            <div className="service-directory">
+              <article><span className="service-index">01</span><div><span className="section-kicker">WEB / PRODUCT</span><h3>Website & digital product</h3><p>Website responsif, landing page, dashboard, dan prototipe produk digital.</p></div><span className="service-arrow">↗</span></article>
+              <article><span className="service-index">02</span><div><span className="section-kicker">AUTOMATION</span><h3>Tools & workflow</h3><p>Utilitas khusus dan otomasi untuk mengurangi pekerjaan berulang.</p></div><span className="service-arrow">↗</span></article>
+              <article><span className="service-index">03</span><div><span className="section-kicker">LEARNING</span><h3>Technical guidance</h3><p>Panduan implementasi, dokumentasi, dan pendampingan teknis yang mudah diikuti.</p></div><span className="service-arrow">↗</span></article>
+            </div>
+          </section>}
         </div>
       </main>
 

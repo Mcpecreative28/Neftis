@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth/client";
@@ -10,6 +10,26 @@ type AuthFormProps = {
 };
 
 type SocialProvider = "google" | "github";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (container: HTMLElement, options: Record<string, unknown>) => string;
+      reset: (widgetId?: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
+function passwordIssue(value: string) {
+  if (value.length < 12) return "Gunakan minimal 12 karakter.";
+  if (!/[A-Z]/.test(value)) return "Tambahkan setidaknya satu huruf kapital.";
+  if (!/[a-z]/.test(value)) return "Tambahkan setidaknya satu huruf kecil.";
+  if (!/[0-9]/.test(value)) return "Tambahkan setidaknya satu angka.";
+  if (!/[^A-Za-z0-9\s]/.test(value)) return "Tambahkan setidaknya satu simbol.";
+  if (value.length > 128) return "Kata sandi maksimal 128 karakter.";
+  return "";
+}
 
 function GoogleMark() {
   return (
@@ -35,31 +55,87 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const captchaContainer = useRef<HTMLDivElement>(null);
+  const captchaWidget = useRef<string | null>(null);
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
   const isRegister = mode === "register";
 
+  useEffect(() => {
+    if (!turnstileSiteKey || !captchaContainer.current) return;
+    let cancelled = false;
+    const render = () => {
+      if (cancelled || !window.turnstile || !captchaContainer.current || captchaWidget.current) return;
+      captchaWidget.current = window.turnstile.render(captchaContainer.current, {
+        sitekey: turnstileSiteKey,
+        callback: (token: string) => setCaptchaToken(token),
+        "expired-callback": () => setCaptchaToken(""),
+        "error-callback": () => setCaptchaToken(""),
+      });
+    };
+    const existing = document.querySelector<HTMLScriptElement>('script[data-neftis-turnstile]');
+    if (window.turnstile) render();
+    else if (existing) existing.addEventListener("load", render, { once: true });
+    else {
+      const script = document.createElement("script");
+      script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      script.async = true;
+      script.defer = true;
+      script.dataset.neftisTurnstile = "true";
+      script.addEventListener("load", render, { once: true });
+      document.head.appendChild(script);
+    }
+    return () => {
+      cancelled = true;
+      if (captchaWidget.current) window.turnstile?.remove(captchaWidget.current);
+      captchaWidget.current = null;
+    };
+  }, [turnstileSiteKey]);
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setSuccessMessage("");
+    if (isRegister) {
+      const issue = passwordIssue(password);
+      if (issue) { setError(issue); return; }
+      if (password !== confirmPassword) { setError("Konfirmasi password belum sama."); return; }
+    }
+    if (turnstileSiteKey && !captchaToken) { setError("Selesaikan verifikasi keamanan terlebih dahulu."); return; }
     setPending(true);
 
     try {
+      const fetchOptions = captchaToken ? { headers: { "x-captcha-response": captchaToken } } : undefined;
       const result = isRegister
-        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password })
-        : await authClient.signIn.email({ email: email.trim(), password });
+        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password, callbackURL: "/dashboard", fetchOptions })
+        : await authClient.signIn.email({ email: email.trim(), password, fetchOptions });
 
       if (result.error) {
-        setError(result.error.message || "Authentication failed. Please try again.");
+        setError(result.error.message || "Autentikasi gagal. Periksa email dan kata sandi, lalu coba lagi.");
+        setCaptchaToken("");
+        if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
         return;
       }
 
-      router.replace("/ai");
+      if (isRegister) {
+        setSuccessMessage("Akun berhasil dibuat. Periksa email untuk menyelesaikan verifikasi sebelum masuk.");
+        setPassword("");
+        setConfirmPassword("");
+        setCaptchaToken("");
+        if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
+        return;
+      }
+
+      router.replace("/dashboard");
       router.refresh();
     } catch {
-      setError("Unable to connect right now. Please try again.");
+      setError("Tidak dapat terhubung sekarang. Silakan coba lagi.");
     } finally {
       setPending(false);
     }
@@ -72,7 +148,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const result = await authClient.signIn.social({
         provider,
-        callbackURL: "/ai",
+        callbackURL: "/dashboard",
       });
 
       if (result.error) {
@@ -97,7 +173,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <span className="auth-brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
           <span>NEFTIS</span>
         </Link>
-        <Link className="auth-home-link" href="/">Back to home <span aria-hidden="true">↗</span></Link>
+        <Link className="auth-home-link" href="/">Kembali ke beranda <span aria-hidden="true">↗</span></Link>
       </header>
 
       <section className="auth-layout" aria-labelledby="auth-title">
@@ -118,9 +194,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
           </div>
 
           <div className="auth-story-copy">
-            <span className="section-kicker">A SPACE TO EXPLORE</span>
-            <h2>Make room for<br /><em>what’s next.</em></h2>
-            <p>AI, useful tools, shared knowledge, and a community built around curiosity.</p>
+            <span className="section-kicker">RUANG UNTUK BEREKSPLORASI</span>
+            <h2>Buka ruang untuk<br /><em>hal berikutnya.</em></h2>
+            <p>AI, alat digital, pengetahuan, dan komunitas untuk rasa ingin tahu.</p>
           </div>
 
           <div className="auth-story-foot">
@@ -131,37 +207,37 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         <div className="auth-panel">
           <div className="auth-panel-heading">
-            <span className="section-kicker">{isRegister ? "YOUR JOURNEY STARTS HERE" : "GOOD TO HAVE YOU BACK"}</span>
+            <span className="section-kicker">{isRegister ? "MULAI PERJALANANMU" : "SENANG MELIHATMU KEMBALI"}</span>
             <span className="auth-index">{isRegister ? "02 — 02" : "01 — 02"}</span>
           </div>
 
           <div className="auth-heading-copy">
-            <h1 id="auth-title">{isRegister ? "Create an account." : "Welcome back."}</h1>
-            <p>{isRegister ? "Set up your Neftis account and make this space yours." : "Sign in to pick up where your curiosity left off."}</p>
+            <h1 id="auth-title">{isRegister ? "Buat akun Neftis." : "Selamat datang kembali."}</h1>
+            <p>{isRegister ? "Buat akun untuk menyimpan aktivitas dan mengelola ruang Neftis milikmu." : "Masuk untuk melanjutkan aktivitasmu di Neftis."}</p>
           </div>
 
           <div className="auth-social-stack">
             <button className="auth-social-button auth-provider-button" type="button" onClick={() => signInWith("google")} disabled={pending}>
               <span className="auth-provider-icon"><GoogleMark /></span>
-              <span>Continue with Google</span>
+              <span>Lanjutkan dengan Google</span>
               <span className="auth-provider-arrow" aria-hidden="true">↗</span>
             </button>
             <button className="auth-social-button auth-provider-button" type="button" onClick={() => signInWith("github")} disabled={pending}>
               <span className="auth-provider-icon auth-provider-github"><GithubMark /></span>
-              <span>Continue with GitHub</span>
+              <span>Lanjutkan dengan GitHub</span>
               <span className="auth-provider-arrow" aria-hidden="true">↗</span>
             </button>
           </div>
 
-          <div className="auth-divider"><span>OR CONTINUE WITH EMAIL</span></div>
+          <div className="auth-divider"><span>ATAU LANJUTKAN DENGAN EMAIL</span></div>
 
           <form className="auth-fields auth-fields-v2" onSubmit={submit}>
             {isRegister && (
               <label>
-                <span>Your name</span>
+                <span>Nama</span>
                 <input
                   autoComplete="name"
-                  placeholder="How should we call you?"
+                  placeholder="Nama yang ingin ditampilkan"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   maxLength={80}
@@ -170,10 +246,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
               </label>
             )}
             <label>
-              <span>Email address</span>
+              <span>Alamat email</span>
               <input
                 type="email"
                 autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                maxLength={320}
                 placeholder="you@example.com"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
@@ -181,42 +261,70 @@ export default function AuthForm({ mode }: AuthFormProps) {
               />
             </label>
             <label>
-              <span>Password</span>
+              <span>Kata sandi</span>
               <span className="auth-password-wrap">
                 <input
                   type={showPassword ? "text" : "password"}
                   autoComplete={isRegister ? "new-password" : "current-password"}
-                  placeholder="At least 8 characters"
+                  placeholder={isRegister ? "Minimal 12 karakter" : "Kata sandi kamu"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  minLength={8}
+                  minLength={isRegister ? 12 : 1}
+                  maxLength={128}
                   required
                 />
-                <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>
-                  {showPassword ? "Hide" : "Show"}
+                <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}>
+                  {showPassword ? "Sembunyikan" : "Tampilkan"}
                 </button>
               </span>
             </label>
 
+            {isRegister && (
+              <label>
+                <span>Konfirmasi kata sandi</span>
+                <span className="auth-password-wrap">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    placeholder="Ulangi kata sandi"
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    maxLength={128}
+                    required
+                  />
+                </span>
+              </label>
+            )}
+            {isRegister && <ul className="auth-password-checks" aria-label="Persyaratan kata sandi">
+              {[
+                ["Minimal 12 karakter", password.length >= 12],
+                ["Huruf kapital", /[A-Z]/.test(password)],
+                ["Huruf kecil", /[a-z]/.test(password)],
+                ["Angka", /[0-9]/.test(password)],
+                ["Simbol", /[^A-Za-z0-9\s]/.test(password)],
+              ].map(([label, valid]) => <li key={label as string} className={valid ? "is-valid" : ""}><span>{valid ? "✓" : "○"}</span>{label}</li>)}
+            </ul>}
+            {turnstileSiteKey && <div className="auth-turnstile" ref={captchaContainer} />}
             {error && <p className="auth-error" role="alert">{error}</p>}
+            {successMessage && <p className="auth-success" role="status">{successMessage}</p>}
 
             <button className="auth-submit auth-submit-v2" type="submit" disabled={pending}>
-              <span>{pending ? "Please wait…" : isRegister ? "Create account" : "Sign in"}</span>
+              <span>{pending ? "Tunggu sebentar…" : isRegister ? "Buat akun" : "Masuk"}</span>
               <span aria-hidden="true">↗</span>
             </button>
           </form>
 
           <p className="auth-switch">
-            {isRegister ? "Already have an account?" : "New to Neftis?"}{" "}
-            <Link href={isRegister ? "/login" : "/register"}>{isRegister ? "Sign in" : "Create an account"}</Link>
+            {isRegister ? "Sudah punya akun?" : "Belum punya akun Neftis?"}{" "}
+            <Link href={isRegister ? "/login" : "/register"}>{isRegister ? "Masuk" : "Buat akun"}</Link>
           </p>
 
-          <p className="auth-legal">By continuing, you agree to use Neftis respectfully and responsibly.</p>
+          <p className="auth-legal">Dengan melanjutkan, kamu setuju menggunakan Neftis secara bertanggung jawab.</p>
         </div>
       </section>
 
       <footer className="auth-footer auth-footer-v2">
-        <span>PRIVATE BY DEFAULT</span>
+        <span>PRIVASI DIUTAMAKAN</span>
         <span>NEFTIS / DIGITAL COMMONS</span>
       </footer>
     </main>

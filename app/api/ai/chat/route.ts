@@ -4,10 +4,19 @@ import { providerHeaders, providers, resolveProvider, type ProviderId } from "@/
 
 export const dynamic = "force-dynamic";
 type ChatMessage = { role: "user" | "assistant"; content: string };
-type Connection = { id: string; provider: ProviderId; apiKey: string; baseUrl?: string; model: string; reasoning?: string };
+type Connection = {
+  id: string;
+  provider: ProviderId;
+  apiKey: string;
+  baseUrl?: string;
+  protocol?: "openai" | "anthropic" | "google";
+  authMode?: "bearer" | "x-api-key" | "google-key" | "none";
+  model: string;
+  reasoning?: string;
+};
 
 async function requestProvider(connection: Connection, messages: ChatMessage[]) {
-  const provider = resolveProvider(connection.provider, connection.baseUrl);
+  const provider = resolveProvider(connection.provider, connection.baseUrl, connection.protocol, connection.authMode);
   const headers = { ...providerHeaders(provider, connection.apiKey), "Content-Type": "application/json" };
   let response: Response;
   if (provider.kind === "anthropic") {
@@ -64,7 +73,10 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+  if (origin && host) {
+    try { if (new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+    catch { return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+  }
 
   let body: { connections?: Connection[]; messages?: ChatMessage[] };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
@@ -80,7 +92,10 @@ export async function POST(request: Request) {
   const failures: string[] = [];
   for (const connection of connections) {
     if (!connection || typeof connection !== "object" || typeof connection.id !== "string" ||
-      !Object.hasOwn(providers, connection.provider) || typeof connection.apiKey !== "string" ||
+      !Object.hasOwn(providers, connection.provider) ||
+      (connection.protocol !== undefined && !["openai", "anthropic", "google"].includes(connection.protocol)) ||
+      (connection.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(connection.authMode)) ||
+      typeof connection.apiKey !== "string" ||
       connection.apiKey.length < 8 || connection.apiKey.length > 512 ||
       typeof connection.model !== "string" || !connection.model || connection.model.length > 180) {
       failures.push("Satu koneksi memiliki konfigurasi yang tidak valid.");

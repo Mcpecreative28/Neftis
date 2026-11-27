@@ -10,10 +10,26 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+  if (origin && host) {
+    try { if (new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+    catch { return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+  }
 
-  let body: { apiKey?: string; provider?: ProviderId; baseUrl?: string };
+  let body: {
+    apiKey?: string;
+    provider?: ProviderId;
+    baseUrl?: string;
+    protocol?: "openai" | "anthropic" | "google";
+    authMode?: "bearer" | "x-api-key" | "google-key" | "none";
+    displayName?: string;
+  };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  if (body.protocol !== undefined && !["openai", "anthropic", "google"].includes(body.protocol)) {
+    return NextResponse.json({ error: "Protokol API tidak didukung." }, { status: 400 });
+  }
+  if (body.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(body.authMode)) {
+    return NextResponse.json({ error: "Metode autentikasi tidak didukung." }, { status: 400 });
+  }
   const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
   if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
@@ -24,7 +40,12 @@ export async function POST(request: Request) {
   }
 
   let provider;
-  try { provider = resolveProvider(providerId, body.baseUrl); }
+  try {
+    provider = resolveProvider(providerId, body.baseUrl, body.protocol, body.authMode);
+    if (providerId === "custom-openai" && typeof body.displayName === "string" && body.displayName.trim()) {
+      provider.name = body.displayName.trim().slice(0, 48);
+    }
+  }
   catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Base URL tidak valid." }, { status: 400 }); }
 
   try {
@@ -39,9 +60,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: status === 401 ? "API key ditolak provider." : `Provider mengembalikan HTTP ${response.status}.` }, { status });
     }
     const payload: unknown = await response.json();
-    const models = normalizeModels(providerId, payload);
+    const models = normalizeModels(providerId, payload, provider.kind);
     if (!models.length) return NextResponse.json({ error: "Provider merespons, tetapi tidak mengirim daftar model yang kompatibel." }, { status: 422 });
-    return NextResponse.json({ provider: { id: provider.id, name: provider.name, baseUrl: provider.baseUrl }, models });
+    return NextResponse.json({
+      provider: { id: provider.id, name: provider.name, baseUrl: provider.baseUrl, kind: provider.kind, keyHeader: provider.keyHeader },
+      models,
+    });
   } catch {
     return NextResponse.json({ error: "Tidak dapat menghubungi provider. Periksa Base URL dan token." }, { status: 502 });
   }
