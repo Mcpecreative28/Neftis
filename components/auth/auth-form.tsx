@@ -54,14 +54,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setKata sandi] = useState("");
-  const [confirmKata sandi, setConfirmKata sandi] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const captchaContainer = useRef<HTMLDivElement>(null);
   const captchaWidget = useRef<string | null>(null);
   const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
-  const [showKata sandi, setShowKata sandi] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -105,7 +105,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     if (isRegister) {
       const issue = passwordIssue(password);
       if (issue) { setError(issue); return; }
-      if (password !== confirmKata sandi) { setError("Konfirmasi password belum sama."); return; }
+      if (password !== confirmPassword) { setError("Konfirmasi password belum sama."); return; }
     }
     if (turnstileSiteKey && !captchaToken) { setError("Selesaikan verifikasi keamanan terlebih dahulu."); return; }
     setPending(true);
@@ -125,8 +125,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
       if (isRegister) {
         setSuccessMessage("Akun berhasil dibuat. Periksa email untuk menyelesaikan verifikasi sebelum masuk.");
-        setKata sandi("");
-        setConfirmKata sandi("");
+        setPassword("");
+        setConfirmPassword("");
         setCaptchaToken("");
         if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
         return;
@@ -260,17 +260,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
               <span>Kata sandi</span>
               <span className="auth-password-wrap">
                 <input
-                  type={showKata sandi ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   autoComplete={isRegister ? "new-password" : "current-password"}
                   placeholder={isRegister ? "At least 12 characters" : "Your password"}
                   value={password}
-                  onChange={(event) => setKata sandi(event.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   minLength={isRegister ? 12 : 1}
                   maxLength={128}
                   required
                 />
-                <button type="button" className="auth-password-toggle" onClick={() => setShowKata sandi((value) => !value)} aria-label={showKata sandi ? "Hide password" : "Show password"}>
-                  {showKata sandi ? "Hide" : "Show"}
+                <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>
+                  {showPassword ? "Hide" : "Show"}
                 </button>
               </span>
             </label>
@@ -280,11 +280,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <span>Konfirmasi kata sandi</span>
                 <span className="auth-password-wrap">
                   <input
-                    type={showKata sandi ? "text" : "password"}
+                    type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
                     placeholder="Ulangi kata sandi"
-                    value={confirmKata sandi}
-                    onChange={(event) => setConfirmKata sandi(event.target.value)}
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
                     maxLength={128}
                     required
                   />
