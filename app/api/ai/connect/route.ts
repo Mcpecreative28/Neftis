@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth/server";
 import { detectProvider, normalizeModels, providerHeaders, providers, resolveProvider, type ProviderId } from "@/lib/ai/providers";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const { auth } = await import("@/lib/auth/server");
   const { data: session } = await auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Sign in to connect an AI provider." }, { status: 401 });
 
@@ -34,14 +34,14 @@ export async function POST(request: Request) {
   if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
   const detected = detectProvider(apiKey);
-  const providerId = body.provider ?? detected;
+  const providerId = body.provider ?? (body.baseUrl?.trim() ? "custom-openai" : detected);
   if (!providerId || !Object.hasOwn(providers, providerId)) {
     return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) });
   }
 
   let provider;
   try {
-    provider = resolveProvider(providerId, body.baseUrl, body.protocol, body.authMode);
+    provider = resolveProvider(providerId, body.baseUrl, body.protocol ?? "openai", body.authMode ?? "bearer");
     if (providerId === "custom-openai" && typeof body.displayName === "string" && body.displayName.trim()) {
       provider.name = body.displayName.trim().slice(0, 48);
     }

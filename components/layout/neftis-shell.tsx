@@ -250,7 +250,7 @@ export default function NeftisShell() {
     window.setTimeout(() => setToast(""), 2200);
   }
   return (
-    <div className="app-shell" lang={language} dir="ltr">
+    <div className="app-shell" lang={language} dir="ltr" data-page={page}>
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
           <span className="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>

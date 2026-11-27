@@ -1473,3 +1473,322 @@ input,textarea,select{color:var(--text);accent-color:var(--accent)}input:not([ty
 .home-principles-grid p{font-size:9px;line-height:1.7;color:var(--muted);margin:0}
 @media(max-width:850px){.home-principles{grid-template-columns:1fr;gap:20px}.home-principles-heading p{max-width:520px}}
 @media(max-width:560px){.home-principles-grid{grid-template-columns:1fr}.home-principles-grid article{min-height:0}.principle-symbol{margin:13px 0 5px}}
+
+
+/* NEFTIS EXPERIENCE REDESIGN — spatial navigation, distinct page canvases */
+:root{
+  --violet:#a78bfa;
+  --cyan:#67e8f9;
+  --accent-glow:color-mix(in srgb,var(--accent) 34%,transparent);
+  --panel-glass:color-mix(in srgb,var(--surface) 82%,transparent);
+  --line-soft:color-mix(in srgb,var(--line) 72%,transparent);
+}
+html{background:var(--bg)}
+body{
+  background:
+    radial-gradient(ellipse at 84% 2%,color-mix(in srgb,var(--violet) 10%,transparent),transparent 34rem),
+    radial-gradient(ellipse at 8% 88%,color-mix(in srgb,var(--cyan) 7%,transparent),transparent 38rem),
+    var(--bg);
+}
+.app-shell{position:relative;isolation:isolate;background:transparent}
+.app-shell:before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.22;
+  background-image:radial-gradient(color-mix(in srgb,var(--text) 24%,transparent) .65px,transparent .65px);
+  background-size:22px 22px;mask-image:linear-gradient(90deg,#000,transparent 65%);
+}
+.sidebar{
+  width:264px;padding:26px 17px 20px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 96%,var(--accent) 4%),color-mix(in srgb,var(--bg) 94%,#000));
+  border-right:1px solid var(--line-soft);box-shadow:18px 0 60px #00000012;
+}
+.brand{padding:0 8px 42px;gap:13px}
+.brand-mark{width:42px;height:42px;border-radius:14px;transform:none;border-color:color-mix(in srgb,var(--accent) 50%,var(--line));background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 19%,var(--surface)),var(--surface));box-shadow:0 0 30px var(--accent-glow)}
+.brand-name{font-size:16px;letter-spacing:-.8px}
+.brand-name small{font-size:8px;letter-spacing:2px}
+.workspace-label{font-size:9px;letter-spacing:1.8px;padding:0 12px 13px}
+.primary-nav{gap:6px}
+.nav-link{min-height:46px;padding:0 12px;border:1px solid transparent;border-radius:12px;font-size:12px;gap:13px}
+.nav-link.active{border-color:color-mix(in srgb,var(--accent) 28%,transparent);background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--violet) 7%,transparent));color:var(--text);box-shadow:inset 3px 0 var(--accent),0 8px 25px #00000010}
+.nav-link.active .nav-icon{color:var(--accent)}
+.nav-link:hover{background:color-mix(in srgb,var(--text) 6%,transparent);border-color:var(--line-soft)}
+.nav-icon{width:20px;font-size:17px}
+.sidebar-divider{margin:24px 7px;border-color:var(--line-soft)}
+.status-card{padding:13px;border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--surface)),var(--surface));border-color:var(--line-soft)}
+.status-dot,.pulse-dot,.online-indicator{background:var(--cyan);box-shadow:0 0 13px color-mix(in srgb,var(--cyan) 65%,transparent)}
+.profile-button{padding:10px;border:1px solid transparent;border-radius:13px}
+.profile-button:hover{background:color-mix(in srgb,var(--text) 5%,transparent);border-color:var(--line-soft)}
+.avatar{width:34px;height:34px;border-radius:12px;background:color-mix(in srgb,var(--accent) 18%,var(--surface));color:var(--accent)}
+.main-area{margin-left:264px}
+.topbar{
+  height:76px;padding:0 clamp(20px,3vw,46px);
+  background:color-mix(in srgb,var(--bg) 82%,transparent);
+  border-bottom:1px solid var(--line-soft);backdrop-filter:blur(24px) saturate(140%);
+}
+.breadcrumbs{font-size:9px;letter-spacing:1.5px}
+.breadcrumbs strong{font-size:11px}
+.topbar-actions{gap:10px}
+.search-trigger,.icon-button,.sign-in-button{height:40px;border-radius:12px;background:var(--panel-glass);border-color:var(--line-soft)}
+.search-trigger{width:210px}
+.search-trigger:hover,.icon-button:hover{border-color:color-mix(in srgb,var(--accent) 60%,var(--line));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 8%,transparent)}
+.sign-in-button{padding:0 17px;background:var(--accent);box-shadow:0 7px 22px var(--accent-glow);font-size:10px}
+.content-wrap{max-width:1600px;padding:clamp(24px,3vw,48px) clamp(20px,3.6vw,58px) 36px}
+.page-view{animation:neftis-enter .42s cubic-bezier(.2,.7,.2,1)}
+@keyframes neftis-enter{from{opacity:0;transform:translateY(13px) scale(.995)}to{opacity:1;transform:none}}
+.section-kicker,.eyebrow{letter-spacing:2px;color:color-mix(in srgb,var(--muted) 86%,var(--accent))}
+.page-intro{margin:10px 0 34px;align-items:center}
+.page-intro h1{font-size:clamp(46px,5vw,72px);letter-spacing:-.075em;margin:17px 0 11px}
+.page-intro h1 em{background:linear-gradient(100deg,var(--accent),var(--violet));background-clip:text;-webkit-background-clip:text;color:transparent}
+.page-intro p{font-size:13px;max-width:540px}
+.intro-side-label{padding:13px 15px;border:1px solid var(--line-soft);border-radius:12px;background:var(--panel-glass);text-align:left;min-width:150px}
+
+/* Home — immersive landing canvas */
+.home-stage{padding-top:0}
+.home-edition{padding:0 0 15px;border-color:var(--line-soft);font-size:8px;letter-spacing:1.8px}
+.home-hero{grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:clamp(25px,4vw,68px);padding:clamp(36px,5vw,70px) 0 42px}
+.home-copy h1{font-size:clamp(54px,6.7vw,96px);line-height:.91;letter-spacing:-.085em;margin:27px 0 25px;max-width:760px}
+.home-copy h1 em{background:linear-gradient(100deg,var(--accent) 4%,var(--violet) 90%);background-clip:text;-webkit-background-clip:text;color:transparent}
+.home-copy>p{font-size:14px;line-height:1.9;max-width:460px}
+.hero-actions{gap:12px;margin-top:30px}
+.button{min-height:46px;border-radius:13px;padding:0 18px;font-size:10px;letter-spacing:.03em}
+.button-primary{background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 72%,var(--violet)));box-shadow:0 9px 28px var(--accent-glow)}
+.button-quiet{background:var(--panel-glass);border-color:var(--line-soft)}
+.home-art{
+  height:clamp(330px,37vw,470px);border:1px solid color-mix(in srgb,var(--accent) 27%,var(--line));
+  border-radius:28px;background:
+    radial-gradient(ellipse at 50% 47%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 36%),
+    radial-gradient(ellipse at 76% 23%,color-mix(in srgb,var(--violet) 20%,transparent),transparent 40%),
+    linear-gradient(145deg,color-mix(in srgb,var(--surface) 85%,var(--accent) 5%),var(--bg));
+  box-shadow:inset 0 1px #ffffff12,0 24px 70px #00000022;
+}
+.home-art:before{background-size:42px 42px;opacity:.65}
+.home-art:after{content:"";position:absolute;inset:12%;border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);border-radius:50%;transform:rotate(-18deg) scaleX(1.35);pointer-events:none}
+.scene-ring{border-color:color-mix(in srgb,var(--accent) 48%,transparent);box-shadow:0 0 28px color-mix(in srgb,var(--accent) 9%,transparent)}
+.scene-ring-b{border-color:color-mix(in srgb,var(--violet) 60%,transparent)}
+.scene-ring-c{border-color:color-mix(in srgb,var(--cyan) 54%,transparent)}
+.scene-disc{width:112px;height:112px;border-radius:34px;background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--violet)));box-shadow:0 0 85px var(--accent-glow);transform:rotate(-8deg)}
+.scene-disc svg{width:68px;height:68px;color:var(--bg)}
+.scene-tag{padding:7px 10px;border:1px solid var(--line-soft);border-radius:999px;background:color-mix(in srgb,var(--bg) 65%,transparent);backdrop-filter:blur(12px);font-size:8px;letter-spacing:1.2px}
+.home-statline{display:flex;gap:clamp(14px,3vw,38px);align-items:center;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:16px 0;color:var(--muted);font-size:9px;letter-spacing:1.2px}
+.home-statline b{color:var(--text);font-weight:700;margin-left:5px}
+.home-stat-note{margin-left:auto;color:var(--dim)}
+.section-heading{margin:54px 0 19px}
+.section-heading h2{font-size:clamp(24px,2.6vw,34px);letter-spacing:-1.2px}
+.feature-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.feature-card{min-height:220px;padding:20px;border-radius:20px;background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 95%,var(--glow) 5%),var(--surface));border-color:var(--line-soft)}
+.feature-card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--glow) 50%,var(--line));box-shadow:0 18px 42px #00000020}
+.feature-symbol{width:44px;height:44px;display:grid;place-items:center;border-radius:15px;background:color-mix(in srgb,var(--glow) 12%,transparent);font-size:23px;margin:23px 0 15px}
+.feature-card h3{font-size:17px;letter-spacing:-.4px}
+.feature-card p{font-size:11px;line-height:1.75;max-width:210px}
+.card-arrow{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line-soft);border-radius:50%;background:var(--bg)}
+.home-principles{padding:44px 0;gap:clamp(25px,4vw,60px);border-color:var(--line-soft)}
+.home-principles-heading h2{font-size:clamp(34px,4vw,52px)}
+.home-principles-grid{gap:12px}
+.home-principles-grid article{border-radius:18px;padding:19px;background:linear-gradient(155deg,var(--surface),color-mix(in srgb,var(--surface) 85%,var(--accent) 15%));border-color:var(--line-soft)}
+.lower-grid{gap:16px;margin-top:20px}
+.panel{border-color:var(--line-soft);border-radius:18px;background:var(--panel-glass);backdrop-filter:blur(16px)}
+.activity-panel,.signal-panel{padding:22px}
+.signal-post{background:color-mix(in srgb,var(--surface-2) 80%,transparent);border:1px solid var(--line-soft);border-radius:13px}
+
+/* AI — instrument panel, setup-first connection flow */
+.ai-workspace{margin-top:0}
+.ai-workspace .page-intro{margin-bottom:28px}
+.ai-gateway-layout{grid-template-columns:minmax(255px,310px) minmax(0,1fr);gap:18px}
+.ai-gateway-rail,.ai-gateway-main{border-radius:22px}
+.ai-gateway-rail{background:linear-gradient(160deg,color-mix(in srgb,var(--surface) 94%,var(--accent) 6%),var(--surface));border-color:var(--line-soft);box-shadow:0 20px 55px #00000018}
+.ai-gateway-main{background:transparent}
+.ai-gateway-heading h2{font-size:clamp(27px,3vw,38px);letter-spacing:-1.3px}
+.ai-add-connection,.ai-chat-panel-v2,.ai-selected-provider{border-radius:20px;border-color:var(--line-soft);background:var(--panel-glass);box-shadow:0 18px 45px #00000016}
+.ai-connect-button{min-height:46px;border-radius:12px;background:var(--accent);box-shadow:0 8px 22px var(--accent-glow)}
+.ai-field input,.ai-field select,.ai-chat-input,.ai-chat-input textarea,.tool-text-input,.tool-textarea,.auth-fields input{border-radius:12px;background:color-mix(in srgb,var(--bg) 68%,var(--surface));border-color:var(--line-soft)}
+.ai-connection-item{border-radius:13px}
+.ai-connection-item.active{border-color:color-mix(in srgb,var(--accent) 60%,var(--line));background:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.ai-chat-panel-v2{overflow:hidden}
+.ai-chat-panel-v2 .ai-chat-heading{min-height:64px}
+.ai-chat-panel-v2 .ai-chat-input{border-radius:16px;background:color-mix(in srgb,var(--bg) 74%,var(--surface));border:1px solid var(--line-soft)}
+.ai-chat-panel-v2 .ai-chat-input button{border-radius:11px;background:var(--accent);color:var(--accent-ink)}
+
+/* Tools — catalog cards and focused workbench */
+.tools-library{padding-top:0}
+.tools-library-toolbar{padding:14px 0 17px;border-bottom:1px solid var(--line-soft)}
+.filter-tabs{gap:8px}
+.filter-tabs button{border:1px solid var(--line-soft);border-radius:999px;padding:9px 14px;background:var(--panel-glass)}
+.filter-tabs button.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tools-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.functional-tool-card{min-height:260px;padding:21px;border:1px solid var(--line-soft);border-radius:20px;background:linear-gradient(150deg,var(--surface),color-mix(in srgb,var(--surface) 88%,var(--violet) 12%));transition:transform .22s,border-color .22s,box-shadow .22s}
+.functional-tool-card:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent) 52%,var(--line));box-shadow:0 20px 50px #00000020}
+.functional-tool-mark{width:58px;height:58px;border-radius:18px;background:color-mix(in srgb,var(--accent) 12%,var(--surface));border-color:color-mix(in srgb,var(--accent) 26%,var(--line));font-size:20px}
+.tool-workspace{padding:22px;border:1px solid var(--line-soft);border-radius:22px;background:var(--panel-glass)}
+.tool-editor-panel,.tool-output-panel{border-radius:16px;border-color:var(--line-soft);background:color-mix(in srgb,var(--surface) 84%,transparent)}
+
+/* Community — open forum layout */
+.community-desk{gap:18px}
+.community-feed,.community-info-card,.community-topic-card{border-radius:22px;border-color:var(--line-soft);background:var(--panel-glass)}
+.community-feed{padding:26px;min-height:500px}
+.community-feed-bar{padding-bottom:18px;border-bottom:1px solid var(--line-soft)}
+.community-feed-bar h2{font-size:25px;letter-spacing:-.8px}
+.community-empty-state{max-width:470px;margin:70px auto;text-align:left}
+.community-empty-mark{width:66px;height:66px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 18%,var(--surface)),color-mix(in srgb,var(--violet) 12%,var(--surface)));border:1px solid var(--line-soft);font-size:29px;color:var(--accent)}
+.community-empty-state h3{font-size:25px;letter-spacing:-.8px}
+.community-info-card,.community-topic-card{padding:22px}
+.community-topic-card b{border-radius:999px;background:color-mix(in srgb,var(--accent) 9%,var(--surface));border:1px solid var(--line-soft);padding:9px 12px}
+
+/* Knowledge — learning path editorial board */
+.learning-hero{gap:18px}
+.learning-feature{border-radius:24px;border-color:var(--line-soft);background:radial-gradient(circle at 75% 30%,color-mix(in srgb,var(--violet) 16%,transparent),transparent 34%),linear-gradient(135deg,color-mix(in srgb,var(--accent) 9%,var(--surface)),var(--surface))}
+.learning-orbit{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%)}
+.learning-orbit span{color:var(--accent)}
+.learning-note{border-radius:22px;border-color:var(--line-soft);background:var(--panel-glass)}
+.learning-path-list{border-top-color:var(--line-soft)}
+.learning-path-list article{padding:22px 15px;border-bottom-color:var(--line-soft);transition:background .2s}
+.learning-path-list article:hover{background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.learning-path-number{font-size:34px}
+
+/* Arcade — bold game collection */
+.arcade-intro{border-radius:24px;border-color:var(--line-soft);background:radial-gradient(circle at 78% 50%,color-mix(in srgb,var(--violet) 18%,transparent),transparent 32%),linear-gradient(115deg,color-mix(in srgb,var(--accent) 8%,var(--surface)),var(--surface))}
+.arcade-emblem{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));background:radial-gradient(circle,color-mix(in srgb,var(--accent) 18%,transparent),transparent 68%)}
+.arcade-card{border-radius:20px;border-color:var(--line-soft);background:var(--panel-glass);overflow:hidden;transition:transform .22s,border-color .22s}
+.arcade-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.arcade-card-art{background:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 65%),color-mix(in srgb,var(--surface) 85%,var(--violet) 15%)}
+
+/* Achievements — collectible index */
+.milestone-hero{border-radius:24px;border-color:var(--line-soft);background:radial-gradient(circle at 82% 50%,color-mix(in srgb,var(--violet) 16%,transparent),transparent 30%),linear-gradient(110deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface))}
+.milestone-stamp{box-shadow:0 0 55px color-mix(in srgb,var(--accent) 10%,transparent)}
+.milestone-collection article{border-color:var(--line-soft);transition:background .18s}
+.milestone-collection article:hover{background:color-mix(in srgb,var(--accent) 5%,transparent)}
+
+/* Services — service directory with clear hierarchy */
+.services-lead{max-width:900px;padding:35px 0}
+.services-lead h2{font-size:clamp(42px,5.2vw,68px);letter-spacing:-.07em}
+.service-directory{border-top-color:var(--line-soft)}
+.service-directory article{padding:27px 15px;border-bottom-color:var(--line-soft);transition:padding .2s,background .2s}
+.service-directory article:hover{padding-left:24px;background:color-mix(in srgb,var(--accent) 5%,transparent)}
+.service-index{font-size:34px}
+
+/* Auth, dashboard and profile belong to the same product, not a separate template */
+.auth-page-v2{background:radial-gradient(ellipse at 18% 24%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 38%),radial-gradient(ellipse at 85% 78%,color-mix(in srgb,var(--violet) 12%,transparent),transparent 35%),var(--bg)}
+.auth-layout{max-width:1160px;border:1px solid var(--line-soft);border-radius:28px;overflow:hidden;background:var(--panel-glass);box-shadow:0 30px 100px #00000035}
+.auth-story{background:radial-gradient(circle at 55% 35%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 34%),linear-gradient(145deg,color-mix(in srgb,var(--surface) 80%,var(--violet) 10%),var(--bg))}
+.auth-art-core{background:linear-gradient(145deg,var(--accent),var(--violet));box-shadow:0 0 70px var(--accent-glow)}
+.auth-panel{background:color-mix(in srgb,var(--surface) 92%,transparent)}
+.auth-panel-heading{margin-bottom:24px}
+.auth-fields input{min-height:48px;padding:0 14px}
+.auth-submit-v2{min-height:50px;border-radius:13px;background:var(--accent);color:var(--accent-ink);box-shadow:0 9px 24px var(--accent-glow)}
+.account-dashboard,.account-detail-page{background:radial-gradient(ellipse at 85% 5%,color-mix(in srgb,var(--violet) 10%,transparent),transparent 35rem),var(--bg)}
+.account-dashboard-top,.account-detail-page>header{border-color:var(--line-soft)}
+.account-dashboard-hero{padding:clamp(55px,8vw,110px) 0 42px}
+.account-dashboard-hero h1,.account-detail-hero h1{font-size:clamp(48px,6vw,76px);letter-spacing:-.08em}
+.account-dashboard-orbit{background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);border-color:color-mix(in srgb,var(--accent) 42%,var(--line))}
+.account-dashboard-orbit span{background:linear-gradient(145deg,var(--accent),var(--violet));color:var(--bg)}
+.account-identity,.account-dash-card,.account-profile-sheet{border-color:var(--line-soft);border-radius:20px;background:var(--panel-glass)}
+.account-dash-card{padding:23px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.account-dash-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 18px 44px #00000020}
+.account-dash-featured{background:radial-gradient(circle at 90% 10%,color-mix(in srgb,var(--violet) 18%,transparent),transparent 35%),linear-gradient(130deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface))}
+.account-avatar{background:linear-gradient(145deg,var(--accent),var(--violet));color:var(--bg);border-radius:14px}
+.account-dashboard-footer{border-color:var(--line-soft)}
+
+/* Responsive: page canvases collapse without horizontal overflow */
+@media(max-width:1100px){
+  .sidebar{width:230px}.main-area{margin-left:230px}
+  .content-wrap{padding-inline:24px}
+  .home-hero{grid-template-columns:1fr 0.9fr;gap:24px}
+  .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tools-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .sidebar{width:min(300px,86vw);padding:22px 16px}
+  .main-area{margin-left:0}
+  .topbar{height:66px;padding:0 15px;gap:9px}
+  .breadcrumbs{display:none}
+  .mobile-brand{display:flex;align-items:center;gap:8px;margin-right:auto}
+  .mobile-brand strong{font-size:15px;letter-spacing:-.6px}
+  .mobile-brand-mark{width:29px;height:29px;border-radius:10px;background:color-mix(in srgb,var(--accent) 14%,var(--surface));display:grid;place-items:center;color:var(--accent)}
+  .mobile-brand-mark svg{width:21px}
+  .mobile-menu{display:inline-flex;align-items:center;justify-content:center;order:-1}
+  .topbar-actions{gap:6px}
+  .search-trigger{width:40px;justify-content:center;padding:0}
+  .search-trigger>span:nth-child(2),.search-trigger kbd{display:none}
+  .language-trigger{padding:0 7px;min-width:48px}
+  .preference-trigger{min-width:38px}
+  .sign-in-button{padding:0 10px}
+  .content-wrap{padding:24px 16px 30px}
+  .home-hero{grid-template-columns:1fr;padding:34px 0 27px}
+  .home-copy h1{font-size:clamp(48px,13vw,74px)}
+  .home-art{height:310px}
+  .home-statline{flex-wrap:wrap;gap:12px 20px}
+  .home-stat-note{width:100%;margin:3px 0 0}
+  .page-intro{align-items:flex-start;gap:14px;flex-direction:column;margin:8px 0 24px}
+  .page-intro h1{font-size:clamp(42px,11vw,60px)}
+  .intro-side-label{min-width:0;text-align:left}
+  .feature-grid,.tools-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .feature-card{min-height:205px;padding:15px}
+  .feature-card h3{font-size:15px}
+  .feature-card p{font-size:10px}
+  .home-principles{padding:30px 0}
+  .home-principles-grid{grid-template-columns:1fr}
+  .home-principles-grid article{min-height:0}
+  .lower-grid{grid-template-columns:1fr}
+  .community-feed{min-height:0}
+  .community-empty-state{margin:40px auto}
+  .learning-hero{grid-template-columns:1fr}
+  .arcade-intro{grid-template-columns:1fr}
+  .milestone-hero{padding:20px}
+  .auth-layout{grid-template-columns:1fr;border-radius:20px}
+  .auth-story{display:none}
+  .auth-panel{padding:26px 20px}
+  .account-dashboard,.account-detail-page{padding-inline:18px}
+}
+@media(max-width:380px){
+  .topbar{padding-inline:10px}
+  .mobile-brand strong{font-size:13px}
+  .topbar-actions{gap:4px}
+  .sign-in-button{font-size:9px;padding-inline:8px}
+  .feature-grid,.tools-grid{grid-template-columns:1fr}
+  .home-art{height:270px}
+  .scene-disc{width:88px;height:88px;border-radius:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  .page-view,.feature-card,.functional-tool-card,.arcade-card,.account-dash-card{animation:none!important;transition:none!important}
+}
+
+
+/* AI connection form: compact, consistent controls */
+.ai-field{position:relative}
+.ai-field select{
+ width:100%;min-height:50px;padding:0 44px 0 14px!important;
+ color:var(--text)!important;background-color:color-mix(in srgb,var(--bg) 72%,var(--surface))!important;
+ border:1px solid var(--line-soft)!important;border-radius:12px!important;
+ appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8a8b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;
+ background-repeat:no-repeat!important;background-position:right 15px center!important;background-size:16px!important;
+ font:inherit;transition:border-color .18s,box-shadow .18s;
+}
+.ai-field select:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accent-glow)}
+.ai-field select option{background:#202126;color:#f5f5f7}
+.ai-advanced-toggle{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+ padding:12px 14px;border:1px solid var(--line-soft);border-radius:12px;
+ color:var(--muted);background:color-mix(in srgb,var(--surface) 70%,transparent);
+ text-align:left;font:inherit;font-size:12px;cursor:pointer;
+}
+.ai-advanced-toggle span{font-size:18px;color:var(--accent)}
+.ai-inline-error{overflow-wrap:anywhere}
+@media(max-width:760px){
+ .ai-gateway-layout{grid-template-columns:1fr!important;gap:14px}
+ .ai-gateway-rail{order:2}.ai-gateway-main{order:1;min-width:0}
+ .ai-add-connection,.ai-selected-provider,.ai-chat-panel-v2{padding:16px!important}
+ .ai-provider-model-grid{grid-template-columns:1fr!important}
+ .ai-connect-button{width:100%}
+ .ai-form-grid{grid-template-columns:1fr!important}
+}
+
+/* Consistent select appearance across Neftis, including AI model controls */
+.app-shell select,.ai-product-workspace select{
+ appearance:none;-webkit-appearance:none;
+ color:var(--text);background-color:color-mix(in srgb,var(--bg) 72%,var(--surface));
+ border:1px solid var(--line-soft);border-radius:12px;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8a8b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-position:right 14px center;background-size:16px;
+ padding-right:42px;cursor:pointer;
+}
+.app-shell select:focus,.ai-product-workspace select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.app-shell select option,.ai-product-workspace select option{background:#202126;color:#f5f5f7}
