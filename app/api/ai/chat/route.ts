@@ -10,7 +10,7 @@ type Connection = {
   apiKey: string;
   baseUrl?: string;
   protocol?: "openai" | "anthropic" | "google";
-  authMode?: "bearer" | "x-api-key" | "none";
+  authMode?: "bearer" | "x-api-key" | "google-key" | "none";
   model: string;
   reasoning?: string;
 };
@@ -73,7 +73,10 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+  if (origin && host) {
+    try { if (new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+    catch { return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+  }
 
   let body: { connections?: Connection[]; messages?: ChatMessage[] };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
@@ -91,7 +94,7 @@ export async function POST(request: Request) {
     if (!connection || typeof connection !== "object" || typeof connection.id !== "string" ||
       !Object.hasOwn(providers, connection.provider) ||
       (connection.protocol !== undefined && !["openai", "anthropic", "google"].includes(connection.protocol)) ||
-      (connection.authMode !== undefined && !["bearer", "x-api-key", "none"].includes(connection.authMode)) ||
+      (connection.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(connection.authMode)) ||
       typeof connection.apiKey !== "string" ||
       connection.apiKey.length < 8 || connection.apiKey.length > 512 ||
       typeof connection.model !== "string" || !connection.model || connection.model.length > 180) {
