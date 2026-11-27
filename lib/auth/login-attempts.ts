@@ -11,7 +11,7 @@ function database() {
   return client;
 }
 
-""export function getLoginFingerprint(email: string, request: Request) {
+export function getLoginFingerprint(email: string, request: Request) {
   const secret = process.env.NEON_AUTH_COOKIE_SECRET;
   if (!secret || secret.length < 32) throw new Error("NEON_AUTH_COOKIE_SECRET is not configured.");
   const forwarded = request.headers.get("cf-connecting-ip")
