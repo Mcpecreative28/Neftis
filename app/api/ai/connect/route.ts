@@ -34,14 +34,18 @@ export async function POST(request: Request) {
   if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
   const detected = detectProvider(apiKey);
-  const providerId = body.provider ?? (body.baseUrl?.trim() ? "custom-openai" : detected);
+  const baseHost = body.baseUrl?.trim() ? new URL(body.baseUrl).hostname.toLowerCase() : "";
+  const hostMatch = Object.values(providers).find((item) => item.baseUrl && new URL(item.baseUrl).hostname.toLowerCase() === baseHost)?.id;
+  const providerId = body.provider ?? hostMatch ?? (body.baseUrl?.trim() ? "custom-openai" : detected);
   if (!providerId || !Object.hasOwn(providers, providerId)) {
     return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) });
   }
 
   let provider;
   try {
-    provider = resolveProvider(providerId, body.baseUrl, body.protocol ?? "openai", body.authMode ?? "bearer");
+    const inferredProtocol = body.protocol ?? (baseHost.includes("generativelanguage.googleapis.com") ? "google" : baseHost.includes("anthropic.com") ? "anthropic" : "openai");
+    const inferredAuth = body.authMode ?? (inferredProtocol === "google" ? "google-key" : inferredProtocol === "anthropic" ? "x-api-key" : "bearer");
+    provider = resolveProvider(providerId, body.baseUrl, inferredProtocol, inferredAuth);
     if (providerId === "custom-openai" && typeof body.displayName === "string" && body.displayName.trim()) {
       provider.name = body.displayName.trim().slice(0, 48);
     }
@@ -49,17 +53,20 @@ export async function POST(request: Request) {
   catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Base URL tidak valid." }, { status: 400 }); }
 
   try {
-    const response = await fetch(`${provider.baseUrl}/models`, {
-      headers: providerHeaders(provider, apiKey),
-      cache: "no-store",
-      redirect: "error",
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!response.ok) {
-      const status = response.status === 401 || response.status === 403 ? 401 : 502;
-      return NextResponse.json({ error: status === 401 ? "API key ditolak provider." : `Provider mengembalikan HTTP ${response.status}.` }, { status });
+    const authModes = body.authMode ? [provider.keyHeader] : provider.kind === "google" ? ["google", "bearer", "x-api-key"] : provider.kind === "anthropic" ? ["anthropic", "x-api-key", "bearer"] : ["bearer", "x-api-key", "google"];
+    let response: Response | null = null;
+    let payload: unknown = null;
+    for (const authMode of authModes) {
+      const candidate = { ...provider, keyHeader: authMode as typeof provider.keyHeader };
+      const attempt = await fetch(`${provider.baseUrl}/models`, { headers: providerHeaders(candidate, apiKey), cache: "no-store", redirect: "error", signal: AbortSignal.timeout(10000) });
+      response = attempt;
+      if (attempt.ok) { payload = await attempt.json(); provider.keyHeader = candidate.keyHeader; break; }
+      if (attempt.status !== 401 && attempt.status !== 403) break;
     }
-    const payload: unknown = await response.json();
+    if (!response?.ok) {
+      const status = response?.status === 401 || response?.status === 403 ? 401 : 502;
+      return NextResponse.json({ error: status === 401 ? "API key atau metode autentikasi tidak cocok." : `Endpoint mengembalikan HTTP ${response?.status ?? "unknown"}.` }, { status });
+    }
     const models = normalizeModels(providerId, payload, provider.kind);
     if (!models.length) return NextResponse.json({ error: "Provider merespons, tetapi tidak mengirim daftar model yang kompatibel." }, { status: 422 });
     return NextResponse.json({
