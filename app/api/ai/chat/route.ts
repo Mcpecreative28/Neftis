@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   let body: { provider?: ProviderId; apiKey?: string; model?: string; messages?: ChatMessage[]; reasoning?: string };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
   const { provider: providerId, apiKey, model, messages, reasoning } = body;
-  if (!providerId || !(providerId in providers) || typeof apiKey !== "string" || apiKey.length < 8 || apiKey.length > 512) {
+  if (!providerId || !Object.hasOwn(providers, providerId) || typeof apiKey !== "string" || apiKey.length < 8 || apiKey.length > 512) {
     return NextResponse.json({ error: "Connect a valid provider first." }, { status: 400 });
   }
   if (typeof model !== "string" || model.length > 180 || !Array.isArray(messages) || messages.length < 1 || messages.length > 40) {
