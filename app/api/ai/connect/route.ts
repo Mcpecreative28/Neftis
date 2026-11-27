@@ -34,7 +34,11 @@ export async function POST(request: Request) {
   if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
   const detected = detectProvider(apiKey);
-  const baseHost = body.baseUrl?.trim() ? new URL(body.baseUrl).hostname.toLowerCase() : "";
+  let baseHost = "";
+  if (body.baseUrl?.trim()) {
+    try { baseHost = new URL(body.baseUrl).hostname.toLowerCase(); }
+    catch { return NextResponse.json({ error: "Base URL tidak valid." }, { status: 400 }); }
+  }
   const hostMatch = Object.values(providers).find((item) => item.baseUrl && new URL(item.baseUrl).hostname.toLowerCase() === baseHost)?.id;
   const providerId = body.provider ?? hostMatch ?? (body.baseUrl?.trim() ? "custom-openai" : detected);
   if (!providerId || !Object.hasOwn(providers, providerId)) {
