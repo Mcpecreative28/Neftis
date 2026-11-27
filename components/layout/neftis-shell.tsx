@@ -31,10 +31,9 @@ const pageTitles: Record<PageKey, string> = {
 };
 
 
-type LocaleCode = "id"|"en"|"ar"|"zh"|"ja"|"ko"|"es"|"pt"|"fr"|"de"|"hi"|"ru"|"tr"|"th"|"vi";
+type LocaleCode = "id"|"en"|"zh"|"ja"|"ko"|"es"|"pt"|"fr"|"de"|"hi"|"ru"|"tr"|"th"|"vi";
 const languages: {code: LocaleCode; name: string; native: string}[] = [
-  {code:"id",name:"Indonesian",native:"Bahasa Indonesia"},{code:"en",name:"English",native:"English"},
-  {code:"ar",name:"Arabic",native:"العربية"},{code:"zh",name:"Chinese",native:"中文"},
+  {code:"id",name:"Indonesian",native:"Bahasa Indonesia"},{code:"en",name:"English",native:"English"},{code:"zh",name:"Chinese",native:"中文"},
   {code:"ja",name:"Japanese",native:"日本語"},{code:"ko",name:"Korean",native:"한국어"},
   {code:"es",name:"Spanish",native:"Español"},{code:"pt",name:"Portuguese",native:"Português"},
   {code:"fr",name:"French",native:"Français"},{code:"de",name:"German",native:"Deutsch"},
@@ -60,12 +59,15 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["atelier","Atelier","#f3f0e8","#cf6848"],
- ["night","Midnight","#11151c","#d6e5a0"],
- ["forest","Moss","#17251e","#b9d38b"],
- ["ocean","Ocean","#102630","#72d7d0"],
- ["lavender","Lavender","#efedf5","#7967a8"],
- ["mono","Monochrome","#f4f4f0","#24272b"],
+ ["night","Night","#101116","#d4f36a"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
+ ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
+ ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
+ ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
+ ["matcha","Matcha","#20251a","#c8df91"],["graphite","Graphite","#171b20","#b8c5d2"],["cobalt","Cobalt","#101b32","#78a9ff"],
+ ["plum","Plum","#25172b","#e0a8ed"],["mint","Mint","#10251f","#8de5c1"],["clay","Clay","#2a211b","#dca77e"],
+ ["aurora","Aurora","#101e27","#8ce6d1"],["parchment","Parchment","#eee5cf","#8d9c57"],["obsidian","Obsidian","#08090d","#a9c4ff"],
+ ["sakura","Sakura","#2b1b28","#ffb5d2"],["ember","Ember","#281912","#ff9a62"],["glacier","Glacier","#10232d","#9be4ef"],
+ ["solar","Solar","#251d10","#f0bd55"]
 ] as const;
 
 
