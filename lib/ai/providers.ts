@@ -31,7 +31,9 @@ export const providers: Record<ProviderId, ProviderConfig> = {
 };
 
 export function detectProvider(apiKey: string): ProviderId | null {
-  if (apiKey.startsWith("thk_")) return "tokenharbor";\n  if (apiKey.startsWith("gsk_")) return "groq";\n  if (apiKey.startsWith("csk-")) return "cerebras";
+  if (apiKey.startsWith("thk_")) return "tokenharbor";
+  if (apiKey.startsWith("gsk_")) return "groq";
+  if (apiKey.startsWith("csk-")) return "cerebras";
   if (apiKey.startsWith("sk-or-v1-")) return "openrouter";
   if (apiKey.startsWith("sk-ant-")) return "anthropic";
   if (apiKey.startsWith("AIza")) return "google";
