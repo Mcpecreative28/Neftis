@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     if (captchaError) return captchaError;
   }
 
-  const authPath = new URL(request.url).pathname.replace(/^\\/api\\/auth\\/?/, "");
+  const authPath = new URL(request.url).pathname.replace("/api/auth/", "");
   const context = { params: Promise.resolve({ path: authPath.split("/").filter(Boolean) }) };
   const response = await handlers.POST(request, context);
   if (isEmailLogin && fingerprint) {
