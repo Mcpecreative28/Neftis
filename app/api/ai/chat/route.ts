@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth/server";
 import { providerHeaders, providers, resolveProvider, type ProviderId } from "@/lib/ai/providers";
 
 export const dynamic = "force-dynamic";
@@ -23,20 +22,20 @@ async function requestProvider(connection: Connection, messages: ChatMessage[]) 
     response = await fetch(`${provider.baseUrl}/messages`, {
       method: "POST", headers,
       body: JSON.stringify({ model: connection.model, max_tokens: 2048, messages }),
-      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(60000),
+      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(35000),
     });
   } else if (provider.kind === "google") {
     const contents = messages.map((message) => ({ role: message.role === "assistant" ? "model" : "user", parts: [{ text: message.content }] }));
     response = await fetch(`${provider.baseUrl}/models/${encodeURIComponent(connection.model)}:generateContent`, {
       method: "POST", headers,
       body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 2048 } }),
-      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(60000),
+      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(35000),
     });
   } else {
     response = await fetch(`${provider.baseUrl}/chat/completions`, {
       method: "POST", headers,
       body: JSON.stringify({ model: connection.model, messages, ...(connection.reasoning ? { reasoning_effort: connection.reasoning } : {}) }),
-      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(60000),
+      cache: "no-store", redirect: "error", signal: AbortSignal.timeout(35000),
     });
   }
 
@@ -68,6 +67,7 @@ function shouldFallback(error: unknown) {
 }
 
 export async function POST(request: Request) {
+  const { auth } = await import("@/lib/auth/server");
   const { data: session } = await auth.getSession();
   if (!session?.user) return NextResponse.json({ error: "Sign in to use Neftis AI." }, { status: 401 });
 
@@ -112,5 +112,5 @@ export async function POST(request: Request) {
       }
     }
   }
-  return NextResponse.json({ error: "Semua koneksi AI gagal. Periksa saldo, limit, token, dan status provider.", attempts: failures }, { status: 502 });
+  return NextResponse.json({ error: failures.length ? `Tidak ada koneksi yang berhasil. Detail: ${failures.join(" · ")}` : "Tidak ada koneksi AI yang dapat digunakan.", attempts: failures }, { status: 502 });
 }
