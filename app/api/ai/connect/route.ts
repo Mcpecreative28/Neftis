@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth/server";
-import { detectProvider, normalizeModels, providerHeaders, providers, type ProviderId } from "@/lib/ai/providers";
+import { detectProvider, normalizeModels, providerHeaders, providers, resolveProvider, type ProviderId } from "@/lib/ai/providers";
 
 export const dynamic = "force-dynamic";
 
@@ -10,41 +10,39 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) {
-    return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
-  }
+  if (origin && host && new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
 
-  let body: { apiKey?: string; provider?: ProviderId };
+  let body: { apiKey?: string; provider?: ProviderId; baseUrl?: string };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
   const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
-  if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) {
-    return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
-  }
+  if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
   const detected = detectProvider(apiKey);
   const providerId = body.provider ?? detected;
   if (!providerId || !Object.hasOwn(providers, providerId)) {
-    return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) }, { status: 200 });
+    return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) });
   }
 
-  const provider = providers[providerId];
-  const endpoint = provider.kind === "google" ? `${provider.baseUrl}/models` : `${provider.baseUrl}/models`;
+  let provider;
+  try { provider = resolveProvider(providerId, body.baseUrl); }
+  catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Base URL tidak valid." }, { status: 400 }); }
+
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetch(`${provider.baseUrl}/models`, {
       headers: providerHeaders(provider, apiKey),
       cache: "no-store",
       redirect: "error",
-      signal: AbortSignal.timeout(9000),
+      signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) {
       const status = response.status === 401 || response.status === 403 ? 401 : 502;
-      return NextResponse.json({ error: status === 401 ? "API key rejected by provider." : `Provider returned HTTP ${response.status}.` }, { status });
+      return NextResponse.json({ error: status === 401 ? "API key ditolak provider." : `Provider mengembalikan HTTP ${response.status}.` }, { status });
     }
     const payload: unknown = await response.json();
     const models = normalizeModels(providerId, payload);
-    if (!models.length) return NextResponse.json({ error: "The provider responded, but no compatible models were found." }, { status: 422 });
-    return NextResponse.json({ provider: { id: provider.id, name: provider.name }, models });
+    if (!models.length) return NextResponse.json({ error: "Provider merespons, tetapi tidak mengirim daftar model yang kompatibel." }, { status: 422 });
+    return NextResponse.json({ provider: { id: provider.id, name: provider.name, baseUrl: provider.baseUrl }, models });
   } catch {
-    return NextResponse.json({ error: "Could not reach the provider. Check the key and try again." }, { status: 502 });
+    return NextResponse.json({ error: "Tidak dapat menghubungi provider. Periksa Base URL dan token." }, { status: 502 });
   }
 }
