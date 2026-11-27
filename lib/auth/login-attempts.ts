@@ -35,13 +35,13 @@ export async function getLoginLock(fingerprint: string) {
 }
 
 export async function recordLoginFailure(fingerprint: string) {
-    const rows = await database()`INSERT INTO neftis_security.login_attempts
+    const rows = await database()`INSERT INTO neftis_security.login_attempts AS attempts
       (fingerprint, failed_attempts, updated_at)
     VALUES (${fingerprint}, 1, now())
     ON CONFLICT (fingerprint) DO UPDATE SET
       failed_attempts = CASE
-        WHEN neftis_security.login_attempts.updated_at < now() - interval '15 minutes' THEN 1
-        ELSE neftis_security.login_attempts.failed_attempts + 1
+        WHEN attempts.updated_at < now() - interval '15 minutes' THEN 1
+        ELSE attempts.failed_attempts + 1
       END,
       updated_at = now()
     RETURNING failed_attempts`;
