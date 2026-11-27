@@ -88,7 +88,7 @@ export default function AIWorkspace() {
             {manualProvider !== "" && <select id="ai-provider-select" value={manualProvider} onChange={(event) => setManualProvider(event.target.value)}>{providerChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
             <button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8}>{connecting ? "Memeriksa token…" : "Periksa token dan lanjutkan"} <span>↗</span></button>
-            {error.includes("belum bisa dikenali") && <button className="ai-manual-provider" type="button" onClick={() => setManualProvider(providerChoices[0]?.id ?? "tokenharbor")}>Pilih provider secara manual</button>}
+            <button className="ai-manual-provider" type="button" onClick={() => setManualProvider(manualProvider ? "" : providerChoices[0]?.id ?? "tokenharbor")}>{manualProvider ? "Gunakan deteksi otomatis" : "Pilih provider secara manual"}</button>
             <p className="ai-key-privacy">Token hanya disimpan di memori halaman ini dan tidak dimasukkan ke penyimpanan akun. Putuskan koneksi untuk menghapusnya dari sesi.</p>
           </form>
         </div>
