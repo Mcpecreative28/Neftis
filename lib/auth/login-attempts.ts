@@ -30,7 +30,8 @@ export async function getLoginLock(fingerprint: string) {
     LIMIT 1`;
   const row = rows[0] as AttemptRow | undefined;
   if (!row?.locked_until) return { locked: false, retryAfter: 0 };
-  const retryAfter = Math.max(0, Math.ceil((new Date(row.locked_until).getTime() - Date.now()) / 1000));
+  const lockedAt = row.locked_until instanceof Date ? row.locked_until.getTime() : new Date(row.locked_until).getTime();
+  const retryAfter = Math.max(0, Math.ceil((lockedAt - Date.now()) / 1000));
   return { locked: retryAfter > 0, retryAfter };
 }
 
