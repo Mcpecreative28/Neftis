@@ -70,6 +70,14 @@ const themes = [
  ["solar","Solar","#251d10","#f0bd55"]
 ] as const;
 
+
+type HomeCopy = { eyebrow:string; headlineTop:string; headlineAccent:string; description:string; section:string; begin:string; activity:string; recent:string; activityEmpty:string; community:string; fromCommunity:string; question:string; questionDesc:string; footer:string; footerNote:string };
+const homeCopy: Partial<Record<LocaleCode,HomeCopy>> = {
+ id:{eyebrow:"RUANG DIGITAL TERBUKA",headlineTop:"Buka ruang untuk",headlineAccent:"hal berikutnya.",description:"Tempat bersama untuk menemukan alat berguna, berpikir bersama AI, bertukar gagasan, dan mempelajari hal baru.",section:"RUANG BERSAMA",begin:"Mulai jelajahi",activity:"AKTIVITASMU",recent:"Aktivitas terbaru",activityEmpty:"Aktivitasmu akan muncul di sini saat kamu menjelajahi Neftis.",community:"JEJAK KOMUNITAS",fromCommunity:"Dari komunitas",question:"Alat kecil apa yang paling menghemat waktumu?",questionDesc:"Bagikan utilitas sederhana yang membuat pekerjaan sehari-hari lebih mudah.",footer:"© NEFTIS / RUANG DIGITAL",footerNote:"TERBUKA UNTUK SEMUA · DIBUAT UNTUK DIJELAJAHI"},
+ en:{eyebrow:"AN OPEN DIGITAL SPACE",headlineTop:"Make room for",headlineAccent:"what comes next.",description:"A shared place to discover useful tools, think with AI, exchange ideas, and learn something new.",section:"THE COMMONS",begin:"A place to begin",activity:"YOUR ACTIVITY",recent:"Recent activity",activityEmpty:"Your activity will appear here as you explore Neftis.",community:"COMMUNITY SIGNAL",fromCommunity:"From the community",question:"What small tool saves you the most time?",questionDesc:"Share the little utilities that make everyday work easier.",footer:"© NEFTIS / DIGITAL COMMONS",footerNote:"OPEN BY DESIGN · MADE TO EXPLORE"},
+ ar:{eyebrow:"مساحة رقمية مفتوحة",headlineTop:"اترك مساحة",headlineAccent:"لما هو قادم.",description:"مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة.",section:"المساحة المشتركة",begin:"ابدأ الاستكشاف",activity:"نشاطك",recent:"النشاط الأخير",activityEmpty:"سيظهر نشاطك هنا أثناء استكشاف نيفتيس.",community:"إشارات المجتمع",fromCommunity:"من المجتمع",question:"ما الأداة الصغيرة التي توفر معظم وقتك؟",questionDesc:"شارك الأدوات البسيطة التي تجعل العمل اليومي أسهل.",footer:"© NEFTIS / مساحة رقمية",footerNote:"مفتوح للجميع · صُمم للاستكشاف"}
+};
+
 const routeByPage: Record<PageKey, string> = {
   home: "/", ai: "/ai", tools: "/tools", community: "/community",
   learn: "/learn", games: "/games", achievements: "/achievements", services: "/services",
@@ -77,6 +85,21 @@ const routeByPage: Record<PageKey, string> = {
 const pageByRoute: Record<string, PageKey> = Object.fromEntries(
   Object.entries(routeByPage).map(([page, route]) => [route, page as PageKey]),
 ) as Record<string, PageKey>;
+
+
+function NeftisIcon({name}:{name:PageKey}) {
+ const paths:Record<PageKey,React.ReactNode>={
+  home:<><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></>,
+  ai:<><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1"/><circle cx="12" cy="12" r="3"/></>,
+  tools:<><path d="m14 7 3-3 4 4-3 3M13 8 5 16a2.8 2.8 0 1 0 4 4l8-8"/><path d="m5 5 4 4"/></>,
+  community:<><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5v1"/></>,
+  learn:<><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3H12v17H5.5A2.5 2.5 0 0 0 3 22z"/><path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H12v17h6.5A2.5 2.5 0 0 1 21 22z"/></>,
+  games:<><path d="M6 8h12a4 4 0 0 1 3.8 5l-1.2 4a2 2 0 0 1-3.2 1l-2.4-2H9l-2.4 2a2 2 0 0 1-3.2-1l-1.2-4A4 4 0 0 1 6 8z"/><path d="M7 11v4M5 13h4M16 12h.01M18 14h.01"/></>,
+  achievements:<><path d="m12 3 2.5 5.2 5.7.8-4.1 4 .9 5.7-5-2.7-5 2.7.9-5.7-4.1-4 5.7-.8z"/></>,
+  services:<><path d="M7 17 17 7M8 7h9v9"/></>
+ };
+ return <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>;
+}
 
 export default function NeftisShell() {
   const pathname = usePathname();
@@ -94,6 +117,7 @@ export default function NeftisShell() {
   const [draftColor, setDraftColor] = useState("#d4f36a");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
+  const copy = homeCopy[language] ?? homeCopy.en!;
   const colorPalette = ["#d4f36a", "#a99aff", "#83d9d2", "#ffabc5", "#ffad78", "#f3d36b", "#9be4ef", "#8de5c1", "#f0f0ec", "#b8c5d2", "#17191f", "#101116", "#201c32", "#10231d", "#f1eee5", "#ffffff"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
   const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
@@ -235,19 +259,19 @@ export default function NeftisShell() {
     <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
-          <span className="brand-mark">N<span>/</span></span>
+          <span className="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
           <span className="brand-name">neftis<span>.</span><small>DIGITAL COMMONS</small></span>
         </a>
         <div className="workspace-label">{t.workspace} <span>PUBLIC</span></div>
         <nav className="primary-nav" aria-label="Main navigation">
           {navPrimary.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}>
-            <span className="nav-icon">{item.icon}</span><span>{(item.id === "home" ? t.overview : item.id === "ai" ? t.ai : item.id === "tools" ? t.tools : item.id === "community" ? t.community : item.id === "learn" ? t.learn : item.id === "games" ? t.games : item.id === "achievements" ? t.achievements : t.services)}</span>{item.isNew && <b className="nav-new">NEW</b>}
+            <span className="nav-icon"><NeftisIcon name={item.id} /></span><span>{(item.id === "home" ? t.overview : item.id === "ai" ? t.ai : item.id === "tools" ? t.tools : item.id === "community" ? t.community : item.id === "learn" ? t.learn : item.id === "games" ? t.games : item.id === "achievements" ? t.achievements : t.services)}</span>{item.isNew && <b className="nav-new">NEW</b>}
           </button>)}
         </nav>
         <div className="sidebar-divider" />
         <div className="workspace-label">{t.yourSpace}</div>
         <nav className="primary-nav" aria-label="Personal navigation">
-          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon">{item.icon}</span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
+          {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon"><NeftisIcon name={item.id} /></span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
         </nav>
         <div className="sidebar-bottom">
           <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
@@ -264,14 +288,14 @@ export default function NeftisShell() {
           <div className="topbar-actions">
             <button className="search-trigger" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label={t.search}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
             <div className="preference-wrap">
-              <button className="icon-button preference-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language">{language.toUpperCase()}⌄</button>
+              <button className="icon-button preference-trigger language-trigger" onClick={() => {setLanguageOpen(!languageOpen);setThemeOpen(false);}} aria-expanded={languageOpen} aria-label="Choose language"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>{language.toUpperCase()}</span><span className="preference-chevron">⌄</span></button>
               {languageOpen && <div className="preference-menu language-menu" role="listbox" aria-label="Languages">{languages.map((item) => <button key={item.code} role="option" aria-selected={language === item.code} className={language === item.code ? "selected" : ""} onClick={() => {setLanguage(item.code);setLanguageOpen(false);}}><span>{item.native}</span><small>{item.name}</small></button>)}</div>}
             </div>
             <div className="preference-wrap">
               <button className="icon-button preference-trigger" onClick={() => {setThemeOpen(!themeOpen);setLanguageOpen(false);}} aria-expanded={themeOpen} aria-label="Choose theme">◐⌄</button>
               {themeOpen && <div className="preference-menu theme-menu" aria-label="Themes">
                 <div className="preference-menu-head"><div><span className="section-kicker">APPEARANCE</span><strong>Color themes</strong></div><button className="menu-close" onClick={() => setThemeOpen(false)} aria-label="Close themes">×</button></div>
-                <div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name} aria-pressed={theme === id}><i style={{background:bg,borderColor:accent}}/><span>{name}</span></button>)}</div>
+                <div className="theme-options">{themes.map(([id,name,bg,accent]) => <button key={id} className={theme === id ? "selected theme-choice" : "theme-choice"} onClick={() => {setTheme(id);setCustomAccent(accent);setCustomBackground("");setCustomPanel("");setCustomText("");}} title={name} aria-label={`${name} theme`} aria-pressed={theme === id}><span className="theme-swatch" style={{background:`linear-gradient(135deg, ${bg} 0 52%, ${accent} 52% 100%)`,borderColor:accent}}>{theme === id && <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4 10 4 4 8-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}</span><span>{name}</span></button>)}</div>
                 <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
                 <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
                 {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
@@ -287,28 +311,28 @@ export default function NeftisShell() {
             <section className="page-view active">
               <div className="hero-grid">
                 <div className="hero-copy">
-                  <div className="eyebrow"><span className="eyebrow-line" /><span>{language === "ar" ? "مساحة رقمية عامة" : "A PUBLIC DIGITAL SPACE"}</span><span className="eyebrow-index">NEF—001</span></div>
-                  <h1>{language === "ar" ? <>اترك مساحة<br />لـ <em>ما هو قادم.</em></> : <>Make room<br />for <em>what&apos;s next.</em></>}</h1>
-                  <p>{language === "ar" ? "مساحة مشتركة لاكتشاف الأدوات المفيدة والتفكير مع الذكاء الاصطناعي وتبادل الأفكار وتعلّم أشياء جديدة." : "A shared place to explore useful tools, think with AI, exchange ideas, and learn something new."}</p>
+                  <div className="eyebrow"><span className="eyebrow-line" /><span>{copy.eyebrow}</span><span className="eyebrow-index">NEF—001</span></div>
+                  <h1>{copy.headlineTop}<br /><em>{copy.headlineAccent}</em></h1>
+                  <p>{copy.description}</p>
                   <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
                   <div className="hero-footnote"><span className="pulse-dot" /> OPEN ACCESS · BUILT FOR SHARING</div>
                 </div>
                 <div className="hero-art" aria-label="Abstract orbital graphic">
                   <div className="art-topline"><span>FIG. 01 / DIGITAL ECOSYSTEM</span><span>∞</span></div>
                   <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
-                  <div className="orbit-core">N<i /></div>
+                  <div className="orbit-core"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 37V11l28 26V11" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg><i /></div>
                   <span className="orbit-label label-a">IDEAS / 01</span><span className="orbit-label label-b">TOOLS / 02</span><span className="orbit-label label-c">PEOPLE / 03</span>
                   <div className="art-coordinates">NEFTIS<br />DIGITAL / 001</div>
                   <div className="art-bottomline"><span>CONNECTED BY CURIOSITY</span><span>NEF—01</span></div>
                 </div>
               </div>
-              <div className="section-heading"><div><span className="section-kicker">{t.commons}</span><h2>{language === "ar" ? "اكتشف مساحتك" : t.begin}</h2></div><span className="section-count">01 / 04</span></div>
-              <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol">{space.icon}</div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
+              <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
+              <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
               <div className="lower-grid">
-                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">YOUR ACTIVITY</span><h3>Recent activity</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>Your activity will appear here as you explore.</p></div></div></section>
-                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">COMMUNITY SIGNAL</span><h3>From the community</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>What small tool saves you the most time?</h4><p>A thread for sharing the little utilities that make a difference.</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
+                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
+                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.community}</span><h3>{copy.fromCommunity}</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>{copy.question}</h4><p>{copy.questionDesc}</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
               </div>
-              <footer className="page-footer"><span>© NEFTIS / DIGITAL COMMONS</span><span>OPEN BY DESIGN · MADE TO EXPLORE</span></footer>
+              <footer className="page-footer"><span>{copy.footer}</span><span>{copy.footerNote}</span></footer>
             </section>
           </>}
 
