@@ -37,11 +37,18 @@ This structure extends the agreed route map; it must not replace it with a diffe
 
 ## Stack decisions
 - Next.js App Router + React + TypeScript; deploy to Vercel.
-- Better Auth for sessions and Google/GitHub OAuth.
-- Neon PostgreSQL with Drizzle ORM for accounts, provider connections, conversations, usage, and file metadata.
+- Neon Managed Better Auth for email/password sessions and social OAuth; auth-owned tables stay in the `neon_auth` schema.
+- Neon PostgreSQL with Drizzle ORM for application profiles, provider connections, conversations, usage, and file metadata. Application tables reference the managed auth user ID.
 - Cloudflare R2 for private binary objects; Neon stores metadata and ownership, not file bytes.
 - Provider adapter layer: Gemini native API, OpenAI-compatible endpoints (including validated custom Base URL), Anthropic native API, and future protocol adapters.
 - Cloudflare WAF/rate limiting at the edge; application-level per-user limits and quotas remain authoritative.
+
+## Authentication implementation
+- The current auth integration uses Neon's `@neon/auth` Next.js server and client SDKs.
+- `NEON_AUTH_BASE_URL` and `NEON_AUTH_COOKIE_SECRET` are server-only configuration; never expose the cookie secret to the browser.
+- Email/password is enabled on the development project. Google shared OAuth is for development only; production should use an OAuth app owned by Neftis.
+- GitHub OAuth requires a Neftis-owned GitHub OAuth App and must be configured in Neon Auth. Its client secret is stored by Neon, not in the Next.js environment.
+- Protected routes include `/ai`, `/dashboard`, `/profile`, `/settings`, and `/admin`.
 
 ## AI provider credentials
 - Support multiple provider connections per account.
