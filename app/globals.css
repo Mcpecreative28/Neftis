@@ -1780,3 +1780,15 @@ body{
  .ai-connect-button{width:100%}
  .ai-form-grid{grid-template-columns:1fr!important}
 }
+
+/* Consistent select appearance across Neftis, including AI model controls */
+.app-shell select,.ai-product-workspace select{
+ appearance:none;-webkit-appearance:none;
+ color:var(--text);background-color:color-mix(in srgb,var(--bg) 72%,var(--surface));
+ border:1px solid var(--line-soft);border-radius:12px;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8a8b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;background-position:right 14px center;background-size:16px;
+ padding-right:42px;cursor:pointer;
+}
+.app-shell select:focus,.ai-product-workspace select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.app-shell select option,.ai-product-workspace select option{background:#202126;color:#f5f5f7}
