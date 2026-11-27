@@ -24,10 +24,10 @@ export function getLoginFingerprint(email: string, request: Request) {
 }
 
 export async function getLoginLock(fingerprint: string) {
-    const rows = await database()`SELECT failed_attempts, locked_until
+  const rows = (await database()`SELECT failed_attempts, locked_until
     FROM neftis_security.login_attempts
     WHERE fingerprint = ${fingerprint}
-    LIMIT 1`;
+    LIMIT 1`) as unknown as AttemptRow[];
   const row = rows[0] as AttemptRow | undefined;
   if (!row?.locked_until) return { locked: false, retryAfter: 0 };
   const lockedAt = row.locked_until instanceof Date ? row.locked_until.getTime() : new Date(row.locked_until).getTime();
@@ -36,7 +36,7 @@ export async function getLoginLock(fingerprint: string) {
 }
 
 export async function recordLoginFailure(fingerprint: string) {
-    const rows = await database()`INSERT INTO neftis_security.login_attempts AS attempts
+  const rows = (await database()`INSERT INTO neftis_security.login_attempts AS attempts
       (fingerprint, failed_attempts, updated_at)
     VALUES (${fingerprint}, 1, now())
     ON CONFLICT (fingerprint) DO UPDATE SET
@@ -45,8 +45,8 @@ export async function recordLoginFailure(fingerprint: string) {
         ELSE attempts.failed_attempts + 1
       END,
       updated_at = now()
-    RETURNING failed_attempts`;
-  const attempts = Number((rows[0] as { failed_attempts?: number } | undefined)?.failed_attempts ?? 1);
+    RETURNING failed_attempts`) as unknown as { failed_attempts?: number }[];
+  const attempts = Number(rows[0]?.failed_attempts ?? 1);
   await database()`UPDATE neftis_security.login_attempts
     SET locked_until = CASE
       WHEN failed_attempts >= 3 THEN now() + make_interval(secs => LEAST(3600, (30 * power(2, failed_attempts - 3))::int))
