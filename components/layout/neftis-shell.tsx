@@ -116,7 +116,16 @@ function NeftisIcon({name}:{name:PageKey}) {
 export default function NeftisShell() {
   const pathname = usePathname();
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const [sessionUser, setSessionUser] = useState<{ name?: string | null; email?: string | null } | null>(null);
+  useEffect(() => {
+    let active = true;
+    authClient.getSession().then(({ data }) => {
+      if (active) setSessionUser(data?.user ?? null);
+    }).catch(() => {
+      if (active) setSessionUser(null);
+    });
+    return () => { active = false; };
+  }, [pathname]);
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
   const [usagePeriod, setUsagePeriod] = useState("7d");
@@ -261,7 +270,7 @@ export default function NeftisShell() {
         </nav>
         <div className="sidebar-bottom">
           <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
-          <button className="profile-button" onClick={() => router.push(session?.user ? "/dashboard" : "/login")}><span className="avatar">{session?.user?.name?.slice(0, 1).toUpperCase() ?? "G"}</span><span><strong>{session?.user?.name ?? "Guest session"}</strong><small>{session?.user?.email ?? "Preview mode"}</small></span><span className="more">↗</span></button>
+          <button className="profile-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}><span className="avatar">{sessionUser?.name?.slice(0, 1).toUpperCase() ?? "G"}</span><span><strong>{sessionUser?.name ?? "Guest session"}</strong><small>{sessionUser?.email ?? "Preview mode"}</small></span><span className="more">↗</span></button>
         </div>
       </aside>
 
@@ -289,7 +298,7 @@ export default function NeftisShell() {
                 <button className="reset-preferences" onClick={() => {setTheme("atelier");setCustomAccent("#cf6848");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
-            <button className="sign-in-button" onClick={() => router.push(session?.user ? "/dashboard" : "/login")}>{session?.user ? "Dashboard" : t.signIn}</button>
+            <button className="sign-in-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}>{sessionUser ? "Dashboard" : t.signIn}</button>
           </div>
         </header>
 
