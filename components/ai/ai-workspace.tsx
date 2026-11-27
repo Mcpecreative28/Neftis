@@ -30,8 +30,8 @@ export default function AIWorkspace() {
   const [providerChoice, setProviderChoice] = useState("auto");
   const [baseUrl, setBaseUrl] = useState("");
   const [customName, setCustomName] = useState("Koneksi API");
-  const [customProtocol, setCustomProtocol] = useState<"openai" | "anthropic" | "google">("openai");
-  const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "google-key" | "none">("bearer");
+  const [customProtocol, setCustomProtocol] = useState<"auto" | "openai" | "anthropic" | "google">("auto");
+  const [customAuthMode, setCustomAuthMode] = useState<"auto" | "bearer" | "x-api-key" | "google-key" | "none">("auto");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [providerChoices, setProviderChoices] = useState<Provider[]>(providerNames);
   const [needsProvider, setNeedsProvider] = useState(false);
@@ -63,12 +63,12 @@ export default function AIWorkspace() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey.trim(),
-          ...(baseUrl.trim() ? { provider: "custom-openai" } : {}),
+          ...(providerChoice !== "auto" ? { provider: providerChoice } : {}),
           ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
             displayName: new URL(baseUrl.trim()).hostname,
-            protocol: customProtocol,
-            authMode: customAuthMode,
+            ...(customProtocol !== "auto" ? { protocol: customProtocol } : {}),
+            ...(customAuthMode !== "auto" ? { authMode: customAuthMode } : {}),
           } : {}),
         }),
       });
@@ -85,12 +85,12 @@ export default function AIWorkspace() {
         baseUrl: result.provider.baseUrl ?? "", models: result.models ?? [],
         modelId: result.models?.[0]?.id ?? "", reasoning: "", healthy: true,
         protocol: result.provider.kind ?? "openai",
-        authMode: result.provider.id === "custom-openai" ? customAuthMode : undefined,
+        authMode: result.provider.id === "custom-openai" ? (result.provider.keyHeader === "google" ? "google-key" : result.provider.keyHeader === "anthropic" ? "x-api-key" : result.provider.keyHeader) : undefined,
       };
       setConnections((items) => [...items, entry]);
       setActiveConnectionId(entry.id);
       setApiKey(""); setBaseUrl(""); setProviderChoice("auto"); setNeedsProvider(false);
-      setCustomName("Koneksi API"); setCustomProtocol("openai"); setCustomAuthMode("bearer"); setShowAdvanced(false);
+      setCustomName("Koneksi API"); setCustomProtocol("auto"); setCustomAuthMode("auto"); setShowAdvanced(false);
       setNotice(`${entry.provider.name} terhubung · ${entry.models.length} model ditemukan.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Koneksi provider gagal.");
@@ -192,10 +192,11 @@ export default function AIWorkspace() {
 <div className="ai-form-grid">
   <label className="ai-field ai-field-wide"><span>API KEY</span><input type="password" autoComplete="off" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setError(""); setNeedsProvider(false); }} placeholder="Tempel API key di sini" /></label>
   <label className="ai-field ai-field-wide"><span>BASE URL</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://api.example.com/v1" /><small>Masukkan alamat API dari penyedia token. Format OpenAI-compatible digunakan otomatis.</small></label>
+  <label className="ai-field ai-field-wide"><span>PENYEDIA (OPSIONAL)</span><select value={providerChoice} onChange={(event) => setProviderChoice(event.target.value)}><option value="auto">Deteksi otomatis dari Base URL</option>{providerNames.filter((provider) => provider.id !== "custom-openai").map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}</select></label>
   <button type="button" className="ai-advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced((value) => !value)}>{showAdvanced ? "Sembunyikan pengaturan tambahan" : "Pengaturan tambahan"} <span>{showAdvanced ? "−" : "+"}</span></button>
   {showAdvanced && <>
-    <label className="ai-field"><span>FORMAT API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible (default)</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
-    <label className="ai-field"><span>HEADER API KEY</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="bearer">Authorization: Bearer (default)</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header</option></select></label>
+    <label className="ai-field"><span>FORMAT API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="auto">Otomatis</option><option value="openai">OpenAI-compatible</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
+    <label className="ai-field"><span>HEADER API KEY</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="auto">Otomatis</option><option value="bearer">Authorization: Bearer</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header</option></select></label>
   </>}
 </div>
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
