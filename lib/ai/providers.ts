@@ -47,7 +47,7 @@ export function resolveProvider(
   providerId: ProviderId,
   customBaseUrl?: string,
   customProtocol?: "openai" | "anthropic" | "google",
-  customAuthMode?: "bearer" | "x-api-key" | "none",
+  customAuthMode?: "bearer" | "x-api-key" | "google-key" | "none",
 ): ProviderConfig {
   const base = providers[providerId];
   if (providerId !== "custom-openai") return base;
@@ -56,7 +56,7 @@ export function resolveProvider(
     name: "Custom API / Telegram Gateway",
     baseUrl: validateBaseUrl(customBaseUrl ?? ""),
     kind: customProtocol ?? "openai",
-    keyHeader: customAuthMode ?? "bearer",
+    keyHeader: customAuthMode === "google-key" ? "google" : customAuthMode ?? "bearer",
   };
 }
 
