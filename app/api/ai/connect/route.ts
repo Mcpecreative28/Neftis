@@ -10,17 +10,26 @@ export async function POST(request: Request) {
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
-  if (origin && host && new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 });
+  if (origin && host) {
+    try { if (new URL(origin).host !== host) return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+    catch { return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
+  }
 
   let body: {
     apiKey?: string;
     provider?: ProviderId;
     baseUrl?: string;
     protocol?: "openai" | "anthropic" | "google";
-    authMode?: "bearer" | "x-api-key" | "none";
+    authMode?: "bearer" | "x-api-key" | "google-key" | "none";
     displayName?: string;
   };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
+  if (body.protocol !== undefined && !["openai", "anthropic", "google"].includes(body.protocol)) {
+    return NextResponse.json({ error: "Protokol API tidak didukung." }, { status: 400 });
+  }
+  if (body.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(body.authMode)) {
+    return NextResponse.json({ error: "Metode autentikasi tidak didukung." }, { status: 400 });
+  }
   const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
   if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
 
