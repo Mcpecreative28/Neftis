@@ -14,7 +14,13 @@ const providerNames: Provider[] = [
   { id: "tokenharbor", name: "Token Harbor" }, { id: "9router", name: "9Router" },
   { id: "openrouter", name: "OpenRouter" }, { id: "mecutinai", name: "MecutinAI" },
   { id: "anthropic", name: "Anthropic / Claude" }, { id: "openai", name: "OpenAI" },
-  { id: "google", name: "Google AI Studio / Gemini" }, { id: "custom-openai", name: "Custom OpenAI-compatible" },
+  { id: "google", name: "Google AI Studio / Gemini" }, { id: "groq", name: "Groq" },
+  { id: "together", name: "Together AI" }, { id: "deepseek", name: "DeepSeek" },
+  { id: "mistral", name: "Mistral AI" }, { id: "cerebras", name: "Cerebras" },
+  { id: "fireworks", name: "Fireworks AI" }, { id: "siliconflow", name: "SiliconFlow" },
+  { id: "novita", name: "Novita AI" }, { id: "perplexity", name: "Perplexity" },
+  { id: "xai", name: "xAI" }, { id: "nvidia", name: "NVIDIA NIM" },
+  { id: "custom-openai", name: "Custom OpenAI-compatible" },
 ];
 
 export default function AIWorkspace() {
