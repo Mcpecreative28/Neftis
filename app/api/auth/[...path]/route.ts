@@ -9,7 +9,7 @@ import {
 
 export const dynamic = "force-dynamic";
 const handlers = auth.handler();
-const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{12,128}$/;
+const passwordPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).{12,128}$/;
 
 async function verifyTurnstile(request: Request) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
@@ -98,9 +98,7 @@ export async function POST(request: Request) {
       if (response.status === 401) await recordLoginFailure(fingerprint);
       else if (response.ok) await resetLoginFailures(fingerprint);
     } catch {
-      if (response.ok) {
-        return NextResponse.json({ error: "Status keamanan login tidak dapat disimpan. Coba lagi." }, { status: 503 });
-      }
+      return NextResponse.json({ error: "Perlindungan login tidak tersedia. Coba lagi nanti." }, { status: 503 });
     }
   }
   return response;
