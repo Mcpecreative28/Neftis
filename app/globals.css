@@ -1749,3 +1749,34 @@ body{
 @media(prefers-reduced-motion:reduce){
   .page-view,.feature-card,.functional-tool-card,.arcade-card,.account-dash-card{animation:none!important;transition:none!important}
 }
+
+
+/* AI connection form: compact, consistent controls */
+.ai-field{position:relative}
+.ai-field select{
+ width:100%;min-height:50px;padding:0 44px 0 14px!important;
+ color:var(--text)!important;background-color:color-mix(in srgb,var(--bg) 72%,var(--surface))!important;
+ border:1px solid var(--line-soft)!important;border-radius:12px!important;
+ appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a8a8b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;
+ background-repeat:no-repeat!important;background-position:right 15px center!important;background-size:16px!important;
+ font:inherit;transition:border-color .18s,box-shadow .18s;
+}
+.ai-field select:focus{border-color:var(--accent)!important;box-shadow:0 0 0 3px var(--accent-glow)}
+.ai-field select option{background:#202126;color:#f5f5f7}
+.ai-advanced-toggle{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+ padding:12px 14px;border:1px solid var(--line-soft);border-radius:12px;
+ color:var(--muted);background:color-mix(in srgb,var(--surface) 70%,transparent);
+ text-align:left;font:inherit;font-size:12px;cursor:pointer;
+}
+.ai-advanced-toggle span{font-size:18px;color:var(--accent)}
+.ai-inline-error{overflow-wrap:anywhere}
+@media(max-width:760px){
+ .ai-gateway-layout{grid-template-columns:1fr!important;gap:14px}
+ .ai-gateway-rail{order:2}.ai-gateway-main{order:1;min-width:0}
+ .ai-add-connection,.ai-selected-provider,.ai-chat-panel-v2{padding:16px!important}
+ .ai-provider-model-grid{grid-template-columns:1fr!important}
+ .ai-connect-button{width:100%}
+ .ai-form-grid{grid-template-columns:1fr!important}
+}
