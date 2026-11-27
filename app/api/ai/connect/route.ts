@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
   const detected = detectProvider(apiKey);
   const providerId = body.provider ?? detected;
-  if (!providerId || !(providerId in providers)) {
+  if (!providerId || !Object.hasOwn(providers, providerId)) {
     return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) }, { status: 200 });
   }
 
