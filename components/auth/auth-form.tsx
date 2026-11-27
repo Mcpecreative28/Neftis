@@ -94,7 +94,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
       <header className="auth-header">
         <Link className="auth-brand" href="/" aria-label="Neftis home">
-          <span className="auth-brand-mark">N</span>
+          <span className="auth-brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
           <span>NEFTIS</span>
         </Link>
         <Link className="auth-home-link" href="/">Back to home <span aria-hidden="true">↗</span></Link>
