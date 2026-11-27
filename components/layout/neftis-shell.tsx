@@ -364,7 +364,7 @@ export default function NeftisShell() {
                 <section className="community-topic-card"><span className="section-kicker">TOPIC MAP</span><div><b>AI & prompts</b><b>Web & code</b><b>Digital tools</b><b>Learning</b><b>Ideas & projects</b></div></section>
               </aside>
             </div>
-          </section>
+          </section>}
 
           {page === "learn" && <section className="page-view active learning-space">
             <PageIntro number="04" title={<>Knowledge <em>room</em></>} desc="Panduan ringkas dan jalur belajar untuk memahami teknologi dengan lebih terarah." side={<>FIELD NOTES<br />LEARN / PRACTICE</>} />
@@ -378,7 +378,7 @@ export default function NeftisShell() {
               <article><span className="learning-path-number">02</span><div><span className="section-kicker">WEB FUNDAMENTALS</span><h3>Bagaimana website dimuat?</h3><p>Kenali browser, DNS, server, request, response, dan aset halaman.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
               <article><span className="learning-path-number">03</span><div><span className="section-kicker">DIGITAL WORKFLOW</span><h3>Membangun alur kerja yang rapi</h3><p>Pilih alat berdasarkan kebutuhan dan kurangi langkah yang tidak perlu.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
             </div>
-          </section>
+          </section>}
 
           {page === "games" && <section className="page-view active arcade-space">
             <PageIntro number="05" title={<>The <em>arcade</em></>} desc="Eksperimen kecil untuk jeda singkat dan tantangan ringan." side={<>PLAY MODE<br />SHORT SESSIONS</>} />
@@ -388,7 +388,7 @@ export default function NeftisShell() {
               <article className="arcade-card arcade-reaction"><div className="arcade-card-art"><span>◉</span><i/></div><div className="arcade-card-copy"><span>02 / REFLEX</span><h3>Reaction Test</h3><p>Ukur seberapa cepat kamu merespons sinyal.</p><small>IN DEVELOPMENT</small></div></article>
               <article className="arcade-card arcade-pattern"><div className="arcade-card-art"><span>⌁</span><i/><i/><i/></div><div className="arcade-card-copy"><span>03 / PATTERN</span><h3>Signal Sequence</h3><p>Ikuti urutan dan temukan pola berikutnya.</p><small>IN DEVELOPMENT</small></div></article>
             </div>
-          </section>
+          </section>}
 
           {page === "achievements" && <section className="page-view active milestones-space">
             <PageIntro number="06" title={<>Small <em>milestones</em></>} desc="Pencapaian akan mencatat perjalanan saat aktivitas akun mulai terhubung." side={<>PERSONAL PROGRESS<br />ACCOUNT / JOURNEY</>} />
@@ -399,7 +399,7 @@ export default function NeftisShell() {
               <article><span>03</span><div><b>Curious learner</b><small>Selesaikan catatan pembelajaran.</small></div><i>LOCKED</i></article>
               <article><span>04</span><div><b>Community voice</b><small>Bagikan pengetahuan kepada komunitas.</small></div><i>LOCKED</i></article>
             </div>
-          </section>
+          </section>}
 
           {page === "services" && <section className="page-view active services-space">
             <PageIntro number="07" title={<>Digital <em>services</em></>} desc="Dukungan praktis untuk ide dan kebutuhan digital yang ingin diwujudkan." side={<>SERVICE DIRECTORY<br />NEFTIS / STUDIO</>} />
@@ -409,7 +409,7 @@ export default function NeftisShell() {
               <article><span className="service-index">02</span><div><span className="section-kicker">AUTOMATION</span><h3>Tools & workflow</h3><p>Utilitas khusus dan otomasi untuk mengurangi pekerjaan berulang.</p></div><span className="service-arrow">↗</span></article>
               <article><span className="service-index">03</span><div><span className="section-kicker">LEARNING</span><h3>Technical guidance</h3><p>Panduan implementasi, dokumentasi, dan pendampingan teknis yang mudah diikuti.</p></div><span className="service-arrow">↗</span></article>
             </div>
-          </section>
+          </section>}
         </div>
       </main>
 
