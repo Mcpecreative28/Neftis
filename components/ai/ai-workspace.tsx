@@ -132,7 +132,10 @@ export default function AIWorkspace() {
         body: JSON.stringify({ connections: ordered, messages: nextMessages }),
       });
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error ?? "Semua koneksi AI gagal.");
+      if (!response.ok) {
+        const detail = Array.isArray(result.attempts) && result.attempts.length ? " (" + result.attempts.join(" · ") + ")" : "";
+        throw new Error((result.error ?? "Permintaan AI gagal.") + detail);
+      }
       setMessages([...nextMessages, { role: "assistant", content: result.content }]);
       setLastUsage(result.usage ?? null);
       if (result.connectionId) {
@@ -197,7 +200,7 @@ export default function AIWorkspace() {
 </div>
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
             {notice && <p className="ai-inline-notice" role="status">{notice}</p>}
-            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || (selectedProvider === "custom-openai" && !baseUrl.trim())}>{connecting ? "Menghubungkan…" : "Hubungkan API"} <span>↗</span></button><span>API key hanya disimpan sementara di tab ini.</span></div>
+            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || false}>{connecting ? "Menghubungkan…" : "Hubungkan API"} <span>↗</span></button><span>API key hanya disimpan sementara di tab ini.</span></div>
           </form>
 
           {activeConnection ? (
