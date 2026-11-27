@@ -30,8 +30,8 @@ export default function AIWorkspace() {
   const [providerChoice, setProviderChoice] = useState("auto");
   const [baseUrl, setBaseUrl] = useState("");
   const [customName, setCustomName] = useState("Koneksi API");
-  const [customProtocol, setCustomProtocol] = useState<"openai" | "anthropic" | "google">("openai");
-  const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "google-key" | "none">("bearer");
+  const [customProtocol, setCustomProtocol] = useState<"auto" | "openai" | "anthropic" | "google">("auto");
+  const [customAuthMode, setCustomAuthMode] = useState<"auto" | "bearer" | "x-api-key" | "google-key" | "none">("auto");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [providerChoices, setProviderChoices] = useState<Provider[]>(providerNames);
   const [needsProvider, setNeedsProvider] = useState(false);
@@ -63,12 +63,12 @@ export default function AIWorkspace() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey.trim(),
-          ...(baseUrl.trim() ? { provider: "custom-openai" } : {}),
+          ...(providerChoice !== "auto" ? { provider: providerChoice } : {}),
           ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
             displayName: new URL(baseUrl.trim()).hostname,
-            protocol: customProtocol,
-            authMode: customAuthMode,
+            ...(customProtocol !== "auto" ? { protocol: customProtocol } : {}),
+            ...(customAuthMode !== "auto" ? { authMode: customAuthMode } : {}),
           } : {}),
         }),
       });
@@ -90,7 +90,7 @@ export default function AIWorkspace() {
       setConnections((items) => [...items, entry]);
       setActiveConnectionId(entry.id);
       setApiKey(""); setBaseUrl(""); setProviderChoice("auto"); setNeedsProvider(false);
-      setCustomName("Koneksi API"); setCustomProtocol("openai"); setCustomAuthMode("bearer"); setShowAdvanced(false);
+      setCustomName("Koneksi API"); setCustomProtocol("auto"); setCustomAuthMode("auto"); setShowAdvanced(false);
       setNotice(`${entry.provider.name} terhubung · ${entry.models.length} model ditemukan.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Koneksi provider gagal.");
