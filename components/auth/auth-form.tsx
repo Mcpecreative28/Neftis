@@ -117,7 +117,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         : await authClient.signIn.email({ email: email.trim(), password, fetchOptions });
 
       if (result.error) {
-        setError(result.error.message || "Authentication failed. Please try again.");
+        setError(result.error.message || "Autentikasi gagal. Periksa email dan kata sandi, lalu coba lagi.");
         setCaptchaToken("");
         if (captchaWidget.current) window.turnstile?.reset(captchaWidget.current);
         return;
@@ -135,7 +135,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       router.replace("/dashboard");
       router.refresh();
     } catch {
-      setError("Unable to connect right now. Please try again.");
+      setError("Tidak dapat terhubung sekarang. Silakan coba lagi.");
     } finally {
       setPending(false);
     }
@@ -262,15 +262,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 <input
                   type={showPassword ? "text" : "password"}
                   autoComplete={isRegister ? "new-password" : "current-password"}
-                  placeholder={isRegister ? "At least 12 characters" : "Your password"}
+                  placeholder={isRegister ? "Minimal 12 karakter" : "Kata sandi kamu"}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   minLength={isRegister ? 12 : 1}
                   maxLength={128}
                   required
                 />
-                <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Hide password" : "Show password"}>
-                  {showPassword ? "Hide" : "Show"}
+                <button type="button" className="auth-password-toggle" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}>
+                  {showPassword ? "Sembunyikan" : "Tampilkan"}
                 </button>
               </span>
             </label>
@@ -312,7 +312,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
           <p className="auth-switch">
             {isRegister ? "Sudah punya akun?" : "Belum punya akun Neftis?"}{" "}
-            <Link href={isRegister ? "/login" : "/register"}>{isRegister ? "Masuk" : "Create an account"}</Link>
+            <Link href={isRegister ? "/login" : "/register"}>{isRegister ? "Masuk" : "Buat akun"}</Link>
           </p>
 
           <p className="auth-legal">Dengan melanjutkan, kamu setuju menggunakan Neftis secara bertanggung jawab.</p>
