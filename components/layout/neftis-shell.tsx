@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import ToolsLibrary from "@/components/tools/tools-library";
+import AIWorkspace from "@/components/ai/ai-workspace";
 
 type PageKey = "home" | "ai" | "tools" | "community" | "learn" | "games" | "achievements" | "services";
 
@@ -59,15 +60,12 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["night","Night","#101116","#d4f36a"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
- ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
- ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
- ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
- ["matcha","Matcha","#20251a","#c8df91"],["graphite","Graphite","#171b20","#b8c5d2"],["cobalt","Cobalt","#101b32","#78a9ff"],
- ["plum","Plum","#25172b","#e0a8ed"],["mint","Mint","#10251f","#8de5c1"],["clay","Clay","#2a211b","#dca77e"],
- ["aurora","Aurora","#101e27","#8ce6d1"],["parchment","Parchment","#eee5cf","#8d9c57"],["obsidian","Obsidian","#08090d","#a9c4ff"],
- ["sakura","Sakura","#2b1b28","#ffb5d2"],["ember","Ember","#281912","#ff9a62"],["glacier","Glacier","#10232d","#9be4ef"],
- ["solar","Solar","#251d10","#f0bd55"]
+ ["atelier","Atelier","#f3f0e8","#cf6848"],
+ ["night","Midnight","#11151c","#d6e5a0"],
+ ["forest","Moss","#17251e","#b9d38b"],
+ ["ocean","Ocean","#102630","#72d7d0"],
+ ["lavender","Lavender","#efedf5","#7967a8"],
+ ["mono","Monochrome","#f4f4f0","#24272b"],
 ] as const;
 
 
@@ -120,29 +118,29 @@ export default function NeftisShell() {
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
   const [usagePeriod, setUsagePeriod] = useState("7d");
-  const [theme, setTheme] = useState("night");
-  const [customAccent, setCustomAccent] = useState("#d4f36a");
+  const [theme, setTheme] = useState("atelier");
+  const [customAccent, setCustomAccent] = useState("#cf6848");
   const [customBackground, setCustomBackground] = useState("");
   const [customPanel, setCustomPanel] = useState("");
   const [customText, setCustomText] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [colorTarget, setColorTarget] = useState<"accent" | "background" | "panel" | "text" | null>(null);
-  const [draftColor, setDraftColor] = useState("#d4f36a");
+  const [draftColor, setDraftColor] = useState("#cf6848");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
   const copy = homeCopy[language] ?? homeCopy.en!;
-  const colorPalette = ["#d4f36a", "#a99aff", "#83d9d2", "#ffabc5", "#ffad78", "#f3d36b", "#9be4ef", "#8de5c1", "#f0f0ec", "#b8c5d2", "#17191f", "#101116", "#201c32", "#10231d", "#f1eee5", "#ffffff"];
+  const colorPalette = ["#cf6848", "#d6e5a0", "#72d7d0", "#7967a8", "#24272b", "#f3f0e8", "#ffffff", "#1b2530", "#d99a5b", "#8caa9a", "#d98da5", "#596c84"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
   const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
   useEffect(() => {
     try {
-      const savedLanguage = localStorage.getItem("neftis-language") as LocaleCode | null;
-      const savedTheme = localStorage.getItem("neftis-theme");
-      const savedAccent = localStorage.getItem("neftis-custom-accent");
-      const savedBackground = localStorage.getItem("neftis-custom-background");
-      const savedPanel = localStorage.getItem("neftis-custom-panel");
-      const savedText = localStorage.getItem("neftis-custom-text");
+      const savedLanguage = localStorage.getItem("neftis-language-v3") as LocaleCode | null;
+      const savedTheme = localStorage.getItem("neftis-theme-v3");
+      const savedAccent = localStorage.getItem("neftis-custom-accent-v3");
+      const savedBackground = localStorage.getItem("neftis-custom-background-v3");
+      const savedPanel = localStorage.getItem("neftis-custom-panel-v3");
+      const savedText = localStorage.getItem("neftis-custom-text-v3");
       if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
       if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
       if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
@@ -161,12 +159,12 @@ export default function NeftisShell() {
     const brightness = hex.length === 6 ? (parseInt(hex.slice(0,2),16)*299 + parseInt(hex.slice(2,4),16)*587 + parseInt(hex.slice(4,6),16)*114)/1000 : 24;
     const isLight = brightness > 155;
     root.style.setProperty("--bg", background);
-    root.style.setProperty("--surface", customPanel || `color-mix(in srgb, ${background} 88%, ${isLight ? "#000" : "#fff"})`);
-    root.style.setProperty("--surface-2", `color-mix(in srgb, var(--surface) 78%, ${isLight ? "#000" : "#fff"})`);
-    root.style.setProperty("--line", `color-mix(in srgb, ${isLight ? "#000" : "#fff"} 15%, ${background})`);
-    root.style.setProperty("--text", customText || (isLight ? "#20231f" : "#f0f0ec"));
-    root.style.setProperty("--muted", isLight ? "#60665e" : "#a1a5ae");
-    root.style.setProperty("--dim", isLight ? "#858b81" : "#737986");
+    root.style.setProperty("--surface", customPanel || `color-mix(in srgb, ${background} 90%, #fff)`);
+    root.style.setProperty("--surface-2", `color-mix(in srgb, var(--surface) 91%, ${isLight ? "#000" : "#fff"})`);
+    root.style.setProperty("--line", `color-mix(in srgb, ${isLight ? "#20252d" : "#fff"} 14%, ${background})`);
+    root.style.setProperty("--text", customText || (isLight ? "#20252d" : "#f0f0ec"));
+    root.style.setProperty("--muted", isLight ? "#626873" : "#a1a5ae");
+    root.style.setProperty("--dim", isLight ? "#8a8e95" : "#737986");
     const accentHex = customAccent.replace("#", "");
     const accentBrightness = (parseInt(accentHex.slice(0,2),16)*299 + parseInt(accentHex.slice(2,4),16)*587 + parseInt(accentHex.slice(4,6),16)*114)/1000;
     root.style.setProperty("--accent", customAccent);
@@ -178,12 +176,12 @@ export default function NeftisShell() {
     root.dir = language === "ar" ? "rtl" : "ltr";
     root.style.colorScheme = isLight ? "light" : "dark";
     try {
-      localStorage.setItem("neftis-theme", theme);
-      localStorage.setItem("neftis-custom-accent", customAccent);
-      localStorage.setItem("neftis-language", language);
-      localStorage.setItem("neftis-custom-background", customBackground);
-      localStorage.setItem("neftis-custom-panel", customPanel);
-      localStorage.setItem("neftis-custom-text", customText);
+      localStorage.setItem("neftis-theme-v3", theme);
+      localStorage.setItem("neftis-custom-accent-v3", customAccent);
+      localStorage.setItem("neftis-language-v3", language);
+      localStorage.setItem("neftis-custom-background-v3", customBackground);
+      localStorage.setItem("neftis-custom-panel-v3", customPanel);
+      localStorage.setItem("neftis-custom-text-v3", customText);
     } catch (error) {
       console.warn("Neftis preferences could not be saved.", error);
     }
@@ -211,26 +209,6 @@ export default function NeftisShell() {
     return () => window.removeEventListener("keydown", handleGlobalKeydown);
   }, []);
 
-  const [message, setMessage] = useState("");
-  const [sentMessages, setSentMessages] = useState<string[]>([]);
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [selectedModel, setSelectedModel] = useState("auto");
-  const [responseStyle, setResponseStyle] = useState("balanced");
-  const [responseLanguage, setResponseLanguage] = useState("id");
-  function addAttachments(files: FileList | null) {
-    if (!files?.length) return;
-    const accepted = Array.from(files).filter((file) => {
-      const valid = /^(image\/(jpeg|png|webp|gif)|video\/(mp4|webm)|application\/(pdf|msword|vnd.openxmlformats-officedocument.wordprocessingml.document|vnd.openxmlformats-officedocument.spreadsheetml.sheet|vnd.ms-excel|vnd.ms-powerpoint|vnd.openxmlformats-officedocument.presentationml.presentation)|text\/(plain|markdown|csv)|application\/(json|zip))$/i.test(file.type)
-        || /\.(pdf|docx?|xlsx?|pptx?|txt|md|csv|json|zip|jpe?g|png|webp|gif|mp4|webm)$/i.test(file.name);
-      if (!valid) notify("Format file ini belum didukung.");
-      return valid;
-    }).slice(0, 8 - attachments.length);
-    setAttachments((current) => [...current, ...accepted]);
-  }
-  function formatFileSize(bytes: number) {
-    if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  }
   const [toast, setToast] = useState("");
   const localizedTitles: Record<PageKey,string> = {home:t.overview,ai:t.ai,tools:t.tools,community:t.community,learn:t.learn,games:t.games,achievements:t.achievements,services:t.services};
 
@@ -314,7 +292,7 @@ export default function NeftisShell() {
                 <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
                 <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
                 {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
-                <button className="reset-preferences" onClick={() => {setTheme("night");setCustomAccent("#d4f36a");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
+                <button className="reset-preferences" onClick={() => {setTheme("atelier");setCustomAccent("#cf6848");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
             <button className="sign-in-button" onClick={() => router.push("/login")}>{t.signIn}</button>
@@ -324,22 +302,28 @@ export default function NeftisShell() {
         <div className="content-wrap">
           {page === "home" && <>
             <section className="page-view active">
-              <div className="hero-grid">
-                <div className="hero-copy">
-                  <div className="eyebrow"><span className="eyebrow-line" /><span>{copy.eyebrow}</span><span className="eyebrow-index">NEF—001</span></div>
-                  <h1>{copy.headlineTop}<br /><em>{copy.headlineAccent}</em></h1>
-                  <p>{copy.description}</p>
-                  <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
-                  <div className="hero-footnote"><span className="pulse-dot" /> OPEN ACCESS · BUILT FOR SHARING</div>
+              <div className="home-stage">
+                <div className="home-edition"><span>NEFTIS / DIGITAL COMMONS</span><span>ISSUE 001 — 2026</span></div>
+                <div className="home-hero">
+                  <div className="home-copy">
+                    <div className="eyebrow"><span className="eyebrow-line" /><span>{copy.eyebrow}</span></div>
+                    <h1>{copy.headlineTop}<br /><em>{copy.headlineAccent}</em></h1>
+                    <p>{copy.description}</p>
+                    <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
+                    <div className="home-proof"><span className="pulse-dot" /> OPEN ACCESS <i /> MADE FOR CURIOUS MINDS</div>
+                  </div>
+                  <div className="home-art" aria-label="Neftis digital commons illustration">
+                    <div className="home-art-top"><span>FIG. 01 / A PLACE TO CONNECT</span><span>NEF—001</span></div>
+                    <div className="home-art-scene">
+                      <div className="scene-ring scene-ring-a" /><div className="scene-ring scene-ring-b" /><div className="scene-ring scene-ring-c" />
+                      <div className="scene-disc"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 49V15l36 34V15" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/><circle cx="50" cy="15" r="4" fill="var(--accent)"/></svg></div>
+                      <span className="scene-tag scene-tag-one">01 / THINK</span><span className="scene-tag scene-tag-two">02 / MAKE</span><span className="scene-tag scene-tag-three">03 / SHARE</span>
+                      <span className="scene-coordinate">EST. FOR IDEAS<br />OPEN BY DESIGN</span>
+                    </div>
+                    <div className="home-art-bottom"><span>TOOLS · KNOWLEDGE · PEOPLE</span><span>↗ EXPLORE</span></div>
+                  </div>
                 </div>
-                <div className="hero-art" aria-label="Abstract orbital graphic">
-                  <div className="art-topline"><span>FIG. 01 / DIGITAL ECOSYSTEM</span><span>∞</span></div>
-                  <div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="orbit orbit-three" />
-                  <div className="orbit-core"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 37V11l28 26V11" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/></svg><i /></div>
-                  <span className="orbit-label label-a">IDEAS / 01</span><span className="orbit-label label-b">TOOLS / 02</span><span className="orbit-label label-c">PEOPLE / 03</span>
-                  <div className="art-coordinates">NEFTIS<br />DIGITAL / 001</div>
-                  <div className="art-bottomline"><span>CONNECTED BY CURIOSITY</span><span>NEF—01</span></div>
-                </div>
+                <div className="home-statline"><span>01 <b>THINK</b></span><span>02 <b>CREATE</b></span><span>03 <b>DISCOVER</b></span><span className="home-stat-note">A SHARED SPACE, WITHOUT THE NOISE.</span></div>
               </div>
               <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
@@ -366,44 +350,11 @@ export default function NeftisShell() {
           </>}
 
           {page === "ai" && <section className="page-view active ai-workspace">
-            <div className="page-intro"><div><span className="section-kicker">01 / INTELLIGENCE</span><h1>Neftis <em>AI</em></h1><p>A calm workspace for thinking, exploring, and making progress.</p></div><div className="intro-side-label">WORKSPACE STATUS<br />LOCAL PREVIEW · PROVIDER NOT CONNECTED</div></div>
-            <div className="chat-layout">
-              <aside className="chat-history panel">
-                <div className="history-head"><strong>Conversations</strong><button className="small-plus" aria-label="New conversation" onClick={() => {setSentMessages([]);setMessage("");setAttachments([]);}}>+</button></div>
-                <button className="history-item selected" type="button"><span aria-hidden="true">◌</span><span>New conversation</span></button>
-                <div className="history-note">Your saved conversations will appear here after account and database setup.</div>
-                <div className="history-foot"><span className="history-foot-dot" /> Private workspace planned</div>
-              </aside>
-              <div className="chat-main panel">
-                <div className="chat-toolbar"><div><span className="online-indicator" /><strong>Neftis Assistant</strong><small>Local preview</small></div><button className="text-button" type="button" onClick={() => {setSentMessages([]);setMessage("");setAttachments([]);}}>Clear chat</button></div>
-                <div className="chat-messages">
-                  {sentMessages.length === 0 ? <div className="assistant-welcome"><div className="assistant-orb">✳</div><span className="section-kicker">NEFTIS / ASSISTANT</span><h2>What are we<br /><em>working on?</em></h2><p>Start with a question or choose a prompt. Your workspace is being prepared for connected AI providers.</p><div className="prompt-chips">{["Help me plan a project", "Explain a difficult topic", "Review this document"].map((prompt) => <button type="button" key={prompt} onClick={() => setMessage(prompt)}>{prompt} ↗</button>)}</div></div> : sentMessages.map((text, index) => <div className="chat-bubble user" key={`${text}-${index}`}><span className="bubble-label">YOU · LOCAL PREVIEW</span>{text}</div>)}
-                </div>
-                <form className="chat-composer ai-composer" onSubmit={sendMessage}>
-                  {attachments.length > 0 && <div className="attachment-queue"><div className="attachment-queue-head"><strong>{attachments.length} attachment{attachments.length > 1 ? "s" : ""}</strong><button type="button" onClick={() => setAttachments([])}>Remove all</button></div><div className="attachment-list">{attachments.map((file, index) => <div className="attachment-chip" key={`${file.name}-${file.lastModified}-${index}`}><span className="attachment-type">{file.type.startsWith("image/") ? "▧" : file.type.startsWith("video/") ? "▶" : "▤"}</span><span className="attachment-name"><strong>{file.name}</strong><small>{formatFileSize(file.size)}</small></span><button type="button" aria-label={`Remove ${file.name}`} onClick={() => setAttachments((current) => current.filter((_, i) => i !== index))}>×</button></div>)}</div></div>}
-                  <textarea rows={3} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Message Neftis AI…" aria-label="Message Neftis AI" />
-                  <div className="composer-bottom">
-                    <div className="composer-tools">
-                      <label className="composer-tool" title="Attach documents, images or videos"><span>＋</span><span>Attach</span><input type="file" multiple accept=".pdf,.doc,.docx,.txt,.md,.csv,.xls,.xlsx,.ppt,.pptx,.json,.zip,image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm" onChange={(e) => {addAttachments(e.target.files);e.currentTarget.value="";}} /></label>
-                      <label className="composer-tool" title="Take a photo using your device camera"><span>◎</span><span>Camera</span><input type="file" accept="image/*" capture="environment" onChange={(e) => {addAttachments(e.target.files);e.currentTarget.value="";}} /></label>
-                      <span className="composer-hint">Up to 8 files · Local preview only</span>
-                    </div>
-                    <button className="send-button" type="submit" aria-label="Send message">↑</button>
-                  </div>
-                  <p className="composer-disclaimer">Preview only. Messages and attachments are not uploaded or sent to an AI provider yet.</p>
-                </form>
-              </div>
-              <aside className="chat-context panel"><span className="section-kicker">SESSION CONTEXT</span><h3>Conversation setup</h3>
-                <label htmlFor="ai-model">Model</label><select id="ai-model" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}><option value="auto">Automatic (planned)</option><option value="gemini">Google Gemini (planned)</option><option value="custom">Connected model (planned)</option></select>
-                <label htmlFor="ai-style">Response style</label><select id="ai-style" value={responseStyle} onChange={(e) => setResponseStyle(e.target.value)}><option value="balanced">Balanced</option><option value="concise">Concise</option><option value="detailed">Detailed</option><option value="creative">Creative</option></select>
-                <label htmlFor="ai-language">Response language</label><select id="ai-language" value={responseLanguage} onChange={(e) => setResponseLanguage(e.target.value)}><option value="id">Bahasa Indonesia</option><option value="en">English</option><option value="auto">Follow conversation</option></select>
-                <div className="context-status"><span className="status-dot" /><div><strong>Provider not connected</strong><small>Connect an API key in AI Connections to enable responses.</small></div></div>
-                <p className="context-footnote">Model and response preferences are interface previews until account settings are connected.</p>
-              </aside>
-            </div>
+            <div className="page-intro"><div><span className="section-kicker">01 / INTELLIGENCE</span><h1>Neftis <em>AI</em></h1><p>One connection. Your models. Your way of thinking.</p></div><div className="intro-side-label">MODEL GATEWAY<br />TOKEN-FIRST WORKSPACE</div></div>
+            <AIWorkspace />
           </section>}
 
-          {page === "tools" && <ToolsLibrary language={language} />}
+                    {page === "tools" && <ToolsLibrary language={language} />}
 
           {page === "community" && <section className="page-view active"><PageIntro number="03" title={<>The <em>commons</em></>} desc="A public board for questions, experiments, and shared discoveries." side={<>COMMUNITY BOARD<br />OPEN ACCESS</>} /><div className="community-compose panel"><div className="compose-mark">＋</div><div className="compose-body"><strong>Start a discussion</strong><p>Share a question or something useful you found.</p></div><button className="button button-outline" onClick={() => notify("Posting akan tersedia setelah autentikasi aktif.")}>Write a post</button></div><article className="community-post"><div className="post-meta"><span>COMMUNITY / INTRODUCTION</span><strong>OPEN DISCUSSION</strong></div><h3>Welcome to Neftis</h3><p>This is a preview of the community space. Sign-in and posting features will be connected in a later phase.</p></article></section>}
 
