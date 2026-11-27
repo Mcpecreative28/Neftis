@@ -29,9 +29,10 @@ export default function AIWorkspace() {
   const [apiKey, setApiKey] = useState("");
   const [providerChoice, setProviderChoice] = useState("auto");
   const [baseUrl, setBaseUrl] = useState("");
-  const [customName, setCustomName] = useState("Telegram / Community API");
+  const [customName, setCustomName] = useState("Koneksi API");
   const [customProtocol, setCustomProtocol] = useState<"openai" | "anthropic" | "google">("openai");
   const [customAuthMode, setCustomAuthMode] = useState<"bearer" | "x-api-key" | "google-key" | "none">("bearer");
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [providerChoices, setProviderChoices] = useState<Provider[]>(providerNames);
   const [needsProvider, setNeedsProvider] = useState(false);
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -62,8 +63,8 @@ export default function AIWorkspace() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey.trim(),
-          ...(providerChoice !== "auto" ? { provider: providerChoice } : {}),
-          ...(providerChoice === "custom-openai" ? {
+          ...(baseUrl.trim() ? { provider: "custom-openai" } : {}),
+          ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
             displayName: customName.trim(),
             protocol: customProtocol,
@@ -89,7 +90,7 @@ export default function AIWorkspace() {
       setConnections((items) => [...items, entry]);
       setActiveConnectionId(entry.id);
       setApiKey(""); setBaseUrl(""); setProviderChoice("auto"); setNeedsProvider(false);
-      setCustomName("Telegram / Community API"); setCustomProtocol("openai"); setCustomAuthMode("bearer");
+      setCustomName("Koneksi API"); setCustomProtocol("openai"); setCustomAuthMode("bearer"); setShowAdvanced(false);
       setNotice(`${entry.provider.name} terhubung · ${entry.models.length} model ditemukan.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Koneksi provider gagal.");
@@ -156,7 +157,7 @@ export default function AIWorkspace() {
     <section className="ai-product-workspace ai-gateway-v2">
       <div className="ai-gateway-layout">
         <aside className="ai-gateway-rail">
-          <div className="ai-rail-heading"><span className="ai-eyebrow">GATEWAY / CONNECTIONS</span><strong>Rute AI kamu</strong><p>Tambahkan beberapa akun atau layanan. Urutan menentukan prioritas fallback.</p></div>
+          <div className="ai-rail-heading"><span className="ai-eyebrow">KONEKSI</span><strong>Layanan tersambung</strong><p>Atur koneksi utama dan cadanganmu di sini.</p></div>
           <div className="ai-connection-list">
             {connections.length === 0 ? <div className="ai-connection-empty"><span>＋</span><strong>Belum ada koneksi</strong><small>Tambahkan token pertama untuk mulai.</small></div> : connections.map((item, index) => (
               <article className={`ai-connection-item ${activeConnection?.id === item.id ? "is-active" : ""}`} key={item.id}>
@@ -179,31 +180,29 @@ export default function AIWorkspace() {
 
         <div className="ai-gateway-main">
           <div className="ai-gateway-heading">
-            <div><span className="ai-eyebrow">NEFTIS AI / MULTI-PROVIDER</span><h2>AI, <em>tanpa satu titik gagal.</em></h2><p>Hubungkan layanan favoritmu, pilih model, lalu biarkan Neftis mengatur urutan cadangan.</p></div>
+            <div><span className="ai-eyebrow">NEFTIS AI</span><h2>Ruang AI</h2><p>Sambungkan API pilihanmu. Model yang tersedia akan muncul otomatis.</p></div>
             <div className="ai-gateway-count"><strong>{connections.length}<small>/ 8</small></strong><span>KONEKSI AKTIF</span></div>
           </div>
 
           <form className="ai-connect-form ai-add-connection" onSubmit={connect}>
-            <div className="ai-form-title"><span>01 / ADD CONNECTION</span><strong>Tambahkan token AI</strong></div>
-            <div className="ai-form-grid">
-              <label className="ai-field ai-field-wide"><span>API TOKEN</span><input type="password" autoComplete="off" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setError(""); setNeedsProvider(false); }} placeholder="Tempel token API di sini" /></label>
-              {(needsProvider || providerChoice !== "auto") && <label className="ai-field"><span>JENIS KONEKSI</span><select value={providerChoice} onChange={(event) => { setProviderChoice(event.target.value); setNeedsProvider(false); setError(""); }}><option value="auto">Deteksi otomatis</option>{providerChoices.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>}
-              {providerChoice === "auto" && !needsProvider && <button type="button" className="ai-manual-provider" onClick={() => setProviderChoice("custom-openai")}>Gunakan token + Base URL khusus ↗</button>}
-              {selectedProvider === "custom-openai" && <>
-                <label className="ai-field"><span>NAMA LAYANAN</span><input value={customName} onChange={(event) => setCustomName(event.target.value)} maxLength={48} placeholder="Contoh: Telegram AI Free" /></label>
-                <label className="ai-field ai-field-wide"><span>BASE URL (HTTPS)</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://gateway.example.com/v1" required /><small>Gunakan Base URL yang diberikan penyedia token. Neftis akan mencoba membaca daftar model dari endpoint tersebut.</small></label>
-                <label className="ai-field"><span>PROTOKOL API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
-                <label className="ai-field"><span>METODE TOKEN</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="bearer">Authorization: Bearer</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header autentikasi</option></select></label>
-              </>}
-            </div>
+            <div className="ai-form-title"><span>KONEKSI BARU</span><strong>Masukkan API key dan Base URL</strong></div>
+<div className="ai-form-grid">
+  <label className="ai-field ai-field-wide"><span>API KEY</span><input type="password" autoComplete="off" value={apiKey} onChange={(event) => { setApiKey(event.target.value); setError(""); setNeedsProvider(false); }} placeholder="Tempel API key di sini" /></label>
+  <label className="ai-field ai-field-wide"><span>BASE URL</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://api.example.com/v1" /><small>Masukkan alamat API dari penyedia token. Format OpenAI-compatible digunakan otomatis.</small></label>
+  <button type="button" className="ai-advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced((value) => !value)}>{showAdvanced ? "Sembunyikan pengaturan tambahan" : "Pengaturan tambahan"} <span>{showAdvanced ? "−" : "+"}</span></button>
+  {showAdvanced && <>
+    <label className="ai-field"><span>FORMAT API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible (default)</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
+    <label className="ai-field"><span>HEADER API KEY</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="bearer">Authorization: Bearer (default)</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header</option></select></label>
+  </>}
+</div>
             {error && <p className="ai-inline-error" role="alert">{error}</p>}
             {notice && <p className="ai-inline-notice" role="status">{notice}</p>}
-            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || (selectedProvider === "custom-openai" && !baseUrl.trim())}>{connecting ? "Memeriksa endpoint…" : "Validasi token & ambil model"} <span>↗</span></button><span>Token hanya aktif selama tab ini terbuka · Maks. 8 koneksi.</span></div>
+            <div className="ai-connect-actions"><button className="ai-connect-button" type="submit" disabled={connecting || apiKey.trim().length < 8 || connections.length >= 8 || (selectedProvider === "custom-openai" && !baseUrl.trim())}>{connecting ? "Menghubungkan…" : "Hubungkan API"} <span>↗</span></button><span>API key hanya disimpan sementara di tab ini.</span></div>
           </form>
 
           {activeConnection ? (
             <div className="ai-selected-provider">
-              <div className="ai-selected-heading"><div><span className="ai-eyebrow">02 / MODEL ROUTING</span><h3>Konfigurasi model</h3><p>Setiap koneksi menyimpan pilihan model dan menjadi kandidat fallback.</p></div><span className="ai-model-total">{connections.reduce((sum, item) => sum + item.models.length, 0)} MODEL DITEMUKAN</span></div>
+              <div className="ai-selected-heading"><div><span className="ai-eyebrow">MODEL</span><h3>Pilih model</h3><p>Pilihan diambil dari daftar model API yang kamu sambungkan.</p></div><span className="ai-model-total">{connections.reduce((sum, item) => sum + item.models.length, 0)} MODEL DITEMUKAN</span></div>
               <div className="ai-provider-model-grid">
                 {connections.map((item, index) => {
                   const selected = item.models.find((model) => model.id === item.modelId);
@@ -219,7 +218,7 @@ export default function AIWorkspace() {
           ) : <div className="ai-first-run"><span className="ai-first-run-icon">✳</span><div><strong>Mulai dengan satu token.</strong><p>Setelah koneksi pertama berhasil, kamu bisa menambahkan provider lain sebagai cadangan.</p></div></div>}
 
           <div className="ai-chat-panel ai-chat-panel-v2">
-            <div className="ai-chat-heading"><div><span className="ai-eyebrow">03 / CHAT WORKSPACE</span><h3>Ruang percakapan</h3></div><span>{activeConnection ? activeConnection.provider.name + " · " + activeConnection.modelId : "Belum terhubung"}</span></div>
+            <div className="ai-chat-heading"><div><span className="ai-eyebrow">CHAT</span><h3>Percakapan</h3></div><span>{activeConnection ? activeConnection.provider.name + " · " + activeConnection.modelId : "Belum terhubung"}</span></div>
             <div className="ai-chat-history" aria-live="polite">
               {messages.length === 0 ? <div className="ai-chat-empty"><div className="ai-empty-glyph">✳</div><strong>Mulai dari sebuah ide.</strong><p>Pesan akan dikirim melalui koneksi prioritas. Fallback berjalan otomatis bila diperlukan.</p></div> : messages.map((message, index) => <article className={message.role === "user" ? "ai-message user" : "ai-message assistant"} key={message.role + "-" + index}><span>{message.role === "user" ? "KAMU" : "NEFTIS AI"}</span><p>{message.content}</p></article>)}
               {sending && <div className="ai-message assistant"><span>NEFTIS AI</span><p className="ai-thinking">Mencari koneksi yang tersedia…</p></div>}
