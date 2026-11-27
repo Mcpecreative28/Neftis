@@ -113,7 +113,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const fetchOptions = captchaToken ? { headers: { "x-captcha-response": captchaToken } } : undefined;
       const result = isRegister
-        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password, fetchOptions })
+        ? await authClient.signUp.email({ name: name.trim(), email: email.trim(), password, callbackURL: "/dashboard", fetchOptions })
         : await authClient.signIn.email({ email: email.trim(), password, fetchOptions });
 
       if (result.error) {
