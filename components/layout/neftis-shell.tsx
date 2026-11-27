@@ -272,7 +272,7 @@ export default function NeftisShell() {
     <div className={`app-shell ${language === "ar" ? "locale-ar" : ""}`} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
       <aside id="neftis-sidebar" className={`sidebar ${menuOpen ? "open" : ""}`}>
         <a className="brand" href="#home" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
-          <span className="brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
+          <span className="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="neftis-mark-gradient" x1="7" y1="7" x2="41" y2="41" gradientUnits="userSpaceOnUse"><stop stopColor="var(--accent)"/><stop offset="1" stopColor="var(--cyan)"/></linearGradient></defs><circle cx="24" cy="24" r="20" fill="none" stroke="url(#neftis-mark-gradient)" strokeWidth="1.4" opacity=".38"/><path d="M13 32V16.8c0-2.5 3.1-3.6 4.7-1.7l12.6 15.1c1.6 1.9 4.7.8 4.7-1.7V16" fill="none" stroke="url(#neftis-mark-gradient)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="35" cy="12" r="3" fill="var(--accent)"/><circle cx="13" cy="36" r="1.8" fill="var(--cyan)"/></svg></span>
           <span className="brand-name">neftis<span>.</span><small>DIGITAL COMMONS</small></span>
         </a>
         <div className="workspace-label">{t.workspace} <span>PUBLIC</span></div>
