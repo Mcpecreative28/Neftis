@@ -3,6 +3,7 @@ import "./globals.css";
 import "./neftis-modern.css";
 import "./neftis-atlas.css";
 import "./product-console.css";
+import "./neftis-editorial.css";
 import NeftisMotion from "@/components/motion/neftis-motion";
 
 export const metadata: Metadata = {
