@@ -23,6 +23,7 @@
 html { scroll-behavior:auto; }
 body { background:var(--bg); color:var(--text); font-family:var(--atlas-sans); }
 .app-shell { min-height:100vh; background:var(--bg); }
+#neftis-sidebar { display:flex!important; }
 .app-shell .sidebar {
   display:flex!important;
   width:104px;
@@ -252,6 +253,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--atlas-sans); }
   .app-shell .home-principles { grid-template-columns:1fr; gap:25px; }
 }
 @media (max-width:760px) {
+  #neftis-sidebar { display:none!important; }
   .app-shell .sidebar { display:none!important; }
   .app-shell .main-area { margin-left:0!important; width:100%; }
   .app-shell .topbar { inset:0 0 auto; height:62px; padding:0 14px; background:#101a1de8; }
