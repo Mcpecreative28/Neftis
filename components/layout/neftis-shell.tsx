@@ -60,15 +60,11 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["atelier","Atelier","#101116","#cf6848"],["paper","Paper","#f1eee5","#829b42"],["forest","Forest","#10231d","#a9d889"],
- ["ocean","Ocean","#0c202b","#65d9d2"],["sunset","Sunset","#281b20","#ffad78"],["lavender","Lavender","#201c32","#b9a2ff"],
- ["terminal","Terminal","#09170e","#7dff9b"],["rose","Rose","#2b1b28","#ffabc5"],["amber","Amber","#211d12","#f3d36b"],
- ["ice","Ice","#10232d","#9be4ef"],["mono","Mono","#111111","#f0f0f0"],["cosmos","Cosmos","#14152b","#a8a5ff"],
- ["matcha","Matcha","#20251a","#c8df91"],["graphite","Graphite","#171b20","#b8c5d2"],["cobalt","Cobalt","#101b32","#78a9ff"],
- ["plum","Plum","#25172b","#e0a8ed"],["mint","Mint","#10251f","#8de5c1"],["clay","Clay","#2a211b","#dca77e"],
- ["aurora","Aurora","#101e27","#8ce6d1"],["parchment","Parchment","#eee5cf","#8d9c57"],["obsidian","Obsidian","#08090d","#a9c4ff"],
- ["sakura","Sakura","#2b1b28","#ffb5d2"],["ember","Ember","#281912","#ff9a62"],["glacier","Glacier","#10232d","#9be4ef"],
- ["solar","Solar","#251d10","#f0bd55"]
+ ["paper","Paper","#f2eee5","#a85f47"],
+ ["olive","Olive","#e9eadf","#69744c"],
+ ["clay","Terracotta","#eee1d7","#a85f47"],
+ ["ink","Ink","#282a26","#c2a27a"],
+ ["night","Night Library","#202522","#c2b58d"],
 ] as const;
 
 
@@ -129,8 +125,8 @@ export default function NeftisShell() {
   }, [pathname]);
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("atelier");
-  const [customAccent, setCustomAccent] = useState("#cf6848");
+  const [theme, setTheme] = useState("paper");
+  const [customAccent, setCustomAccent] = useState("#a85f47");
   const [customBackground, setCustomBackground] = useState("");
   const [customPanel, setCustomPanel] = useState("");
   const [customText, setCustomText] = useState("");
@@ -141,17 +137,17 @@ export default function NeftisShell() {
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
   const copy = homeCopy[language] ?? homeCopy.en!;
-  const colorPalette = ["#cf6848", "#d6e5a0", "#72d7d0", "#7967a8", "#24272b", "#f3f0e8", "#ffffff", "#1b2530", "#d99a5b", "#8caa9a", "#d98da5", "#596c84"];
+  const colorPalette = ["#a85f47", "#737b4e", "#c6a77b", "#292a25", "#f2eee5", "#e8e0d2", "#8c9a87", "#b8785b"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
   const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
   useEffect(() => {
     try {
-      const savedLanguage = localStorage.getItem("neftis-language-v3") as LocaleCode | null;
-      const savedTheme = localStorage.getItem("neftis-theme-v3");
-      const savedAccent = localStorage.getItem("neftis-custom-accent-v3");
-      const savedBackground = localStorage.getItem("neftis-custom-background-v3");
-      const savedPanel = localStorage.getItem("neftis-custom-panel-v3");
-      const savedText = localStorage.getItem("neftis-custom-text-v3");
+      const savedLanguage = localStorage.getItem("neftis-language-v4") as LocaleCode | null;
+      const savedTheme = localStorage.getItem("neftis-theme-v4");
+      const savedAccent = localStorage.getItem("neftis-custom-accent-v4");
+      const savedBackground = localStorage.getItem("neftis-custom-background-v4");
+      const savedPanel = localStorage.getItem("neftis-custom-panel-v4");
+      const savedText = localStorage.getItem("neftis-custom-text-v4");
       if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
       if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
       if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
@@ -187,12 +183,12 @@ export default function NeftisShell() {
     root.dir = "ltr";
     root.style.colorScheme = isLight ? "light" : "dark";
     try {
-      localStorage.setItem("neftis-theme-v3", theme);
-      localStorage.setItem("neftis-custom-accent-v3", customAccent);
-      localStorage.setItem("neftis-language-v3", language);
-      localStorage.setItem("neftis-custom-background-v3", customBackground);
-      localStorage.setItem("neftis-custom-panel-v3", customPanel);
-      localStorage.setItem("neftis-custom-text-v3", customText);
+      localStorage.setItem("neftis-theme-v4", theme);
+      localStorage.setItem("neftis-custom-accent-v4", customAccent);
+      localStorage.setItem("neftis-language-v4", language);
+      localStorage.setItem("neftis-custom-background-v4", customBackground);
+      localStorage.setItem("neftis-custom-panel-v4", customPanel);
+      localStorage.setItem("neftis-custom-text-v4", customText);
     } catch (error) {
       console.warn("Neftis preferences could not be saved.", error);
     }
