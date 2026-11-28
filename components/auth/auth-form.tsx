@@ -66,6 +66,11 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const [pending, setPending] = useState(false);
 
   const isRegister = mode === "register";
+  function getSafeReturnTo() {
+    if (typeof window === "undefined" || isRegister) return "/dashboard";
+    const requested = new URLSearchParams(window.location.search).get("next");
+    return requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
+  }
 
   useEffect(() => {
     if (!turnstileSiteKey || !captchaContainer.current) return;
@@ -132,7 +137,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         return;
       }
 
-      router.replace("/dashboard");
+      router.replace(getSafeReturnTo());
       router.refresh();
     } catch {
       setError("Tidak dapat terhubung sekarang. Silakan coba lagi.");
@@ -148,7 +153,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
     try {
       const result = await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL: getSafeReturnTo(),
       });
 
       if (result.error) {
