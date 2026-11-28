@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import ToolsLibrary from "@/components/tools/tools-library";
 import AIWorkspace from "@/components/ai/ai-workspace";
 import { authClient } from "@/lib/auth/client";
+import { motion } from "motion/react";
 
 type PageKey = "home" | "ai" | "tools" | "community" | "learn" | "games" | "achievements" | "services";
 
@@ -310,31 +311,50 @@ export default function NeftisShell() {
         <div className="content-wrap">
           {page === "home" && <>
             <section className="page-view active">
-              <div className="home-stage">
-                <div className="home-edition"><span>NEFTIS / DIGITAL COMMONS</span><span>ISSUE 001 — 2026</span></div>
-                <div className="home-hero">
-                  <div className="home-copy">
-                    <div className="eyebrow"><span className="eyebrow-line" /><span>{copy.eyebrow}</span></div>
-                    <h1>{copy.headlineTop}<br /><em>{copy.headlineAccent}</em></h1>
-                    <p>{copy.description}</p>
-                    <div className="hero-actions"><button className="button button-primary" onClick={() => navigate("ai")}>{t.openAI} <span>↗</span></button><button className="button button-quiet" onClick={() => navigate("tools")}>{t.explore} <span>→</span></button></div>
-                    <div className="home-proof"><span className="pulse-dot" /> OPEN ACCESS <i /> MADE FOR CURIOUS MINDS</div>
-                  </div>
-                  <div className="home-art" aria-label="Neftis digital commons illustration">
-                    <div className="home-art-top"><span>FIG. 01 / A PLACE TO CONNECT</span><span>NEF—001</span></div>
-                    <div className="home-art-scene">
-                      <div className="scene-ring scene-ring-a" /><div className="scene-ring scene-ring-b" /><div className="scene-ring scene-ring-c" />
-                      <div className="scene-disc"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 49V15l36 34V15" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/><circle cx="50" cy="15" r="4" fill="var(--accent)"/></svg></div>
-                      <span className="scene-tag scene-tag-one">01 / THINK</span><span className="scene-tag scene-tag-two">02 / MAKE</span><span className="scene-tag scene-tag-three">03 / SHARE</span>
-                      <span className="scene-coordinate">EST. FOR IDEAS<br />OPEN BY DESIGN</span>
+              <div className="atlas-stage">
+                <div className="atlas-meta"><span>NEFTIS / DIGITAL COMMONS</span><span>FIELD EDITION — 001</span></div>
+                <motion.section className="atlas-hero" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+                  <div className="atlas-copy">
+                    <div className="atlas-overline"><span className="atlas-overline-mark">N°</span><span>{copy.eyebrow}</span><i /></div>
+                    <h1><span>{copy.headlineTop}</span><em>{copy.headlineAccent}</em></h1>
+                    <p className="atlas-description">{copy.description}</p>
+                    <div className="atlas-actions">
+                      <button className="atlas-primary" onClick={() => navigate("ai")}>{t.openAI}<span>↗</span></button>
+                      <button className="atlas-secondary" onClick={() => navigate("tools")}>{t.explore}<span>→</span></button>
                     </div>
-                    <div className="home-art-bottom"><span>TOOLS · KNOWLEDGE · PEOPLE</span><span>↗ EXPLORE</span></div>
+                    <div className="atlas-footnote"><span>01—08</span><i /> A SHARED SPACE FOR THE CURIOUS</div>
                   </div>
-                </div>
-                <div className="home-statline"><span>01 <b>THINK</b></span><span>02 <b>CREATE</b></span><span>03 <b>DISCOVER</b></span><span className="home-stat-note">A SHARED SPACE, WITHOUT THE NOISE.</span></div>
+                  <div className="atlas-visual" aria-label="Abstract topographic map artwork">
+                    <div className="atlas-visual-caption"><span>FIG. 01</span><span>THE OPEN FIELD</span></div>
+                    <svg className="atlas-map" viewBox="0 0 680 700" role="img" aria-label="Topographic contours surrounding the Neftis mark">
+                      <defs>
+                        <linearGradient id="atlas-wash" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#e8b98d"/><stop offset=".48" stopColor="#b65c49"/><stop offset="1" stopColor="#4c6870"/></linearGradient>
+                        <radialGradient id="atlas-core"><stop offset="0" stopColor="#f2d9b4"/><stop offset=".58" stopColor="#bd745e"/><stop offset="1" stopColor="#263b45"/></radialGradient>
+                        <clipPath id="atlas-clip"><path d="M342 30C505 29 646 165 649 337c3 180-129 322-309 332C158 677 22 540 26 352 30 168 163 32 342 30Z"/></clipPath>
+                      </defs>
+                      <g clipPath="url(#atlas-clip)">
+                        <rect width="680" height="700" fill="#182b34"/>
+                        <circle cx="346" cy="345" r="286" fill="url(#atlas-wash)" opacity=".9"/>
+                        <circle cx="346" cy="345" r="214" fill="url(#atlas-core)"/>
+                        {Array.from({length:12},(_,i)=><ellipse key={i} cx="345" cy="345" rx={105+i*18} ry={88+i*19} transform={`rotate(${i*11-28} 345 345)`} fill="none" stroke="#f2e1c8" strokeOpacity={.22+i*.018} strokeWidth="1.3"/>)}
+                        <path d="M-20 500C110 420 80 275 202 230S380 300 480 200 630 110 720 160M-30 550C120 450 100 330 220 280S390 340 500 250 640 190 720 230M-20 610C110 500 130 390 250 345S420 400 530 310 650 260 730 300" fill="none" stroke="#f6e8d2" strokeOpacity=".36" strokeWidth="2"/>
+                        <path d="M90 0C145 120 230 135 270 210S290 365 410 420 545 550 580 730M0 110C100 185 180 205 230 290S260 450 370 500 470 610 490 720" fill="none" stroke="#101e27" strokeOpacity=".36" strokeWidth="3"/>
+                        <circle cx="346" cy="345" r="64" fill="#142630" stroke="#f1dfc4" strokeOpacity=".65"/>
+                        <path d="M320 385V305l52 80v-80" fill="none" stroke="#f4e6d0" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
+                        <circle cx="372" cy="305" r="7" fill="#e2a46f"/>
+                      </g>
+                      <path d="M342 30C505 29 646 165 649 337c3 180-129 322-309 332C158 677 22 540 26 352 30 168 163 32 342 30Z" fill="none" stroke="#f1d6b4" strokeOpacity=".6" strokeWidth="1.5"/>
+                      <path d="M346 4V31M346 670V697M4 350H27M649 350H676" stroke="#f1d6b4" strokeOpacity=".7"/>
+                    </svg>
+                    <div className="atlas-coordinate atlas-coordinate-a">06°12′ S<br/>106°49′ E</div>
+                    <div className="atlas-coordinate atlas-coordinate-b">THINK / MAKE / SHARE</div>
+                    <div className="atlas-visual-index">N</div>
+                  </div>
+                </motion.section>
+                <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>DISCOVER</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
               </div>
               <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
-              <div className="feature-grid">{spaces.map((space) => <button key={space.id} className={`feature-card ${space.tone}`} onClick={() => navigate(space.id)}><div className="card-meta"><span>{space.no} — {space.tag}</span><span>{space.icon}</span></div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
+              <div className="atlas-space-list">{spaces.map((space) => <button key={space.id} className={`atlas-space-row ${space.tone}`} onClick={() => navigate(space.id)}><span className="atlas-space-no">{space.no}</span><span className="atlas-space-symbol"><NeftisIcon name={space.id} /></span><span className="atlas-space-copy"><small>{space.tag}</small><strong>{space.title}</strong><em>{space.desc}</em></span><span className="atlas-space-arrow">↗</span></button>)}</div><div className="feature-symbol"><NeftisIcon name={space.id} /></div><h3>{space.title}</h3><p>{space.desc}</p><span className="card-arrow">↗</span></button>)}</div>
               <section className="home-principles">
                 <div className="home-principles-heading"><span className="section-kicker">A SIMPLE WAY TO BEGIN</span><h2>Explore first.<br/><em>Make something useful.</em></h2><p>Neftis menghubungkan alat, pengetahuan, dan ruang berbagi dalam satu tempat yang bisa kamu jelajahi sesuai kebutuhan.</p></div>
                 <div className="home-principles-grid">
