@@ -22,10 +22,10 @@ const navPersonal: { id: PageKey; label: string; icon: string }[] = [
   { id: "services", label: "Services", icon: "↗" },
 ];
 const spaces = [
-  { id: "ai" as const, no: "01", tag: "THINK", title: "Neftis AI", desc: "A focused space for questions, drafts, and ideas.", icon: "✳", tone: "feature-ai" },
-  { id: "tools" as const, no: "02", tag: "MAKE", title: "Tools library", desc: "Small utilities for everyday digital work.", icon: "⌘", tone: "feature-tools" },
-  { id: "community" as const, no: "03", tag: "SHARE", title: "Community", desc: "Exchange notes, questions, and discoveries.", icon: "◎", tone: "feature-community" },
-  { id: "learn" as const, no: "04", tag: "GROW", title: "Knowledge room", desc: "Guides and references worth keeping.", icon: "▤", tone: "feature-learn" },
+  { id: "ai" as const, no: "01", tag: "PIKIR", title: "Neftis AI", desc: "Tempat merangkai pertanyaan, tulisan, dan gagasan.", icon: "✳", tone: "feature-ai" },
+  { id: "tools" as const, no: "02", tag: "BUAT", title: "Tools library", desc: "Alat sederhana untuk pekerjaan sehari-hari.", icon: "⌘", tone: "feature-tools" },
+  { id: "community" as const, no: "03", tag: "BAGI", title: "Community", desc: "Berbagi cerita, pertanyaan, dan temuan.", icon: "◎", tone: "feature-community" },
+  { id: "learn" as const, no: "04", tag: "GROW", title: "Knowledge room", desc: "Catatan dan panduan yang bisa kamu simpan.", icon: "▤", tone: "feature-learn" },
 ];
 const pageTitles: Record<PageKey, string> = {
   home: "Overview", ai: "Neftis AI", tools: "Tools library", community: "Community",
@@ -318,37 +318,56 @@ export default function NeftisShell() {
                       <button className="atlas-primary" onClick={() => navigate("ai")}>{t.openAI}<span>↗</span></button>
                       <button className="atlas-secondary" onClick={() => navigate("tools")}>{t.explore}<span>→</span></button>
                     </div>
-                    <div className="atlas-footnote"><span>01—08</span><i /> A SHARED SPACE FOR THE CURIOUS</div>
+                    <div className="atlas-footnote"><span>01—08</span><i /> TEMPAT UNTUK BERTANYA DAN BERBAGI</div>
                   </div>
                   <div className="atlas-visual moonlit-visual" aria-label="Ilustrasi taman malam dan percakapan Neftis">
-                    <div className="atlas-visual-caption"><span>FIG. 01</span><span>THE OPEN FIELD</span></div>
-                    <svg className="atlas-map" viewBox="0 0 680 700" role="img" aria-label="Topographic contours surrounding the Neftis mark">
-                      <defs>
-                        <linearGradient id="atlas-wash" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#e8b98d"/><stop offset=".48" stopColor="#b65c49"/><stop offset="1" stopColor="#4c6870"/></linearGradient>
-                        <radialGradient id="atlas-core"><stop offset="0" stopColor="#f2d9b4"/><stop offset=".58" stopColor="#bd745e"/><stop offset="1" stopColor="#263b45"/></radialGradient>
-                        <clipPath id="atlas-clip"><path d="M342 30C505 29 646 165 649 337c3 180-129 322-309 332C158 677 22 540 26 352 30 168 163 32 342 30Z"/></clipPath>
-                      </defs>
-                      <g clipPath="url(#atlas-clip)">
-                        <rect width="680" height="700" fill="#182b34"/>
-                        <circle cx="346" cy="345" r="286" fill="url(#atlas-wash)" opacity=".9"/>
-                        <circle cx="346" cy="345" r="214" fill="url(#atlas-core)"/>
-                        {Array.from({length:12},(_,i)=><ellipse key={i} cx="345" cy="345" rx={105+i*18} ry={88+i*19} transform={`rotate(${i*11-28} 345 345)`} fill="none" stroke="#f2e1c8" strokeOpacity={.22+i*.018} strokeWidth="1.3"/>)}
-                        <path d="M-20 500C110 420 80 275 202 230S380 300 480 200 630 110 720 160M-30 550C120 450 100 330 220 280S390 340 500 250 640 190 720 230M-20 610C110 500 130 390 250 345S420 400 530 310 650 260 730 300" fill="none" stroke="#f6e8d2" strokeOpacity=".36" strokeWidth="2"/>
-                        <path d="M90 0C145 120 230 135 270 210S290 365 410 420 545 550 580 730M0 110C100 185 180 205 230 290S260 450 370 500 470 610 490 720" fill="none" stroke="#101e27" strokeOpacity=".36" strokeWidth="3"/>
-                        <circle cx="346" cy="345" r="64" fill="#142630" stroke="#f1dfc4" strokeOpacity=".65"/>
-                        <path d="M320 385V305l52 80v-80" fill="none" stroke="#f4e6d0" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
-                        <circle cx="372" cy="305" r="7" fill="#e2a46f"/>
-                      </g>
-                      <path d="M342 30C505 29 646 165 649 337c3 180-129 322-309 332C158 677 22 540 26 352 30 168 163 32 342 30Z" fill="none" stroke="#f1d6b4" strokeOpacity=".6" strokeWidth="1.5"/>
-                      <path d="M346 4V31M346 670V697M4 350H27M649 350H676" stroke="#f1d6b4" strokeOpacity=".7"/>
-                    </svg>
+                    <div className="atlas-visual-caption"><span>FIG. 01</span><span>MALAM DI NEFTIS</span></div>
+                    <svg className="atlas-map moonlit-scene" viewBox="0 0 680 700" role="img" aria-label="Pemandangan malam dengan jendela, bulan, tanaman, dan serpihan kristal">
+  <defs>
+    <linearGradient id="night-sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#263b78"/><stop offset=".55" stopColor="#172a5a"/><stop offset="1" stopColor="#0b1537"/></linearGradient>
+    <linearGradient id="window-glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9eb8f0" stopOpacity=".34"/><stop offset="1" stopColor="#7b9cdb" stopOpacity=".02"/></linearGradient>
+    <linearGradient id="hair-silver" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f2f5ff"/><stop offset=".55" stopColor="#a9bee9"/><stop offset="1" stopColor="#627db8"/></linearGradient>
+    <linearGradient id="crystal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f4f7ff"/><stop offset=".5" stopColor="#9bbaff"/><stop offset="1" stopColor="#5475c2"/></linearGradient>
+    <filter id="moon-blur"><feGaussianBlur stdDeviation="20"/></filter>
+  </defs>
+  <rect width="680" height="700" fill="url(#night-sky)"/>
+  <circle cx="505" cy="150" r="92" fill="#a8c2ff" opacity=".14" filter="url(#moon-blur)"/>
+  <circle cx="505" cy="150" r="54" fill="#dbe6ff" opacity=".78"/>
+  <circle cx="526" cy="132" r="53" fill="#283d78" opacity=".48"/>
+  <path d="M0 0h132v700H0z" fill="#171c39" opacity=".9"/>
+  <path d="M126 0v700M142 0v700" stroke="#9caedb" strokeOpacity=".23" strokeWidth="3"/>
+  <rect x="146" y="22" width="500" height="590" rx="5" fill="url(#window-glow)" stroke="#9fb4e4" strokeOpacity=".5" strokeWidth="5"/>
+  <path d="M395 22v590M146 310h500" stroke="#9fb4e4" strokeOpacity=".35" strokeWidth="4"/>
+  <path d="M0 612h680v88H0z" fill="#111832"/>
+  <path d="M0 620h680" stroke="#a6b8e7" strokeOpacity=".42" strokeWidth="3"/>
+  <g fill="#c6d5fa" opacity=".86">
+    <path d="M642 0c-50 35-62 72-52 114 26-13 50-44 52-114ZM596 22c-44 7-74 35-82 78 35-2 67-30 82-78ZM664 95c-48-4-78 18-92 57 36 8 74-16 92-57ZM553 0c-27 35-28 65-10 91 22-16 31-50 10-91Z"/>
+    <path d="M650 170c-47-10-78 7-99 45 39 14 79-2 99-45ZM590 145c-42 4-67 29-71 68 37-4 66-29 71-68Z"/>
+  </g>
+  <g fill="none" stroke="#e0e9ff" strokeOpacity=".55" strokeWidth="2">
+    <path d="M650 0c-20 67-45 107-90 152M596 22c-8 41-18 75-36 103M664 95c-39 17-66 39-91 75"/>
+  </g>
+  <g fill="url(#crystal)" stroke="#e8efff" strokeOpacity=".7" strokeWidth="2">
+    <path d="m208 130 14-39 17 37-15 31z"/><path d="m558 320 13-34 17 36-17 26z"/>
+    <path d="m86 360 11-29 17 28-13 25z"/><path d="m430 70 10-26 13 25-12 22z"/>
+  </g>
+  <g fill="#dce6ff" opacity=".7"><circle cx="300" cy="112" r="2"/><circle cx="370" cy="225" r="2"/><circle cx="478" cy="260" r="1.8"/><circle cx="250" cy="400" r="2"/><circle cx="610" cy="430" r="1.5"/><circle cx="330" cy="520" r="1.5"/></g>
+  <ellipse cx="360" cy="620" rx="126" ry="20" fill="#060d25" opacity=".65"/>
+  <path d="M312 606c-7-52 2-101 27-129 17-20 47-29 69-12 24 18 32 65 26 141z" fill="#121b3e"/>
+  <path d="M328 481c-25-52-13-118 27-143 36-23 77-3 83 36 6 42-19 79-47 105-23 20-44 23-63 2z" fill="url(#hair-silver)"/>
+  <path d="M355 361c-44-22-69 4-80 43-11 40-6 76-35 111 41-10 64-37 82-67 19-31 43-45 33-87z" fill="#829bd0"/>
+  <path d="M393 347c37 14 52 45 43 87-7 31-26 54-44 69 47-9 78-54 72-102-5-40-32-67-71-54z" fill="#b8c9ee"/>
+  <path d="M343 474c-35 19-48 65-42 132h128c-2-54-13-102-42-128-15-13-29-15-44-4z" fill="#dbe5fb"/>
+  <path d="M345 490c-21 25-23 61-16 115M385 487c24 30 29 72 27 119" fill="none" stroke="#8da6d6" strokeWidth="3" opacity=".7"/>
+  <path d="M290 606h148" stroke="#8d9fc9" strokeOpacity=".35" strokeWidth="4"/>
+</svg>
                     <div className="atlas-coordinate atlas-coordinate-a">06°12′ S<br/>106°49′ E</div>
                     <div className="atlas-coordinate atlas-coordinate-b">THINK / MAKE / SHARE</div>
                     <div className="atlas-visual-index">N</div>
-                    <div className="moonlit-chat-preview" aria-hidden="true"><span className="moonlit-bubble user">Ceritakan apa yang kamu cari?</span><span className="moonlit-bubble">Neftis adalah ruang tanya jawab?</span><span className="moonlit-bubble">AI dan teman-teman ikut berpikir.</span><span className="moonlit-start">Mulai ngobrol <b>↗</b></span></div>
+                    <div className="moonlit-scene-note"><span>NEFTIS / ARCHIVE 01</span><span>Di bawah cahaya bulan</span></div>
                   </div>
                 </motion.section>
-                <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>DISCOVER</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
+                <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>TEMUKAN</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
               </div>
               <div className="section-heading" data-reveal><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="atlas-space-list" data-reveal>{spaces.map((space) => <button key={space.id} className={`atlas-space-row ${space.tone}`} onClick={() => navigate(space.id)}><span className="atlas-space-no">{space.no}</span><span className="atlas-space-symbol"><NeftisIcon name={space.id} /></span><span className="atlas-space-copy"><small>{space.tag}</small><strong>{space.title}</strong><em>{space.desc}</em></span><span className="atlas-space-arrow">↗</span></button>)}</div>
@@ -357,12 +376,12 @@ export default function NeftisShell() {
                 <div className="home-principles-grid">
                   <article><span>01 / THINK</span><div className="principle-symbol">✳</div><h3>Think with AI</h3><p>Hubungkan layanan AI yang kamu pilih dan gunakan model sesuai kebutuhan.</p></article>
                   <article><span>02 / MAKE</span><div className="principle-symbol">⌘</div><h3>Make with tools</h3><p>Temukan utilitas praktis untuk pekerjaan, eksperimen, dan ide kecil.</p></article>
-                  <article><span>03 / SHARE</span><div className="principle-symbol">◎</div><h3>Learn together</h3><p>Bangun pemahaman dan bagikan temuan yang bisa membantu orang lain.</p></article>
+                  <article><span>03 / SHARE</span><div className="principle-symbol">◎</div><h3>Belajar bersama</h3><p>Bangun pemahaman dan bagikan temuan yang bisa membantu orang lain.</p></article>
                 </div>
               </section>
               <div className="lower-grid" data-reveal>
-                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
-                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.community}</span><h3>{copy.fromCommunity}</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>{copy.question}</h4><p>{copy.questionDesc}</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
+                <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>Lihat semua ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
+                <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.community}</span><h3>{copy.fromCommunity}</h3></div><button className="text-link" onClick={() => navigate("community")}>Kunjungi ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>{copy.question}</h4><p>{copy.questionDesc}</p><div className="signal-foot"><span>PAPAN KOMUNITAS</span><span>↗</span></div></div></section>
               </div>
               <footer className="page-footer"><span>{copy.footer}</span><span>{copy.footerNote}</span></footer>
             </section>
@@ -379,35 +398,35 @@ export default function NeftisShell() {
             <PageIntro number="03" title={<>The <em>commons</em></>} desc="Tempat bertukar pertanyaan, pengalaman, dan temuan bersama." side={<>COMMUNITY BOARD<br />OPEN ACCESS</>} />
             <div className="community-desk">
               <main className="community-feed">
-                <div className="community-feed-bar"><div><span className="section-kicker">PUBLIC DISCUSSIONS</span><h2>Ruang percakapan</h2></div><span className="community-count">BELUM ADA THREAD</span></div>
-                <div className="community-empty-state"><div className="community-empty-mark">◎</div><span className="section-kicker">START WITH A QUESTION</span><h3>Belum ada percakapan di sini.</h3><p>Komunitas akan menjadi tempat berbagi proses, meminta masukan, dan menyimpan pengetahuan yang berguna. Masuk untuk bersiap berpartisipasi saat diskusi dibuka.</p><a className="button button-primary" href="/login">Masuk ke Neftis <span>↗</span></a></div>
+                <div className="community-feed-bar"><div><span className="section-kicker">PERCAKAPAN TERBUKA</span><h2>Ruang percakapan</h2></div><span className="community-count">BELUM ADA TOPIK</span></div>
+                <div className="community-empty-state"><div className="community-empty-mark">◎</div><span className="section-kicker">MULAI DARI SATU PERTANYAAN</span><h3>Belum ada yang membuka percakapan.</h3><p>Punya sesuatu yang ingin ditanyakan atau dibagikan? Mulai dari sini.</p><a className="button button-primary" href="/login">Masuk <span>↗</span></a></div>
               </main>
               <aside className="community-sidebar">
-                <section className="community-info-card"><span className="section-kicker">COMMUNITY NOTES</span><h3>Ruang yang sehat dimulai dari cara berbagi.</h3><ul><li>Berikan konteks saat bertanya.</li><li>Bagikan solusi yang bisa diulang.</li><li>Hormati privasi dan karya orang lain.</li></ul></section>
-                <section className="community-topic-card"><span className="section-kicker">TOPIC MAP</span><div><b>AI & prompts</b><b>Web & code</b><b>Digital tools</b><b>Learning</b><b>Ideas & projects</b></div></section>
+                <section className="community-info-card"><span className="section-kicker">CATATAN RUANG</span><h3>Biar obrolan tetap nyaman.</h3><ul><li>Ceritakan konteks saat bertanya.</li><li>Tulis langkah yang berhasil kamu coba.</li><li>Hargai privasi dan karya orang lain.</li></ul></section>
+                <section className="community-topic-card"><span className="section-kicker">TOPIK</span><div><b>AI & prompt</b><b>Web & code</b><b>Alat digital</b><b>Learning</b><b>Ide & proyek</b></div></section>
               </aside>
             </div>
           </section>}
 
           {page === "learn" && <section className="page-view active learning-space">
-            <PageIntro number="04" title={<>Knowledge <em>room</em></>} desc="Panduan ringkas dan jalur belajar untuk memahami teknologi dengan lebih terarah." side={<>FIELD NOTES<br />LEARN / PRACTICE</>} />
+            <PageIntro number="04" title={<>Ruang <em>belajar</em></>} desc="Catatan dan panduan untuk memahami hal-hal yang sedang kamu pelajari." side={<>CATATAN<br />BACA / COBA</>} />
             <div className="learning-hero">
-              <section className="learning-feature"><span className="section-kicker">FEATURED LEARNING PATH / 001</span><div className="learning-orbit" aria-hidden="true"><span>AI</span></div><div><span className="learning-level">BEGINNER PATH · 4 TOPICS</span><h2>Memahami AI, dari dasar sampai praktik.</h2><p>Kenali cara kerja model, susun prompt yang jelas, pahami batasan, dan evaluasi hasil dengan kritis.</p></div><span className="learning-feature-index">01</span></section>
-              <aside className="learning-note"><span className="section-kicker">HOW TO LEARN HERE</span><h3>Pelan, jelas, dan bisa dipraktikkan.</h3><p>Setiap materi dirancang sebagai catatan singkat, bukan sekadar daftar istilah.</p><div className="learning-note-rule"><span>READ</span><i/><span>TRY</span><i/><span>REFLECT</span></div></aside>
+              <section className="learning-feature"><span className="section-kicker">PILIHAN MINGGU INI / 001</span><div className="learning-orbit" aria-hidden="true"><span>AI</span></div><div><span className="learning-level">MULAI DARI DASAR · 4 TOPIK</span><h2>Memahami AI, pelan-pelan.</h2><p>Kenali cara kerja model, susun prompt yang jelas, pahami batasan, dan evaluasi hasil dengan kritis.</p></div><span className="learning-feature-index">01</span></section>
+              <aside className="learning-note"><span className="section-kicker">CARA BELAJAR</span><h3>Baca. Coba. Pahami.</h3><p>Materi singkat yang bisa langsung kamu coba.</p><div className="learning-note-rule"><span>READ</span><i/><span>TRY</span><i/><span>REFLECT</span></div></aside>
             </div>
-            <div className="learning-library-head"><div><span className="section-kicker">LEARNING LIBRARY</span><h2>Jelajahi bidang pengetahuan</h2></div><span>CURATED NOTES / 2026</span></div>
+            <div className="learning-library-head"><div><span className="section-kicker">DAFTAR CATATAN</span><h2>Pilih yang ingin dipelajari</h2></div><span>CATATAN NEFTIS</span></div>
             <div className="learning-path-list">
-              <article><span className="learning-path-number">01</span><div><span className="section-kicker">AI LITERACY</span><h3>Menulis prompt yang berguna</h3><p>Berikan konteks, tujuan, batasan, dan bentuk jawaban yang kamu butuhkan.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
+              <article><span className="learning-path-number">01</span><div><span className="section-kicker">AI LITERACY</span><h3>Menulis prompt yang berguna</h3><p>Berikan konteks, tujuan, batasan, dan bentuk jawaban yang kamu butuhkan.</p></div><span className="learning-path-status">CATATAN</span></article>
               <article><span className="learning-path-number">02</span><div><span className="section-kicker">WEB FUNDAMENTALS</span><h3>Bagaimana website dimuat?</h3><p>Kenali browser, DNS, server, request, response, dan aset halaman.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
               <article><span className="learning-path-number">03</span><div><span className="section-kicker">DIGITAL WORKFLOW</span><h3>Membangun alur kerja yang rapi</h3><p>Pilih alat berdasarkan kebutuhan dan kurangi langkah yang tidak perlu.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
             </div>
           </section>}
 
           {page === "games" && <section className="page-view active arcade-space">
-            <PageIntro number="05" title={<>The <em>arcade</em></>} desc="Eksperimen kecil untuk jeda singkat dan tantangan ringan." side={<>PLAY MODE<br />SHORT SESSIONS</>} />
-            <div className="arcade-intro"><div><span className="section-kicker">NEFTIS ARCADE / COLLECTION 01</span><h2>Main sebentar.<br/><em>Segarkan pikiran.</em></h2><p>Permainan singkat sedang disiapkan sebagai bagian dari ruang Neftis. Setiap judul akan punya aturan sederhana dan progres yang jelas.</p></div><div className="arcade-emblem" aria-hidden="true"><span>◇</span><i/><i/><i/></div></div>
+            <PageIntro number="05" title={<>Ruang <em>main</em></>} desc="Permainan kecil untuk mengisi jeda." side={<>WAKTUNYA MAIN<br />SEBENTAR SAJA</>} />
+            <div className="arcade-intro"><div><span className="section-kicker">PERMAINAN / 001</span><h2>Istirahat sebentar.<br/><em>Main satu ronde.</em></h2><p>Pilih permainan ringan untuk mengisi waktu luang.</p></div><div className="arcade-emblem" aria-hidden="true"><span>◇</span><i/><i/><i/></div></div>
             <div className="arcade-grid">
-              <article className="arcade-card arcade-memory"><div className="arcade-card-art"><span>▦</span><i/><i/><i/><i/></div><div className="arcade-card-copy"><span>01 / MEMORY</span><h3>Memory Grid</h3><p>Latih ingatan visual lewat pola yang berubah.</p><small>IN DEVELOPMENT</small></div></article>
+              <article className="arcade-card arcade-memory"><div className="arcade-card-art"><span>▦</span><i/><i/><i/><i/></div><div className="arcade-card-copy"><span>01 / MEMORY</span><h3>Memory Grid</h3><p>Latih ingatan visual lewat pola yang berubah.</p><small>SEGERA HADIR</small></div></article>
               <article className="arcade-card arcade-reaction"><div className="arcade-card-art"><span>◉</span><i/></div><div className="arcade-card-copy"><span>02 / REFLEX</span><h3>Reaction Test</h3><p>Ukur seberapa cepat kamu merespons sinyal.</p><small>IN DEVELOPMENT</small></div></article>
               <article className="arcade-card arcade-pattern"><div className="arcade-card-art"><span>⌁</span><i/><i/><i/></div><div className="arcade-card-copy"><span>03 / PATTERN</span><h3>Signal Sequence</h3><p>Ikuti urutan dan temukan pola berikutnya.</p><small>IN DEVELOPMENT</small></div></article>
             </div>
@@ -425,12 +444,12 @@ export default function NeftisShell() {
           </section>}
 
           {page === "services" && <section className="page-view active services-space">
-            <PageIntro number="07" title={<>Digital <em>services</em></>} desc="Dukungan praktis untuk ide dan kebutuhan digital yang ingin diwujudkan." side={<>SERVICE DIRECTORY<br />NEFTIS / STUDIO</>} />
-            <div className="services-lead"><span className="section-kicker">FROM IDEA TO DELIVERY</span><h2>Butuh bantuan untuk<br/><em>membangun sesuatu?</em></h2><p>Jelajahi jenis dukungan yang tersedia. Detail paket dan permintaan layanan akan ditambahkan setelah alur pemesanan siap.</p></div>
+            <PageIntro number="07" title={<>Bantuan <em>digital</em></>} desc="Bantuan untuk website, alat digital, dan pekerjaan teknis." side={<>DAFTAR LAYANAN<br />NEFTIS</>} />
+            <div className="services-lead"><span className="section-kicker">LAYANAN NEFTIS</span><h2>Ada yang ingin<br/><em>kamu buat?</em></h2><p>Lihat bantuan yang tersedia untuk proyekmu.</p></div>
             <div className="service-directory">
-              <article><span className="service-index">01</span><div><span className="section-kicker">WEB / PRODUCT</span><h3>Website & digital product</h3><p>Website responsif, landing page, dashboard, dan prototipe produk digital.</p></div><span className="service-arrow">↗</span></article>
-              <article><span className="service-index">02</span><div><span className="section-kicker">AUTOMATION</span><h3>Tools & workflow</h3><p>Utilitas khusus dan otomasi untuk mengurangi pekerjaan berulang.</p></div><span className="service-arrow">↗</span></article>
-              <article><span className="service-index">03</span><div><span className="section-kicker">LEARNING</span><h3>Technical guidance</h3><p>Panduan implementasi, dokumentasi, dan pendampingan teknis yang mudah diikuti.</p></div><span className="service-arrow">↗</span></article>
+              <article><span className="service-index">01</span><div><span className="section-kicker">WEB / PRODUCT</span><h3>Website dan produk digital</h3><p>Website responsif, landing page, dashboard, dan prototipe produk digital.</p></div><span className="service-arrow">↗</span></article>
+              <article><span className="service-index">02</span><div><span className="section-kicker">AUTOMATION</span><h3>Alat dan otomasi</h3><p>Utilitas khusus dan otomasi untuk mengurangi pekerjaan berulang.</p></div><span className="service-arrow">↗</span></article>
+              <article><span className="service-index">03</span><div><span className="section-kicker">LEARNING</span><h3>Panduan teknis</h3><p>Panduan implementasi, dokumentasi, dan pendampingan teknis yang mudah diikuti.</p></div><span className="service-arrow">↗</span></article>
             </div>
           </section>}
         </div>
