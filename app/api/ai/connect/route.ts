@@ -3,10 +3,25 @@ import { detectProvider, normalizeModels, providerHeaders, providers, resolvePro
 
 export const dynamic = "force-dynamic";
 
+type Protocol = "openai" | "anthropic" | "google";
+type AuthMode = "bearer" | "x-api-key" | "google-key" | "none";
+
+function inferProtocol(baseUrl: string): Protocol {
+  const host = new URL(baseUrl).hostname.toLowerCase();
+  if (host.includes("anthropic")) return "anthropic";
+  if (host.includes("generativelanguage.googleapis.com") || host.includes("googleapis.com")) return "google";
+  return "openai";
+}
+
+function authCandidates(preferred?: AuthMode): AuthMode[] {
+  const all: AuthMode[] = ["bearer", "x-api-key", "google-key"];
+  return preferred && preferred !== "none" ? [preferred, ...all.filter((mode) => mode !== preferred)] : all;
+}
+
 export async function POST(request: Request) {
   const { auth } = await import("@/lib/auth/server");
   const { data: session } = await auth.getSession();
-  if (!session?.user) return NextResponse.json({ error: "Sign in to connect an AI provider." }, { status: 401 });
+  if (!session?.user) return NextResponse.json({ error: "Masuk terlebih dahulu untuk menggunakan Neftis AI." }, { status: 401 });
 
   const origin = request.headers.get("origin");
   const host = request.headers.get("host");
@@ -15,58 +30,67 @@ export async function POST(request: Request) {
     catch { return NextResponse.json({ error: "Invalid request origin." }, { status: 403 }); }
   }
 
-  let body: {
-    apiKey?: string;
-    provider?: ProviderId;
-    baseUrl?: string;
-    protocol?: "openai" | "anthropic" | "google";
-    authMode?: "bearer" | "x-api-key" | "google-key" | "none";
-    displayName?: string;
-  };
+  let body: { apiKey?: string; provider?: ProviderId; baseUrl?: string; protocol?: Protocol; authMode?: AuthMode; displayName?: string };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request." }, { status: 400 }); }
-  if (body.protocol !== undefined && !["openai", "anthropic", "google"].includes(body.protocol)) {
-    return NextResponse.json({ error: "Protokol API tidak didukung." }, { status: 400 });
-  }
-  if (body.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(body.authMode)) {
-    return NextResponse.json({ error: "Metode autentikasi tidak didukung." }, { status: 400 });
-  }
-  const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
-  if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "API key format is invalid." }, { status: 400 });
+  if (body.protocol !== undefined && !["openai", "anthropic", "google"].includes(body.protocol)) return NextResponse.json({ error: "Protokol API tidak didukung." }, { status: 400 });
+  if (body.authMode !== undefined && !["bearer", "x-api-key", "google-key", "none"].includes(body.authMode)) return NextResponse.json({ error: "Metode autentikasi tidak didukung." }, { status: 400 });
 
+  const apiKey = typeof body.apiKey === "string" ? body.apiKey.trim() : "";
+  if (apiKey.length < 8 || apiKey.length > 512 || /[\r\n]/.test(apiKey)) return NextResponse.json({ error: "Format API key tidak valid." }, { status: 400 });
+
+  const hasBaseUrl = typeof body.baseUrl === "string" && body.baseUrl.trim().length > 0;
   const detected = detectProvider(apiKey);
-  const providerId = body.provider ?? (body.baseUrl?.trim() ? "custom-openai" : detected);
+  const providerId = hasBaseUrl ? "custom-openai" : body.provider ?? detected;
   if (!providerId || !Object.hasOwn(providers, providerId)) {
-    return NextResponse.json({ needsProvider: true, providers: Object.values(providers).map(({ id, name }) => ({ id, name })) });
+    return NextResponse.json({ error: "Base URL diperlukan untuk token yang tidak memiliki pola provider yang dikenali.", needsBaseUrl: true }, { status: 400 });
   }
 
   let provider;
   try {
-    provider = resolveProvider(providerId, body.baseUrl, body.protocol ?? "openai", body.authMode ?? "bearer");
-    if (providerId === "custom-openai" && typeof body.displayName === "string" && body.displayName.trim()) {
-      provider.name = body.displayName.trim().slice(0, 48);
-    }
+    const protocol = body.protocol ?? (hasBaseUrl ? inferProtocol(body.baseUrl!) : providerId === "google" ? "google" : providerId === "anthropic" ? "anthropic" : "openai");
+    provider = resolveProvider(providerId, body.baseUrl, protocol, body.authMode ?? "bearer");
+    if (providerId === "custom-openai") provider.name = body.displayName?.trim().slice(0, 48) || new URL(provider.baseUrl).hostname;
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Base URL tidak valid." }, { status: 400 });
   }
-  catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Base URL tidak valid." }, { status: 400 }); }
 
-  try {
-    const response = await fetch(`${provider.baseUrl}/models`, {
-      headers: providerHeaders(provider, apiKey),
-      cache: "no-store",
-      redirect: "error",
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!response.ok) {
-      const status = response.status === 401 || response.status === 403 ? 401 : 502;
-      return NextResponse.json({ error: status === 401 ? "API key ditolak provider." : `Provider mengembalikan HTTP ${response.status}.` }, { status });
+  const candidates = authCandidates(body.authMode);
+  const diagnostics: string[] = [];
+  for (const authMode of candidates) {
+    const candidate = { ...provider, keyHeader: authMode === "google-key" ? "google" as const : authMode };
+    try {
+      const response = await fetch(`${provider.baseUrl}/models`, {
+        headers: providerHeaders(candidate, apiKey),
+        cache: "no-store",
+        redirect: "error",
+        signal: AbortSignal.timeout(9000),
+      });
+      if (response.status === 401 || response.status === 403) {
+        diagnostics.push(`${authMode}: HTTP ${response.status}`);
+        continue;
+      }
+      if (!response.ok) {
+        const detail = (await response.text()).slice(0, 180);
+        return NextResponse.json({ error: `Endpoint model mengembalikan HTTP ${response.status}. ${detail}`.trim(), endpoint: `${provider.baseUrl}/models` }, { status: 502 });
+      }
+      const payload: unknown = await response.json();
+      const models = normalizeModels(providerId, payload, provider.kind);
+      if (!models.length) {
+        return NextResponse.json({ error: "Token diterima, tetapi endpoint /models tidak mengembalikan daftar model yang dikenali. Periksa format API atau masukkan model ID secara manual pada pengaturan lanjutan.", modelsUnavailable: true, endpoint: `${provider.baseUrl}/models` }, { status: 422 });
+      }
+      return NextResponse.json({
+        provider: { id: provider.id, name: provider.name, baseUrl: provider.baseUrl, kind: provider.kind, keyHeader: authMode },
+        models,
+        detection: { protocol: provider.kind, authMode, method: "base-url" },
+      });
+    } catch (error) {
+      diagnostics.push(`${authMode}: ${error instanceof Error ? error.name : "network error"}`);
+      if (error instanceof Error && error.name === "TimeoutError") continue;
     }
-    const payload: unknown = await response.json();
-    const models = normalizeModels(providerId, payload, provider.kind);
-    if (!models.length) return NextResponse.json({ error: "Provider merespons, tetapi tidak mengirim daftar model yang kompatibel." }, { status: 422 });
-    return NextResponse.json({
-      provider: { id: provider.id, name: provider.name, baseUrl: provider.baseUrl, kind: provider.kind, keyHeader: provider.keyHeader },
-      models,
-    });
-  } catch {
-    return NextResponse.json({ error: "Tidak dapat menghubungi provider. Periksa Base URL dan token." }, { status: 502 });
   }
+  return NextResponse.json({
+    error: "Koneksi belum berhasil. Neftis sudah mencoba header Bearer, x-api-key, dan x-goog-api-key. Pastikan Base URL adalah alamat API, bukan halaman web, dan token memang berlaku untuk endpoint tersebut.",
+    endpoint: `${provider.baseUrl}/models`,
+    diagnostics,
+  }, { status: 502 });
 }
