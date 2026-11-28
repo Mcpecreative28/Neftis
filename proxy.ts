@@ -11,6 +11,5 @@ export const config = {
     "/profile/:path*",
     "/settings/:path*",
     "/notifications/:path*",
-    "/admin/:path*",
   ],
 };
