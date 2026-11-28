@@ -10,22 +10,22 @@ import { motion } from "motion/react";
 type PageKey = "home" | "ai" | "tools" | "community" | "learn" | "games" | "achievements" | "services";
 
 const navPrimary: { id: PageKey; label: string; icon: string; isNew?: boolean }[] = [
-  { id: "home", label: "Overview", icon: "◫" },
+  { id: "home", label: "Beranda", icon: "◫" },
   { id: "ai", label: "Neftis AI", icon: "✳", isNew: true },
-  { id: "tools", label: "Tools library", icon: "⌘" },
-  { id: "community", label: "Community", icon: "◎" },
-  { id: "learn", label: "Knowledge", icon: "▤" },
-  { id: "games", label: "Arcade", icon: "◇" },
+  { id: "tools", label: "Pustaka alat", icon: "⌘" },
+  { id: "community", label: "Komunitas", icon: "◎" },
+  { id: "learn", label: "Ruang belajar", icon: "▤" },
+  { id: "games", label: "Permainan", icon: "◇" },
 ];
 const navPersonal: { id: PageKey; label: string; icon: string }[] = [
-  { id: "achievements", label: "Achievements", icon: "✧" },
-  { id: "services", label: "Services", icon: "↗" },
+  { id: "achievements", label: "Pencapaian", icon: "✧" },
+  { id: "services", label: "Layanan", icon: "↗" },
 ];
 const spaces = [
   { id: "ai" as const, no: "01", tag: "PIKIR", title: "Neftis AI", desc: "Tempat merangkai pertanyaan, tulisan, dan gagasan.", icon: "✳", tone: "feature-ai" },
-  { id: "tools" as const, no: "02", tag: "BUAT", title: "Tools library", desc: "Alat sederhana untuk pekerjaan sehari-hari.", icon: "⌘", tone: "feature-tools" },
-  { id: "community" as const, no: "03", tag: "BAGI", title: "Community", desc: "Berbagi cerita, pertanyaan, dan temuan.", icon: "◎", tone: "feature-community" },
-  { id: "learn" as const, no: "04", tag: "GROW", title: "Knowledge room", desc: "Catatan dan panduan yang bisa kamu simpan.", icon: "▤", tone: "feature-learn" },
+  { id: "tools" as const, no: "02", tag: "BUAT", title: "Pustaka alat", desc: "Alat sederhana untuk pekerjaan sehari-hari.", icon: "⌘", tone: "feature-tools" },
+  { id: "community" as const, no: "03", tag: "BAGI", title: "Komunitas", desc: "Berbagi cerita, pertanyaan, dan temuan.", icon: "◎", tone: "feature-community" },
+  { id: "learn" as const, no: "04", tag: "GROW", title: "Ruang belajar", desc: "Catatan dan panduan yang bisa kamu simpan.", icon: "▤", tone: "feature-learn" },
 ];
 const pageTitles: Record<PageKey, string> = {
   home: "Overview", ai: "Neftis AI", tools: "Tools library", community: "Community",
@@ -395,7 +395,7 @@ export default function NeftisShell() {
                     {page === "tools" && <ToolsLibrary language={language} />}
 
           {page === "community" && <section className="page-view active community-space">
-            <PageIntro number="03" title={<>The <em>commons</em></>} desc="Tempat bertukar pertanyaan, pengalaman, dan temuan bersama." side={<>COMMUNITY BOARD<br />OPEN ACCESS</>} />
+            <PageIntro number="03" title={<>Ruang <em>bersama</em></>} desc="Tempat bertukar pertanyaan, pengalaman, dan temuan bersama." side={<>PAPAN KOMUNITAS<br />TERBUKA UNTUK SEMUA</>} />
             <div className="community-desk">
               <main className="community-feed">
                 <div className="community-feed-bar"><div><span className="section-kicker">PERCAKAPAN TERBUKA</span><h2>Ruang percakapan</h2></div><span className="community-count">BELUM ADA TOPIK</span></div>
@@ -416,9 +416,9 @@ export default function NeftisShell() {
             </div>
             <div className="learning-library-head"><div><span className="section-kicker">DAFTAR CATATAN</span><h2>Pilih yang ingin dipelajari</h2></div><span>CATATAN NEFTIS</span></div>
             <div className="learning-path-list">
-              <article><span className="learning-path-number">01</span><div><span className="section-kicker">AI LITERACY</span><h3>Menulis prompt yang berguna</h3><p>Berikan konteks, tujuan, batasan, dan bentuk jawaban yang kamu butuhkan.</p></div><span className="learning-path-status">CATATAN</span></article>
-              <article><span className="learning-path-number">02</span><div><span className="section-kicker">WEB FUNDAMENTALS</span><h3>Bagaimana website dimuat?</h3><p>Kenali browser, DNS, server, request, response, dan aset halaman.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
-              <article><span className="learning-path-number">03</span><div><span className="section-kicker">DIGITAL WORKFLOW</span><h3>Membangun alur kerja yang rapi</h3><p>Pilih alat berdasarkan kebutuhan dan kurangi langkah yang tidak perlu.</p></div><span className="learning-path-status">FIELD NOTE</span></article>
+              <article><span className="learning-path-number">01</span><div><span className="section-kicker">DASAR AI</span><h3>Menulis prompt yang berguna</h3><p>Berikan konteks, tujuan, batasan, dan bentuk jawaban yang kamu butuhkan.</p></div><span className="learning-path-status">CATATAN</span></article>
+              <article><span className="learning-path-number">02</span><div><span className="section-kicker">DASAR WEB</span><h3>Bagaimana website dimuat?</h3><p>Kenali browser, DNS, server, request, response, dan aset halaman.</p></div><span className="learning-path-status">CATATAN</span></article>
+              <article><span className="learning-path-number">03</span><div><span className="section-kicker">ALUR KERJA DIGITAL</span><h3>Membangun alur kerja yang rapi</h3><p>Pilih alat berdasarkan kebutuhan dan kurangi langkah yang tidak perlu.</p></div><span className="learning-path-status">CATATAN</span></article>
             </div>
           </section>}
 
@@ -427,19 +427,19 @@ export default function NeftisShell() {
             <div className="arcade-intro"><div><span className="section-kicker">PERMAINAN / 001</span><h2>Istirahat sebentar.<br/><em>Main satu ronde.</em></h2><p>Pilih permainan ringan untuk mengisi waktu luang.</p></div><div className="arcade-emblem" aria-hidden="true"><span>◇</span><i/><i/><i/></div></div>
             <div className="arcade-grid">
               <article className="arcade-card arcade-memory"><div className="arcade-card-art"><span>▦</span><i/><i/><i/><i/></div><div className="arcade-card-copy"><span>01 / MEMORY</span><h3>Memory Grid</h3><p>Latih ingatan visual lewat pola yang berubah.</p><small>SEGERA HADIR</small></div></article>
-              <article className="arcade-card arcade-reaction"><div className="arcade-card-art"><span>◉</span><i/></div><div className="arcade-card-copy"><span>02 / REFLEX</span><h3>Reaction Test</h3><p>Ukur seberapa cepat kamu merespons sinyal.</p><small>IN DEVELOPMENT</small></div></article>
-              <article className="arcade-card arcade-pattern"><div className="arcade-card-art"><span>⌁</span><i/><i/><i/></div><div className="arcade-card-copy"><span>03 / PATTERN</span><h3>Signal Sequence</h3><p>Ikuti urutan dan temukan pola berikutnya.</p><small>IN DEVELOPMENT</small></div></article>
+              <article className="arcade-card arcade-reaction"><div className="arcade-card-art"><span>◉</span><i/></div><div className="arcade-card-copy"><span>02 / REFLEX</span><h3>Reaction Test</h3><p>Ukur seberapa cepat kamu merespons sinyal.</p><small>SEGERA HADIR</small></div></article>
+              <article className="arcade-card arcade-pattern"><div className="arcade-card-art"><span>⌁</span><i/><i/><i/></div><div className="arcade-card-copy"><span>03 / PATTERN</span><h3>Signal Sequence</h3><p>Ikuti urutan dan temukan pola berikutnya.</p><small>SEGERA HADIR</small></div></article>
             </div>
           </section>}
 
           {page === "achievements" && <section className="page-view active milestones-space">
-            <PageIntro number="06" title={<>Small <em>milestones</em></>} desc="Pencapaian akan mencatat perjalanan saat aktivitas akun mulai terhubung." side={<>PERSONAL PROGRESS<br />ACCOUNT / JOURNEY</>} />
-            <div className="milestone-hero"><div><span className="section-kicker">YOUR NEFTIS JOURNEY</span><h2>Setiap penemuan<br/>punya <em>jejak.</em></h2><p>Ruang ini akan mengumpulkan pencapaian dari aktivitas nyata—menjelajahi alat, mempelajari materi, dan berkontribusi pada komunitas.</p></div><div className="milestone-stamp"><span>✧</span><small>COLLECT<br/>AS YOU GO</small></div></div>
+            <PageIntro number="06" title={<>Jejak <em>perjalanan</em></>} desc="Pencapaian akan mencatat perjalanan saat aktivitas akun mulai terhubung." side={<>PERJALANAN AKUN<br />PENCAPAIAN</>} />
+            <div className="milestone-hero"><div><span className="section-kicker">PERJALANANMU DI NEFTIS</span><h2>Setiap penemuan<br/>punya <em>jejak.</em></h2><p>Ruang ini akan mengumpulkan pencapaian dari aktivitas nyata—menjelajahi alat, mempelajari materi, dan berkontribusi pada komunitas.</p></div><div className="milestone-stamp"><span>✧</span><small>TERKUMPUL<br/>SEIRING WAKTU</small></div></div>
             <div className="milestone-collection">
-              <article><span>01</span><div><b>Explorer</b><small>Jelajahi beberapa ruang Neftis.</small></div><i>LOCKED</i></article>
-              <article><span>02</span><div><b>Problem solver</b><small>Gunakan alat untuk menyelesaikan tugas.</small></div><i>LOCKED</i></article>
-              <article><span>03</span><div><b>Curious learner</b><small>Selesaikan catatan pembelajaran.</small></div><i>LOCKED</i></article>
-              <article><span>04</span><div><b>Community voice</b><small>Bagikan pengetahuan kepada komunitas.</small></div><i>LOCKED</i></article>
+              <article><span>01</span><div><b>Explorer</b><small>Jelajahi beberapa ruang Neftis.</small></div><i>BELUM TERBUKA</i></article>
+              <article><span>02</span><div><b>Pemecah masalah</b><small>Gunakan alat untuk menyelesaikan tugas.</small></div><i>BELUM TERBUKA</i></article>
+              <article><span>03</span><div><b>Pembelajar</b><small>Selesaikan catatan pembelajaran.</small></div><i>BELUM TERBUKA</i></article>
+              <article><span>04</span><div><b>Suara komunitas</b><small>Bagikan pengetahuan kepada komunitas.</small></div><i>BELUM TERBUKA</i></article>
             </div>
           </section>}
 
@@ -460,7 +460,7 @@ export default function NeftisShell() {
           <span className="mobile-dock-icon"><NeftisIcon name={item.id} /></span><small>{localizedTitles[item.id]}</small>
         </button>)}
       </nav>
-      {searchOpen && <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}><section className="modal panel" role="dialog" aria-modal="true" aria-label="Search Neftis"><div className="modal-head"><span className="section-kicker">NEFTIS / SEARCH</span><button className="icon-button" onClick={() => setSearchOpen(false)}>×</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search spaces..." aria-label="Search Neftis spaces" />{searchable.length ? searchable.map((item) => <button className="search-result" key={item.id} onClick={() => navigate(item.id)}>{item.label}<span>OPEN ↗</span></button>) : <p className="empty-state">No matching spaces.</p> }</section></div>}
+      {searchOpen && <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}><section className="modal panel" role="dialog" aria-modal="true" aria-label="Search Neftis"><div className="modal-head"><span className="section-kicker">PENCARIAN NEFTIS</span><button className="icon-button" onClick={() => setSearchOpen(false)}>×</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari halaman atau topik..." aria-label="Search Neftis spaces" />{searchable.length ? searchable.map((item) => <button className="search-result" key={item.id} onClick={() => navigate(item.id)}>{item.label}<span>BUKA ↗</span></button>) : <p className="empty-state">Tidak ada halaman yang cocok.</p> }</section></div>}
       {toast && <div className="toast show" role="status">{toast}</div>}
     </div>
   );

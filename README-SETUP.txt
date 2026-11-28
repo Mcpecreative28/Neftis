@@ -35,3 +35,25 @@ DEPLOYMENT
 - Do not merge into main until build, lint, migrations, authentication, quotas, and upload security are verified.
 
 See docs/architecture.md for the agreed structure, service boundaries, upload design, and security invariants.
+
+
+ADMIN ACCESS
+------------
+There is no separate public admin registration page.
+
+1. Create a normal Neftis account at /register, or sign in at /login.
+2. To grant the initial owner access, add the exact email used by that account to the
+   server-only Vercel Environment Variable named NEFTIS_SUPERADMIN_EMAILS.
+   Example format: owner@example.com
+   Multiple addresses can be comma-separated.
+3. Apply the variable to Production (and Preview if needed), then redeploy the project.
+4. Sign out of Neftis and sign in again using that same email.
+5. Open /admin. If the account is not authorized, /admin/login explains what is missing.
+
+Do not create a NEXT_PUBLIC_NEFTIS_SUPERADMIN_EMAILS variable. Do not put this email
+allowlist in client-side code. Never share passwords or authentication cookies.
+
+The initial superadmin is resolved from NEFTIS_SUPERADMIN_EMAILS. Other staff access
+is represented by active rows in the admin_members table and must be granted by an
+authorized administrator through a controlled server-side process. The current admin
+console does not yet provide a complete staff-management interface.
