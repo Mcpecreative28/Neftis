@@ -157,3 +157,42 @@ body { background:#0b1028!important; color:var(--moon-ink)!important; font-famil
 @media(prefers-reduced-motion:reduce) {
  *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important; }
 }
+
+/* Scene artwork and Indonesian interface copy */
+.app-shell .moonlit-visual { background:#101b43!important; }
+.app-shell .moonlit-visual::before { content:none!important; }
+.app-shell .moonlit-visual::after { height:18%!important;background:linear-gradient(0deg,rgba(7,13,34,.66),transparent)!important; }
+.app-shell .moonlit-scene {
+  display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  object-fit:cover!important;opacity:1!important;z-index:0!important;
+}
+.app-shell .atlas-visual-caption { z-index:2!important;color:#dce6ff!important; }
+.app-shell .moonlit-scene-note {
+  position:absolute;z-index:3;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;
+  align-items:center;color:#dce6ff;font-size:9px;letter-spacing:1.1px;text-shadow:0 1px 8px #07102b;
+}
+.app-shell .atlas-overline { letter-spacing:1.1px!important; }
+.app-shell .atlas-copy h1 { max-width:590px!important; }
+.app-shell .atlas-copy h1 em { max-width:560px!important; }
+.app-shell .atlas-footnote { letter-spacing:.65px!important; }
+.app-shell .atlas-bottomline { letter-spacing:.7px!important; }
+.app-shell .section-heading h2,.app-shell .home-principles-heading h2 { letter-spacing:-.6px!important; }
+.app-shell .atlas-space-copy strong { font-size:18px!important; }
+.app-shell .community-empty-state { padding:48px 28px!important; }
+.app-shell .community-empty-state h3 { font-size:clamp(25px,3vw,34px)!important; }
+.app-shell .community-empty-state p { max-width:460px!important;line-height:1.75!important; }
+.app-shell .learning-feature h2,.app-shell .arcade-intro h2,.app-shell .services-lead h2 { font-family:var(--moon-serif)!important; }
+.app-shell .page-intro { border-bottom:1px solid var(--moon-line)!important;padding-bottom:24px!important; }
+.app-shell .section-kicker { letter-spacing:1.05px!important; }
+.app-shell .topbar,.app-shell .sidebar { backdrop-filter:none!important; }
+.app-shell .nav-link.active { box-shadow:inset 2px 0 #b9caff!important; }
+.app-shell .feature-card:hover,.app-shell .atlas-space-row:hover { transform:translateY(-2px)!important; }
+@media(max-width:900px) {
+ .app-shell .moonlit-scene { object-position:58% center!important; }
+}
+@media(max-width:680px) {
+ .app-shell .atlas-visual { height:360px!important;min-height:360px!important; }
+ .app-shell .moonlit-scene { object-position:57% center!important; }
+ .app-shell .moonlit-scene-note { left:14px;right:14px;bottom:14px;font-size:8px; }
+ .app-shell .atlas-copy h1 em { max-width:100%!important; }
+}
