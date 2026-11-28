@@ -44,7 +44,7 @@ const languages: {code: LocaleCode; name: string; native: string}[] = [
   {code:"vi",name:"Vietnamese",native:"Tiếng Việt"}
 ];
 const translations: Record<LocaleCode, Record<string,string>> = {
- id:{overview:"Ringkasan",ai:"Neftis AI",tools:"Pustaka alat",community:"Komunitas",learn:"Pengetahuan",games:"Arkade",achievements:"Pencapaian",services:"Layanan",workspace:"RUANG KERJA",yourSpace:"RUANG KAMU",search:"Cari apa saja",signIn:"Masuk",openAI:"Buka Neftis AI",explore:"Jelajahi alat",commons:"RUANG BERSAMA",begin:"Tempat untuk memulai"},
+ id:{overview:"Ringkasan",ai:"Neftis AI",tools:"Pustaka alat",community:"Komunitas",learn:"Pengetahuan",games:"Arkade",achievements:"Pencapaian",services:"Layanan",workspace:"RUANG KERJA",yourSpace:"RUANG KAMU",search:"Cari ruang atau topik",signIn:"Masuk",openAI:"Mulai ngobrol",explore:"Lihat alat",commons:"RUANG BERSAMA",begin:"Mulai dari sini"},
  en:{overview:"Overview",ai:"Neftis AI",tools:"Tools library",community:"Community",learn:"Knowledge",games:"Arcade",achievements:"Achievements",services:"Services",workspace:"WORKSPACE",yourSpace:"YOUR SPACE",search:"Search anything",signIn:"Sign in",openAI:"Open Neftis AI",explore:"Explore tools",commons:"THE COMMONS",begin:"A place to begin"},
  zh:{overview:"概览",ai:"Neftis 人工智能",tools:"工具库",community:"社区",learn:"知识",games:"游戏",achievements:"成就",services:"服务",workspace:"工作区",yourSpace:"你的空间",search:"搜索任何内容",signIn:"登录",openAI:"打开 Neftis AI",explore:"探索工具",commons:"共享空间",begin:"从这里开始"},
  ja:{overview:"概要",ai:"Neftis AI",tools:"ツールライブラリ",community:"コミュニティ",learn:"ナレッジ",games:"アーケード",achievements:"実績",services:"サービス",workspace:"ワークスペース",yourSpace:"あなたのスペース",search:"何でも検索",signIn:"ログイン",openAI:"Neftis AIを開く",explore:"ツールを見る",commons:"共有スペース",begin:"ここから始める"},
@@ -265,8 +265,8 @@ export default function NeftisShell() {
           {navPersonal.map((item) => <button key={item.id} className={`nav-link ${page === item.id ? "active" : ""}`} onClick={() => navigate(item.id)}><span className="nav-icon"><NeftisIcon name={item.id} /></span><span>{item.id === "achievements" ? t.achievements : t.services}</span></button>)}
         </nav>
         <div className="sidebar-bottom">
-          <div className="status-card"><span className="status-dot" /><div><strong>Open for everyone</strong><small>A shared digital space</small></div></div>
-          <button className="profile-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}><span className="avatar">{sessionUser?.name?.slice(0, 1).toUpperCase() ?? "G"}</span><span><strong>{sessionUser?.name ?? "Guest session"}</strong><small>{sessionUser?.email ?? "Preview mode"}</small></span><span className="more">↗</span></button>
+          <div className="status-card"><span className="status-dot" /><div><strong>Terbuka untuk semua</strong><small>Ruang bersama</small></div></div>
+          <button className="profile-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}><span className="avatar">{sessionUser?.name?.slice(0, 1).toUpperCase() ?? "G"}</span><span><strong>{sessionUser?.name ?? "Pengunjung"}</strong><small>{sessionUser?.email ?? "Belum masuk"}</small></span><span className="more">↗</span></button>
         </div>
       </aside>
 
@@ -367,7 +367,7 @@ export default function NeftisShell() {
                     <div className="moonlit-scene-note"><span>NEFTIS / ARCHIVE 01</span><span>Di bawah cahaya bulan</span></div>
                   </div>
                 </motion.section>
-                <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>TEMUKAN</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
+                <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>TEMUKAN</b></span><span className="atlas-bottom-note">TEMPAT UNTUK MENEMUKAN IDE</span></div>
               </div>
               <div className="section-heading" data-reveal><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
               <div className="atlas-space-list" data-reveal>{spaces.map((space) => <button key={space.id} className={`atlas-space-row ${space.tone}`} onClick={() => navigate(space.id)}><span className="atlas-space-no">{space.no}</span><span className="atlas-space-symbol"><NeftisIcon name={space.id} /></span><span className="atlas-space-copy"><small>{space.tag}</small><strong>{space.title}</strong><em>{space.desc}</em></span><span className="atlas-space-arrow">↗</span></button>)}</div>
@@ -388,7 +388,7 @@ export default function NeftisShell() {
           </>}
 
           {page === "ai" && <section className="page-view active ai-workspace">
-            <div className="page-intro"><div><span className="section-kicker">01 / INTELLIGENCE</span><h1>Neftis <em>AI</em></h1><p>One connection. Your models. Your way of thinking.</p></div><div className="intro-side-label">MODEL GATEWAY<br />TOKEN-FIRST WORKSPACE</div></div>
+            <div className="page-intro"><div><span className="section-kicker">01 / RUANG AI</span><h1>Neftis <em>AI</em></h1><p>Sambungkan model pilihanmu, lalu mulai bertanya.</p></div><div className="intro-side-label">PENGATURAN MODEL<br />RUANG PERCAKAPAN</div></div>
             <AIWorkspace />
           </section>}
 
