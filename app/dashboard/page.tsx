@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth/server";
 import { signOutAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  const { auth } = await import("@/lib/auth/server");
   const { data: session } = await auth.getSession();
   if (!session?.user) redirect("/login?next=/dashboard");
 
