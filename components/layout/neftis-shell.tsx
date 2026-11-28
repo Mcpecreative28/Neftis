@@ -133,13 +133,13 @@ export default function NeftisShell() {
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [colorTarget, setColorTarget] = useState<"accent" | "background" | "panel" | "text" | null>(null);
-  const [draftColor, setDraftColor] = useState("#cf6848");
+  const [draftColor, setDraftColor] = useState("#a85f47");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
   const copy = homeCopy[language] ?? homeCopy.en!;
   const colorPalette = ["#a85f47", "#737b4e", "#c6a77b", "#292a25", "#f2eee5", "#e8e0d2", "#8c9a87", "#b8785b"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
-  const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#101116"), panel: customPanel || "#20232b", text: customText || "#f0f0ec" };
+  const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#f2eee5"), panel: customPanel || (theme === "ink" || theme === "night" ? "#343832" : "#e8e0d2"), text: customText || (theme === "ink" || theme === "night" ? "#f2eee5" : "#292a25") };
   useEffect(() => {
     try {
       const savedLanguage = localStorage.getItem("neftis-language-v4") as LocaleCode | null;
@@ -297,7 +297,7 @@ export default function NeftisShell() {
                 <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
                 <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
                 {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
-                <button className="reset-preferences" onClick={() => {setTheme("atelier");setCustomAccent("#cf6848");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
+                <button className="reset-preferences" onClick={() => {setTheme("paper");setCustomAccent("#a85f47");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
             <button className="sign-in-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}>{sessionUser ? "Dashboard" : t.signIn}</button>
