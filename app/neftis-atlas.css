@@ -314,3 +314,35 @@ body { background:var(--bg); color:var(--text); font-family:var(--atlas-sans); }
 .atlas-space-row:hover { background:color-mix(in srgb,var(--accent) 8%,transparent); }
 .atlas-primary { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
 .atlas-primary:hover { background:color-mix(in srgb,var(--accent) 82%,white); }
+
+/* Theme-aware shell surfaces */
+.app-shell .sidebar { background:var(--bg); border-right-color:var(--line); }
+.app-shell .topbar { background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 94%,transparent),color-mix(in srgb,var(--bg) 70%,transparent) 72%,transparent); }
+.app-shell .nav-link { color:var(--muted); }
+.app-shell .nav-link.active { color:var(--text); background:color-mix(in srgb,var(--accent) 15%,transparent); outline-color:color-mix(in srgb,var(--accent) 42%,transparent); }
+.app-shell .brand-mark { border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); color:var(--text); background:color-mix(in srgb,var(--accent) 12%,transparent); }
+.app-shell .brand-name>span { color:var(--accent); }
+.app-shell .search-trigger,.app-shell .preference-trigger,.app-shell .icon-button,.app-shell .sign-in-button {
+ border-color:color-mix(in srgb,var(--text) 20%,transparent);
+ color:var(--text);
+ background:color-mix(in srgb,var(--surface) 66%,transparent);
+}
+.app-shell .sign-in-button { color:var(--accent-ink); background:var(--accent); border-color:var(--accent); }
+.app-shell .mobile-dock { background:color-mix(in srgb,var(--surface) 94%,transparent); border-color:var(--line); }
+.app-shell .mobile-dock-link { color:var(--muted); }
+.app-shell .mobile-dock-link.active { color:var(--text); background:color-mix(in srgb,var(--accent) 16%,transparent); outline-color:color-mix(in srgb,var(--accent) 50%,transparent); }
+.app-shell .atlas-stage { background:var(--bg); }
+.app-shell .atlas-stage::before {
+ background:radial-gradient(ellipse at 80% 47%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 43%),radial-gradient(ellipse at 20% 85%,color-mix(in srgb,var(--text) 7%,transparent),transparent 38%),linear-gradient(120deg,var(--bg),color-mix(in srgb,var(--bg) 85%,var(--surface)) 58%,var(--surface));
+}
+.app-shell .atlas-copy h1,.app-shell .atlas-space-copy strong { color:var(--text); }
+.app-shell .atlas-description,.app-shell .atlas-space-copy em { color:var(--muted); }
+.app-shell .atlas-space-row:hover { background:color-mix(in srgb,var(--accent) 8%,transparent); }
+.app-shell .atlas-space-symbol { border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); color:var(--accent); }
+.app-shell .atlas-meta,.app-shell .atlas-bottomline { border-color:var(--line); color:var(--muted); }
+.app-shell .atlas-primary { color:var(--accent-ink); background:var(--accent); border-color:var(--accent); }
+.app-shell .atlas-secondary { color:var(--text); }
+@media(max-width:760px) {
+ .app-shell .topbar { background:color-mix(in srgb,var(--bg) 94%,transparent); }
+ .app-shell .mobile-dock { background:color-mix(in srgb,var(--surface) 95%,transparent); }
+}
