@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap");
+
+/* Neftis — Moonlit Garden */
+:root {
+  --moon-ink:#eef1ff;
+  --moon-muted:#aab5d6;
+  --moon-line:rgba(191,205,255,.22);
+  --moon-panel:#151d3d;
+  --moon-accent:#a9bcff;
+  --moon-serif:"Playfair Display",Georgia,serif;
+  --moon-sans:"DM Sans",Arial,sans-serif;
+}
+html { background:#0b1028; color-scheme:dark; }
+body { background:#0b1028!important; color:var(--moon-ink)!important; font-family:var(--moon-sans)!important; }
+.app-shell {
+  --bg:#0b1028!important; --surface:#111936!important; --surface-2:#1a2448!important;
+  --text:#eef1ff!important; --muted:#aab5d6!important; --accent:#a9bcff!important;
+  background:#0b1028!important;color:var(--moon-ink)!important;font-family:var(--moon-sans)!important;
+}
+.app-shell .sidebar { background:#0a1027!important;border-right:1px solid var(--moon-line)!important; }
+.app-shell .brand-mark,.app-shell .global-brand-mark { border:0!important;background:transparent!important;color:#b6c8ff!important; }
+.app-shell .brand-name,.app-shell .global-brand { color:#eef1ff!important; }
+.app-shell .brand-name small { color:#8593bd!important; }
+.app-shell .workspace-label,.app-shell .section-kicker { color:#a8b9f0!important; }
+.app-shell .nav-link { color:#aab5d6!important;border-radius:10px!important; }
+.app-shell .nav-link.active { background:#202b54!important;border-color:#435486!important;color:#fff!important; }
+.app-shell .nav-link .nav-icon { color:#b8caff!important; }
+.app-shell .status-card { background:#121b3a!important;border:1px solid var(--moon-line)!important; }
+.app-shell .topbar { background:rgba(9,15,38,.88)!important;border-bottom:1px solid var(--moon-line)!important; }
+.app-shell .global-nav-link,.app-shell .search-trigger,.app-shell .preference-trigger,.app-shell .icon-button {
+  color:#dce5ff!important;border-color:var(--moon-line)!important;background:rgba(27,39,78,.42)!important;border-radius:9px!important;
+}
+.app-shell .sign-in-button { background:#a9bcff!important;color:#101936!important;border:0!important;border-radius:9px!important; }
+.app-shell .content-wrap { padding-top:0!important; }
+.app-shell .atlas-stage {
+  position:relative!important;overflow:hidden!important;margin:-1px calc(clamp(22px,4vw,62px) * -1) 0!important;
+  padding:22px clamp(22px,4vw,62px) 30px!important;background:#0b1028!important;
+}
+.app-shell .atlas-stage::before {
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:1!important;
+  background:
+    radial-gradient(ellipse at 74% 36%,rgba(67,103,179,.48),transparent 37%),
+    radial-gradient(ellipse at 88% 0%,rgba(126,143,202,.22),transparent 31%),
+    linear-gradient(180deg,#101a3d 0%,#0b1028 84%)!important;
+}
+.app-shell .atlas-stage::after { opacity:.08!important;background-image:radial-gradient(#d9e2ff 1px,transparent 1px)!important;background-size:38px 38px!important; }
+.app-shell .atlas-meta,.app-shell .atlas-bottomline { position:relative;color:#8998c4!important;border-color:var(--moon-line)!important;font-size:9px!important;letter-spacing:1px!important; }
+.app-shell .atlas-hero { position:relative;grid-template-columns:1fr 1fr!important;gap:clamp(22px,5vw,70px)!important;min-height:570px!important;padding:42px 0 36px!important;align-items:center!important; }
+.app-shell .atlas-overline { color:#b9c9ff!important;font-size:10px!important;letter-spacing:1.4px!important; }
+.app-shell .atlas-overline-mark { border:1px solid #8499d5!important;border-radius:50%!important;color:#dce5ff!important; }
+.app-shell .atlas-copy h1 { max-width:650px!important;margin:24px 0 18px!important;color:#f1f3ff!important;font:600 clamp(47px,6vw,78px)/1.08 var(--moon-serif)!important;letter-spacing:-1.8px!important; }
+.app-shell .atlas-copy h1 span,.app-shell .atlas-copy h1 em { display:block!important; }
+.app-shell .atlas-copy h1 em { color:#c0ceff!important;font-style:normal!important; }
+.app-shell .atlas-description { max-width:450px!important;color:#c1cbe5!important;font-size:15px!important;line-height:1.65!important; }
+.app-shell .atlas-primary,.app-shell .atlas-secondary { min-height:46px!important;border-radius:10px!important;padding:0 18px!important;font-size:12px!important; }
+.app-shell .atlas-primary { background:#b8caff!important;color:#111a3b!important;border:0!important; }
+.app-shell .atlas-secondary { background:rgba(179,198,255,.08)!important;color:#e8edff!important;border:1px solid #879bd0!important; }
+.app-shell .atlas-footnote { color:#8392bb!important;font-size:9px!important; }
+.app-shell .atlas-visual {
+  position:relative!important;isolation:isolate!important;overflow:hidden!important;min-height:480px!important;height:480px!important;
+  border:0!important;border-radius:16px!important;box-shadow:0 28px 70px rgba(0,0,0,.32)!important;
+  background:
+    radial-gradient(ellipse at 78% 15%,rgba(178,194,235,.78) 0 2%,transparent 26%),
+    radial-gradient(ellipse at 80% 8%,rgba(139,160,214,.5),transparent 30%),
+    radial-gradient(ellipse at 48% 47%,rgba(51,85,150,.72),transparent 45%),
+    linear-gradient(155deg,#1a2c5a 0%,#15264e 45%,#0b1430 100%)!important;
+}
+.app-shell .atlas-visual::before {
+  content:"";position:absolute;z-index:-1;inset:-8% -8% 28% 42%;opacity:.92;
+  background:
+    radial-gradient(ellipse 18px 56px at 18% 28%,#aebde2 0 48%,transparent 52%),
+    radial-gradient(ellipse 16px 48px at 30% 13%,#899fcf 0 48%,transparent 52%),
+    radial-gradient(ellipse 19px 58px at 46% 24%,#c3cce7 0 48%,transparent 52%),
+    radial-gradient(ellipse 18px 52px at 63% 10%,#8fa4d3 0 48%,transparent 52%),
+    radial-gradient(ellipse 17px 50px at 80% 30%,#a8b9e2 0 48%,transparent 52%);
+  filter:drop-shadow(0 8px 8px #050b20);transform:rotate(-24deg);
+}
+.app-shell .atlas-visual::after {
+  content:"";position:absolute;z-index:0;left:0;right:0;bottom:0;height:31%;
+  background:linear-gradient(0deg,#0a112b 0%,rgba(10,17,43,.82) 35%,transparent 100%);
+}
+.app-shell .atlas-map,.app-shell .atlas-coordinate,.app-shell .atlas-visual-index { display:none!important; }
+.app-shell .atlas-visual-caption { z-index:2!important;color:#cbd7ff!important;font-size:9px!important; }
+.app-shell .moonlit-chat-preview { position:absolute;z-index:3;left:7%;right:7%;bottom:7%;display:flex;flex-direction:column;align-items:flex-end;gap:10px; }
+.app-shell .moonlit-bubble { max-width:82%;padding:12px 15px;border-radius:15px 15px 4px 15px;background:#f0f3ff;color:#1b2547;font-size:12px;line-height:1.35;box-shadow:0 8px 22px #050b2033; }
+.app-shell .moonlit-bubble.user { background:#aebfff;color:#111a3b;border-radius:15px 15px 15px 4px;align-self:flex-start; }
+.app-shell .moonlit-start { display:flex;align-items:center;justify-content:space-between;gap:24px;width:78%;margin-top:8px;padding:13px 16px;border-radius:10px;background:#aebfff;color:#111a3b;font-size:12px;font-weight:700; }
+.app-shell .moonlit-start b { font-size:17px; }
+.app-shell .atlas-bottomline { padding-top:16px!important; }
+.app-shell .section-heading { margin:0 calc(clamp(22px,4vw,62px) * -1)!important;padding:30px clamp(22px,4vw,62px) 16px!important;border-top:1px solid var(--moon-line)!important;background:#0e1632!important; }
+.app-shell .section-heading h2,.app-shell .home-principles-heading h2 { color:#f0f3ff!important;font:600 clamp(30px,4vw,46px)/1.1 var(--moon-serif)!important; }
+.app-shell .atlas-space-list { display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;padding:12px 0 34px!important; }
+.app-shell .atlas-space-row { min-height:130px!important;padding:17px!important;border:1px solid #7789bd!important;border-radius:13px!important;background:linear-gradient(145deg,#1b2549,#121a38)!important;box-shadow:0 8px 25px #02081755!important; }
+.app-shell .atlas-space-no,.app-shell .atlas-space-symbol { color:#b9caff!important; }
+.app-shell .atlas-space-copy strong { color:#f1f3ff!important;font:600 17px var(--moon-serif)!important; }
+.app-shell .atlas-space-copy em { color:#aeb9da!important;font-size:11px!important; }
+.app-shell .atlas-space-arrow { color:#c5d2ff!important; }
+.app-shell .home-principles { margin:0 calc(clamp(22px,4vw,62px) * -1)!important;padding:34px clamp(22px,4vw,62px)!important;border-top:1px solid var(--moon-line)!important;background:linear-gradient(110deg,#172348,#101936)!important; }
+.app-shell .home-principles-heading h2 em { color:#b8caff!important; }
+.app-shell .home-principles-heading p,.app-shell .home-principles-grid p { color:#aab7da!important; }
+.app-shell .home-principles-grid { gap:0!important;border:1px solid var(--moon-line)!important;border-radius:13px!important;overflow:hidden; }
+.app-shell .home-principles-grid article { padding:20px!important;background:rgba(12,20,47,.35)!important;border-right:1px solid var(--moon-line)!important; }
+.app-shell .home-principles-grid article>span,.app-shell .principle-symbol { color:#b8caff!important; }
+.app-shell .home-principles-grid h3 { color:#f0f3ff!important;font:600 18px var(--moon-serif)!important; }
+.app-shell .lower-grid { gap:14px!important; }
+.app-shell .lower-grid .panel { border:1px solid var(--moon-line)!important;border-radius:13px!important;background:#121b39!important;box-shadow:none!important; }
+.app-shell .panel-heading h3,.app-shell .signal-post h4 { color:#f0f3ff!important;font:600 20px var(--moon-serif)!important; }
+.app-shell .signal-post { background:#1a2549!important;border:1px solid #53699e!important;border-radius:12px!important; }
+.app-shell .signal-post p,.app-shell .empty-state p { color:#aab7da!important; }
+.app-shell .page-footer { color:#8492bb!important;border-color:var(--moon-line)!important; }
+.app-shell .page-intro h1,.app-shell .page-intro h2 { color:#f0f3ff!important;font-family:var(--moon-serif)!important; }
+.app-shell .page-intro p { color:#b2bddc!important; }
+.app-shell .tool-card,.app-shell .functional-tool-card,.app-shell .community-feed,.app-shell .community-info-card,.app-shell .community-topic-card,
+.app-shell .learning-feature,.app-shell .learning-note,.app-shell .arcade-card,.app-shell .admin-panel,.app-shell .account-dash-card {
+  background:#141e3d!important;border:1px solid var(--moon-line)!important;border-radius:12px!important;color:#eef1ff!important;box-shadow:none!important;
+}
+.app-shell .tool-card h3,.app-shell .functional-tool-card h3,.app-shell .community-feed h2,.app-shell .community-info-card h3,.app-shell .learning-feature h2,
+.app-shell .learning-note h3,.app-shell .arcade-card h3,.app-shell .account-dash-card strong { color:#eef1ff!important;font-family:var(--moon-serif)!important; }
+.app-shell .tool-card p,.app-shell .functional-tool-card p,.app-shell .community-info-card li,.app-shell .learning-feature p,.app-shell .learning-note p { color:#aab7da!important; }
+.app-shell .community-empty-state h3 { color:#eef1ff!important;font-family:var(--moon-serif)!important; }
+.app-shell .community-empty-state p { color:#aab7da!important; }
+.app-shell .ai-gateway-rail,.app-shell .ai-gateway-main,.app-shell .ai-chat-panel,.app-shell .ai-chat-composer { background:#101936!important;border-color:var(--moon-line)!important;color:#eef1ff!important; }
+.app-shell .ai-chat-message,.app-shell .ai-message-bubble { border:1px solid var(--moon-line)!important;border-radius:14px!important; }
+.app-shell .ai-chat-composer textarea,.app-shell .ai-chat-composer input { background:#172246!important;color:#eef1ff!important;border:1px solid var(--moon-line)!important;border-radius:12px!important; }
+.app-shell .account-dashboard,.app-shell .account-detail-page,.admin-console,.announcements-page,.admin-login-page { background:#0b1028!important;color:#eef1ff!important; }
+.app-shell .account-dashboard-hero h1,.app-shell .account-detail-hero h1,.admin-console-intro h1,.announcements-intro h1 { color:#eef1ff!important;font-family:var(--moon-serif)!important; }
+.app-shell .account-dash-card p,.app-shell .account-profile-fields span,.app-shell .account-profile-fields strong { color:#aab7da!important; }
+.app-shell select,.app-shell input,.app-shell textarea,.admin-console select { background:#121b39!important;color:#eef1ff!important;border-color:var(--moon-line)!important;border-radius:9px!important; }
+.app-shell button:focus-visible { outline:2px solid #bdccff!important;outline-offset:3px!important; }
+.mobile-dock { background:#0a1027!important;border-color:var(--moon-line)!important; }
+.mobile-dock-link { color:#aab7da!important; }
+.mobile-dock-link.active { color:#c0ceff!important; }
+@media(max-width:900px) {
+ .app-shell .atlas-hero { grid-template-columns:1fr minmax(240px,.85fr)!important;min-height:500px!important; }
+ .app-shell .atlas-visual { height:420px!important;min-height:420px!important; }
+ .app-shell .atlas-space-list { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+}
+@media(max-width:680px) {
+ .app-shell .atlas-stage { margin:0 -16px!important;padding:17px 16px 25px!important; }
+ .app-shell .atlas-hero { display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:22px!important;min-height:0!important;padding:28px 0 20px!important; }
+ .app-shell .atlas-copy h1 { font-size:clamp(43px,12vw,59px)!important;line-height:1.06!important;letter-spacing:-1.2px!important; }
+ .app-shell .atlas-description { font-size:13px!important; }
+ .app-shell .atlas-visual { width:100%!important;height:380px!important;min-height:380px!important;border-radius:13px!important; }
+ .app-shell .moonlit-chat-preview { left:5%;right:5%;bottom:6%;gap:8px; }
+ .app-shell .moonlit-bubble { font-size:11px;padding:10px 12px; }
+ .app-shell .moonlit-start { width:85%; }
+ .app-shell .atlas-space-list { grid-template-columns:1fr!important;gap:9px!important; }
+ .app-shell .atlas-space-row { min-height:104px!important; }
+ .app-shell .home-principles-grid { grid-template-columns:1fr!important; }
+ .app-shell .home-principles-grid article { border-right:0!important;border-bottom:1px solid var(--moon-line)!important; }
+ .app-shell .section-heading { margin:0 -16px!important;padding:27px 16px 12px!important; }
+ .app-shell .home-principles { margin:0 -16px!important;padding:27px 16px!important; }
+ .app-shell .content-wrap { padding:0 16px 92px!important; }
+ .app-shell .topbar { padding:0 12px!important; }
+ .app-shell .page-intro { padding:20px 0!important; }
+}
+@media(prefers-reduced-motion:reduce) {
+ *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important; }
+}

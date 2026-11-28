@@ -60,17 +60,17 @@ const translations: Record<LocaleCode, Record<string,string>> = {
  vi:{overview:"Tổng quan",ai:"Neftis AI",tools:"Thư viện công cụ",community:"Cộng đồng",learn:"Kiến thức",games:"Trò chơi",achievements:"Thành tựu",services:"Dịch vụ",workspace:"KHÔNG GIAN LÀM VIỆC",yourSpace:"KHÔNG GIAN CỦA BẠN",search:"Tìm kiếm",signIn:"Đăng nhập",openAI:"Mở Neftis AI",explore:"Khám phá công cụ",commons:"KHÔNG GIAN CHUNG",begin:"Nơi để bắt đầu"}
 };
 const themes = [
- ["paper","Paper","#f2eee5","#a85f47"],
- ["olive","Olive","#e9eadf","#69744c"],
- ["clay","Terracotta","#eee1d7","#a85f47"],
- ["ink","Ink","#282a26","#c2a27a"],
- ["night","Night Library","#202522","#c2b58d"],
+ ["midnight","Midnight","#0b1028","#a9bcff"],
+ ["moonlight","Moonlight","#0b1028","#c4d0ff"],
+ ["wisteria","Wisteria","#0b1028","#c1a9ed"],
+ ["deepsea","Deep Sea","#0b1028","#8fb8d8"],
+ ["dusk","Dusk Garden","#0b1028","#d2a9c5"],
 ] as const;
 
 
 type HomeCopy = { eyebrow:string; headlineTop:string; headlineAccent:string; description:string; section:string; begin:string; activity:string; recent:string; activityEmpty:string; community:string; fromCommunity:string; question:string; questionDesc:string; footer:string; footerNote:string };
 const homeCopy: Partial<Record<LocaleCode,HomeCopy>> = {
- id:{eyebrow:"RUANG DIGITAL TERBUKA",headlineTop:"Buka ruang untuk",headlineAccent:"hal berikutnya.",description:"Tempat bersama untuk menemukan alat berguna, berpikir bersama AI, bertukar gagasan, dan mempelajari hal baru.",section:"RUANG BERSAMA",begin:"Mulai jelajahi",activity:"AKTIVITASMU",recent:"Aktivitas terbaru",activityEmpty:"Aktivitasmu akan muncul di sini saat kamu menjelajahi Neftis.",community:"JEJAK KOMUNITAS",fromCommunity:"Dari komunitas",question:"Alat kecil apa yang paling menghemat waktumu?",questionDesc:"Bagikan utilitas sederhana yang membuat pekerjaan sehari-hari lebih mudah.",footer:"© NEFTIS / RUANG DIGITAL",footerNote:"TERBUKA UNTUK SEMUA · DIBUAT UNTUK DIJELAJAHI"},
+ id:{eyebrow:"RUANG TANYA JAWAB TERBUKA",headlineTop:"Duduk dulu.",headlineAccent:"Ceritakan apa yang kamu cari.",description:"Neftis adalah ruang tanya jawab dengan AI dan teman-teman yang mau ikut mikir.",section:"RUANG BERSAMA",begin:"Mulai jelajahi",activity:"AKTIVITASMU",recent:"Aktivitas terbaru",activityEmpty:"Aktivitasmu akan muncul di sini saat kamu menjelajahi Neftis.",community:"JEJAK KOMUNITAS",fromCommunity:"Dari komunitas",question:"Alat kecil apa yang paling menghemat waktumu?",questionDesc:"Bagikan utilitas sederhana yang membuat pekerjaan sehari-hari lebih mudah.",footer:"© NEFTIS / RUANG DIGITAL",footerNote:"TERBUKA UNTUK SEMUA · DIBUAT UNTUK DIJELAJAHI"},
  en:{eyebrow:"AN OPEN DIGITAL SPACE",headlineTop:"Make room for",headlineAccent:"what comes next.",description:"A shared place to discover useful tools, think with AI, exchange ideas, and learn something new.",section:"THE COMMONS",begin:"A place to begin",activity:"YOUR ACTIVITY",recent:"Recent activity",activityEmpty:"Your activity will appear here as you explore Neftis.",community:"COMMUNITY SIGNAL",fromCommunity:"From the community",question:"What small tool saves you the most time?",questionDesc:"Share the little utilities that make everyday work easier.",footer:"© NEFTIS / DIGITAL COMMONS",footerNote:"OPEN BY DESIGN · MADE TO EXPLORE"},
  zh:{eyebrow:"开放的数字空间",headlineTop:"为下一步",headlineAccent:"留出空间。",description:"在这里发现实用工具、借助 AI 思考、交流想法，并学习新知识。",section:"共享空间",begin:"从这里开始",activity:"你的动态",recent:"最近动态",activityEmpty:"探索 Neftis 时，你的动态会显示在这里。",community:"社区动态",fromCommunity:"来自社区",question:"哪款小工具最能帮你节省时间？",questionDesc:"分享让日常工作更轻松的小工具。",footer:"© NEFTIS / 数字共享空间",footerNote:"开放共享 · 探索更多"},
  ja:{eyebrow:"ひらかれたデジタル空間",headlineTop:"次の可能性に",headlineAccent:"余白をつくろう。",description:"便利なツールを見つけ、AIと考え、アイデアを交換し、新しいことを学べる共有スペース。",section:"共有スペース",begin:"ここから始める",activity:"あなたのアクティビティ",recent:"最近のアクティビティ",activityEmpty:"Neftisを探索すると、ここに履歴が表示されます。",community:"コミュニティ",fromCommunity:"コミュニティから",question:"一番時間を節約してくれる小さなツールは？",questionDesc:"日々の作業を楽にする便利なツールを共有しましょう。",footer:"© NEFTIS / デジタルコモンズ",footerNote:"誰にでも開かれた場所 · 探索しよう"},
@@ -125,29 +125,29 @@ export default function NeftisShell() {
   }, [pathname]);
   const page = pageByRoute[pathname] ?? "home";
   const [menuOpen, setMenuOpen] = useState(false);
-  const [theme, setTheme] = useState("paper");
-  const [customAccent, setCustomAccent] = useState("#a85f47");
+  const [theme, setTheme] = useState("midnight");
+  const [customAccent, setCustomAccent] = useState("#a9bcff");
   const [customBackground, setCustomBackground] = useState("");
   const [customPanel, setCustomPanel] = useState("");
   const [customText, setCustomText] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [themeOpen, setThemeOpen] = useState(false);
   const [colorTarget, setColorTarget] = useState<"accent" | "background" | "panel" | "text" | null>(null);
-  const [draftColor, setDraftColor] = useState("#a85f47");
+  const [draftColor, setDraftColor] = useState("#a9bcff");
   const [language, setLanguage] = useState<LocaleCode>("id");
   const t = translations[language];
   const copy = homeCopy[language] ?? homeCopy.en!;
-  const colorPalette = ["#a85f47", "#737b4e", "#c6a77b", "#292a25", "#f2eee5", "#e8e0d2", "#8c9a87", "#b8785b"];
+  const colorPalette = ["#a9bcff", "#c4d0ff", "#c1a9ed", "#8fb8d8", "#d2a9c5", "#0b1028", "#18234b", "#eef1ff"];
   const colorLabels = { accent: "Accent", background: "Background", panel: "Panel", text: "Text" } as const;
-  const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#f2eee5"), panel: customPanel || (theme === "ink" || theme === "night" ? "#343832" : "#e8e0d2"), text: customText || (theme === "ink" || theme === "night" ? "#f2eee5" : "#292a25") };
+  const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#0b1028"), panel: customPanel || "#151d3d", text: customText || "#eef1ff" };
   useEffect(() => {
     try {
-      const savedLanguage = localStorage.getItem("neftis-language-v4") as LocaleCode | null;
-      const savedTheme = localStorage.getItem("neftis-theme-v4");
-      const savedAccent = localStorage.getItem("neftis-custom-accent-v4");
-      const savedBackground = localStorage.getItem("neftis-custom-background-v4");
-      const savedPanel = localStorage.getItem("neftis-custom-panel-v4");
-      const savedText = localStorage.getItem("neftis-custom-text-v4");
+      const savedLanguage = localStorage.getItem("neftis-language-v5") as LocaleCode | null;
+      const savedTheme = localStorage.getItem("neftis-theme-v5");
+      const savedAccent = localStorage.getItem("neftis-custom-accent-v5");
+      const savedBackground = localStorage.getItem("neftis-custom-background-v5");
+      const savedPanel = localStorage.getItem("neftis-custom-panel-v5");
+      const savedText = localStorage.getItem("neftis-custom-text-v5");
       if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
       if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
       if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
@@ -183,12 +183,12 @@ export default function NeftisShell() {
     root.dir = "ltr";
     root.style.colorScheme = isLight ? "light" : "dark";
     try {
-      localStorage.setItem("neftis-theme-v4", theme);
-      localStorage.setItem("neftis-custom-accent-v4", customAccent);
-      localStorage.setItem("neftis-language-v4", language);
-      localStorage.setItem("neftis-custom-background-v4", customBackground);
-      localStorage.setItem("neftis-custom-panel-v4", customPanel);
-      localStorage.setItem("neftis-custom-text-v4", customText);
+      localStorage.setItem("neftis-theme-v5", theme);
+      localStorage.setItem("neftis-custom-accent-v5", customAccent);
+      localStorage.setItem("neftis-language-v5", language);
+      localStorage.setItem("neftis-custom-background-v5", customBackground);
+      localStorage.setItem("neftis-custom-panel-v5", customPanel);
+      localStorage.setItem("neftis-custom-text-v5", customText);
     } catch (error) {
       console.warn("Neftis preferences could not be saved.", error);
     }
@@ -297,7 +297,7 @@ export default function NeftisShell() {
                 <div className="customizer-head"><span>Custom colors</span><small>PERSONALIZE</small></div>
                 <div className="custom-colors">{(["accent","background","panel","text"] as const).map((target) => <button key={target} className="color-setting" onClick={() => openColorEditor(target)}><span>{colorLabels[target]}</span><i style={{background:colorValues[target]}}/><code>{colorValues[target].toUpperCase()}</code></button>)}</div>
                 {colorTarget && <div className="color-editor"><div className="color-editor-head"><strong>{colorLabels[colorTarget]} color</strong><button className="menu-close" onClick={() => setColorTarget(null)} aria-label="Close color editor">×</button></div><div className="color-swatches">{colorPalette.map((color) => <button key={color} aria-label={color} title={color} className={draftColor.toLowerCase() === color ? "active" : ""} style={{background:color}} onClick={() => setDraftColor(color)} />)}</div><label className="hex-field"><span>HEX</span><input value={draftColor} maxLength={7} spellCheck={false} onChange={(e) => setDraftColor(e.target.value)} aria-label="Hex color value"/><span className="hex-preview" style={{background:/^#[0-9a-f]{6}$/i.test(draftColor) ? draftColor : "transparent"}} /></label><div className="color-editor-actions"><button onClick={() => setColorTarget(null)}>Cancel</button><button className="apply-color" disabled={!/^#[0-9a-f]{6}$/i.test(draftColor)} onClick={applyCustomColor}>Apply color</button></div></div>}
-                <button className="reset-preferences" onClick={() => {setTheme("paper");setCustomAccent("#a85f47");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
+                <button className="reset-preferences" onClick={() => {setTheme("midnight");setCustomAccent("#a9bcff");setCustomBackground("");setCustomPanel("");setCustomText("");setLanguage("id");setColorTarget(null);}}>Reset preferences</button>
               </div>}
             </div>
             <button className="sign-in-button" onClick={() => router.push(sessionUser ? "/dashboard" : "/login")}>{sessionUser ? "Dashboard" : t.signIn}</button>
@@ -320,7 +320,7 @@ export default function NeftisShell() {
                     </div>
                     <div className="atlas-footnote"><span>01—08</span><i /> A SHARED SPACE FOR THE CURIOUS</div>
                   </div>
-                  <div className="atlas-visual" aria-label="Abstract topographic map artwork">
+                  <div className="atlas-visual moonlit-visual" aria-label="Ilustrasi taman malam dan percakapan Neftis">
                     <div className="atlas-visual-caption"><span>FIG. 01</span><span>THE OPEN FIELD</span></div>
                     <svg className="atlas-map" viewBox="0 0 680 700" role="img" aria-label="Topographic contours surrounding the Neftis mark">
                       <defs>
@@ -345,6 +345,7 @@ export default function NeftisShell() {
                     <div className="atlas-coordinate atlas-coordinate-a">06°12′ S<br/>106°49′ E</div>
                     <div className="atlas-coordinate atlas-coordinate-b">THINK / MAKE / SHARE</div>
                     <div className="atlas-visual-index">N</div>
+                    <div className="moonlit-chat-preview" aria-hidden="true"><span className="moonlit-bubble user">Ceritakan apa yang kamu cari?</span><span className="moonlit-bubble">Neftis adalah ruang tanya jawab?</span><span className="moonlit-bubble">AI dan teman-teman ikut berpikir.</span><span className="moonlit-start">Mulai ngobrol <b>↗</b></span></div>
                   </div>
                 </motion.section>
                 <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>DISCOVER</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
