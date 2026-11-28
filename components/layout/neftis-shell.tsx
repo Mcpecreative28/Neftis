@@ -277,9 +277,15 @@ export default function NeftisShell() {
 
       <main className="main-area">
         <header className="topbar">
-          <a className="mobile-brand" href="/" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home"><span className="mobile-brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span><strong>neftis<span>.</span></strong></a>
-          <button className="icon-button mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="neftis-sidebar">☰</button>
-          <div className="breadcrumbs"><span>NEFTIS</span><i>/</i><strong>{localizedTitles[page]}</strong></div>
+          <a className="global-brand" href="/" onClick={(e) => { e.preventDefault(); navigate("home"); }} aria-label="Neftis home">
+            <span className="global-brand-mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M9 31V9l22 22V9" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="31" cy="9" r="3" fill="var(--accent)"/></svg></span>
+            <span>neftis<span>.</span><small>COMMONS / 001</small></span>
+          </a>
+          <nav className="global-nav" aria-label="Main navigation">
+            {navPrimary.map((item) => <button key={item.id} className={page === item.id ? "global-nav-link active" : "global-nav-link"} onClick={() => navigate(item.id)} aria-current={page === item.id ? "page" : undefined}>
+              <span>{item.label === "Overview" ? "01" : item.id === "ai" ? "02" : item.id === "tools" ? "03" : item.id === "community" ? "04" : item.id === "learn" ? "05" : "06"}</span>{localizedTitles[item.id]}
+            </button>)}
+          </nav>
           <div className="topbar-actions">
             <button className="search-trigger" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label={t.search}><span>⌕</span><span>{t.search}</span><kbd>⌘ K</kbd></button>
             <div className="preference-wrap">
@@ -413,6 +419,11 @@ export default function NeftisShell() {
         </div>
       </main>
 
+      <nav className="mobile-dock" aria-label="Main navigation">
+        {navPrimary.map((item) => <button key={item.id} className={page === item.id ? "mobile-dock-link active" : "mobile-dock-link"} onClick={() => navigate(item.id)} aria-current={page === item.id ? "page" : undefined}>
+          <span className="mobile-dock-icon"><NeftisIcon name={item.id} /></span><small>{localizedTitles[item.id]}</small>
+        </button>)}
+      </nav>
       {searchOpen && <div className="modal-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}><section className="modal panel" role="dialog" aria-modal="true" aria-label="Search Neftis"><div className="modal-head"><span className="section-kicker">NEFTIS / SEARCH</span><button className="icon-button" onClick={() => setSearchOpen(false)}>×</button></div><input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search spaces..." aria-label="Search Neftis spaces" />{searchable.length ? searchable.map((item) => <button className="search-result" key={item.id} onClick={() => navigate(item.id)}>{item.label}<span>OPEN ↗</span></button>) : <p className="empty-state">No matching spaces.</p> }</section></div>}
       {toast && <div className="toast show" role="status">{toast}</div>}
     </div>
