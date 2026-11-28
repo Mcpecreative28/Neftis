@@ -61,10 +61,10 @@ const translations: Record<LocaleCode, Record<string,string>> = {
 };
 const themes = [
  ["midnight","Midnight","#0b1028","#a9bcff"],
- ["moonlight","Moonlight","#111a3a","#c4d0ff"],
- ["wisteria","Wisteria","#171832","#c1a9ed"],
- ["deepsea","Deep Sea","#0c1d35","#8fb8d8"],
- ["dusk","Dusk Garden","#191a35","#d2a9c5"],
+ ["moonlight","Moonlight","#0b1028","#c4d0ff"],
+ ["wisteria","Wisteria","#0b1028","#c1a9ed"],
+ ["deepsea","Deep Sea","#0b1028","#8fb8d8"],
+ ["dusk","Dusk Garden","#0b1028","#d2a9c5"],
 ] as const;
 
 
@@ -142,12 +142,12 @@ export default function NeftisShell() {
   const colorValues = { accent: customAccent, background: customBackground || (themes.find(([id]) => id === theme)?.[2] ?? "#0b1028"), panel: customPanel || "#151d3d", text: customText || "#eef1ff" };
   useEffect(() => {
     try {
-      const savedLanguage = localStorage.getItem("neftis-language-v4") as LocaleCode | null;
-      const savedTheme = localStorage.getItem("neftis-theme-v4");
-      const savedAccent = localStorage.getItem("neftis-custom-accent-v4");
-      const savedBackground = localStorage.getItem("neftis-custom-background-v4");
-      const savedPanel = localStorage.getItem("neftis-custom-panel-v4");
-      const savedText = localStorage.getItem("neftis-custom-text-v4");
+      const savedLanguage = localStorage.getItem("neftis-language-v5") as LocaleCode | null;
+      const savedTheme = localStorage.getItem("neftis-theme-v5");
+      const savedAccent = localStorage.getItem("neftis-custom-accent-v5");
+      const savedBackground = localStorage.getItem("neftis-custom-background-v5");
+      const savedPanel = localStorage.getItem("neftis-custom-panel-v5");
+      const savedText = localStorage.getItem("neftis-custom-text-v5");
       if (savedLanguage && savedLanguage in translations) setLanguage(savedLanguage);
       if (savedTheme && themes.some(([id]) => id === savedTheme)) setTheme(savedTheme);
       if (savedAccent && /^#[0-9a-f]{6}$/i.test(savedAccent)) setCustomAccent(savedAccent);
@@ -183,12 +183,12 @@ export default function NeftisShell() {
     root.dir = "ltr";
     root.style.colorScheme = isLight ? "light" : "dark";
     try {
-      localStorage.setItem("neftis-theme-v4", theme);
-      localStorage.setItem("neftis-custom-accent-v4", customAccent);
-      localStorage.setItem("neftis-language-v4", language);
-      localStorage.setItem("neftis-custom-background-v4", customBackground);
-      localStorage.setItem("neftis-custom-panel-v4", customPanel);
-      localStorage.setItem("neftis-custom-text-v4", customText);
+      localStorage.setItem("neftis-theme-v5", theme);
+      localStorage.setItem("neftis-custom-accent-v5", customAccent);
+      localStorage.setItem("neftis-language-v5", language);
+      localStorage.setItem("neftis-custom-background-v5", customBackground);
+      localStorage.setItem("neftis-custom-panel-v5", customPanel);
+      localStorage.setItem("neftis-custom-text-v5", customText);
     } catch (error) {
       console.warn("Neftis preferences could not be saved.", error);
     }
