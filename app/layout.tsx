@@ -4,6 +4,7 @@ import "./neftis-modern.css";
 import "./neftis-atlas.css";
 import "./product-console.css";
 import "./neftis-editorial.css";
+import "./neftis-moonlit.css";
 import NeftisMotion from "@/components/motion/neftis-motion";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#101116",
+  themeColor: "#0b1028",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
