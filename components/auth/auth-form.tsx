@@ -184,7 +184,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <section className="auth-layout" aria-labelledby="auth-title">
         <aside className="auth-story">
           <div className="auth-story-top">
-            <span className="auth-story-label"><i /> DIGITAL COMMONS / 2026</span>
+            <span className="auth-story-label"><i /> NEFTIS / RUANG BERSAMA</span>
             <span className="auth-story-index">N° 001</span>
           </div>
 
@@ -194,31 +194,31 @@ export default function AuthForm({ mode }: AuthFormProps) {
             <div className="auth-art-orbit auth-art-orbit-b" />
             <div className="auth-art-orbit auth-art-orbit-c" />
             <div className="auth-art-core"><span>N</span></div>
-            <span className="auth-art-caption auth-art-caption-a">IDEAS IN MOTION</span>
+            <span className="auth-art-caption auth-art-caption-a">RUANG UNTUK IDE</span>
             <span className="auth-art-caption auth-art-caption-b">01 / 03</span>
           </div>
 
           <div className="auth-story-copy">
-            <span className="section-kicker">RUANG UNTUK BEREKSPLORASI</span>
-            <h2>Buka ruang untuk<br /><em>hal berikutnya.</em></h2>
-            <p>AI, alat digital, pengetahuan, dan komunitas untuk rasa ingin tahu.</p>
+            <span className="section-kicker">TEMPAT UNTUK BERTANYA</span>
+            <h2>Duduk dulu.<br /><em>Mulai dari sini.</em></h2>
+            <p>AI, alat, catatan, dan orang-orang yang mau berbagi pikiran.</p>
           </div>
 
           <div className="auth-story-foot">
-            <span>THINK · CREATE · DISCOVER</span>
-            <span>EST. NEFTIS</span>
+            <span>TANYA · COBA · BERBAGI</span>
+            <span>NEFTIS / 001</span>
           </div>
         </aside>
 
         <div className="auth-panel">
           <div className="auth-panel-heading">
-            <span className="section-kicker">{isRegister ? "MULAI PERJALANANMU" : "SENANG MELIHATMU KEMBALI"}</span>
+            <span className="section-kicker">{isRegister ? "BUAT AKUN" : "MASUK KE NEFTIS"}</span>
             <span className="auth-index">{isRegister ? "02 — 02" : "01 — 02"}</span>
           </div>
 
           <div className="auth-heading-copy">
             <h1 id="auth-title">{isRegister ? "Buat akun Neftis." : "Selamat datang kembali."}</h1>
-            <p>{isRegister ? "Buat akun untuk menyimpan aktivitas dan mengelola ruang Neftis milikmu." : "Masuk untuk melanjutkan aktivitasmu di Neftis."}</p>
+            <p>{isRegister ? "Satu akun untuk menyimpan percakapan dan mengatur ruangmu." : "Masuk untuk melanjutkan dari tempat terakhir."}</p>
           </div>
 
           <div className="auth-social-stack">
@@ -329,8 +329,8 @@ export default function AuthForm({ mode }: AuthFormProps) {
       </section>
 
       <footer className="auth-footer auth-footer-v2">
-        <span>PRIVASI DIUTAMAKAN</span>
-        <span>NEFTIS / DIGITAL COMMONS</span>
+        <span>AKUN NEFTIS</span>
+        <span>NEFTIS / RUANG BERSAMA</span>
       </footer>
     </main>
   );
