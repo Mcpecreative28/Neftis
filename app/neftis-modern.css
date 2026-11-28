@@ -566,3 +566,203 @@ input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible 
 @media (prefers-reduced-motion: reduce) {
   .app-shell[data-page="home"] * { scroll-behavior: auto !important; }
 }
+
+
+/* Neftis control surface — glass controls with dependable contrast */
+:root {
+  --neo-glass: color-mix(in srgb, var(--bg) 54%, transparent);
+  --neo-glass-border: color-mix(in srgb, var(--text) 19%, transparent);
+  --neo-glass-text: var(--text);
+}
+.topbar {
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--text) 10%, transparent);
+  backdrop-filter: blur(24px) saturate(155%);
+}
+.topbar-actions { gap: 8px; }
+.search-trigger,
+.preference-trigger,
+.icon-button,
+.sign-in-button {
+  min-height: 40px;
+  border: 1px solid var(--neo-glass-border);
+  border-radius: 999px;
+  background: var(--neo-glass);
+  color: var(--text);
+  box-shadow: inset 0 1px 0 #ffffff12, 0 5px 18px #00000012;
+  backdrop-filter: blur(22px) saturate(150%);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+}
+.search-trigger {
+  width: clamp(150px, 17vw, 205px);
+  justify-content: flex-start;
+  gap: 10px;
+  padding-inline: 14px;
+  color: var(--muted);
+}
+.search-trigger > span:first-child { color: var(--text); }
+.search-trigger kbd {
+  margin-left: auto;
+  border: 1px solid color-mix(in srgb, var(--text) 20%, transparent);
+  border-radius: 999px;
+  background: #00000020;
+  color: var(--text);
+  padding: 3px 7px;
+}
+.preference-trigger {
+  min-width: 42px;
+  padding-inline: 12px;
+  color: var(--text);
+  gap: 7px;
+}
+.preference-trigger:hover,
+.search-trigger:hover,
+.icon-button:hover,
+.sign-in-button:hover {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--text) 40%, transparent);
+  background: color-mix(in srgb, var(--text) 12%, var(--neo-glass));
+  transform: translateY(-1px);
+}
+.sign-in-button {
+  min-height: 40px;
+  padding-inline: 19px;
+  color: var(--text);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--accent) 17%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+  box-shadow: inset 0 1px 0 #ffffff20, 0 6px 20px #00000016;
+}
+.sign-in-button:hover {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  border-color: var(--accent);
+}
+.preference-wrap { position: relative; }
+.preference-menu {
+  z-index: 80;
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface) 94%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--text) 16%, var(--line));
+  border-radius: 18px;
+  box-shadow: 0 24px 70px #00000055, inset 0 1px 0 #ffffff0b;
+  backdrop-filter: blur(28px) saturate(145%);
+  -webkit-backdrop-filter: blur(28px) saturate(145%);
+}
+.preference-menu-title,
+.preference-menu-head strong,
+.customizer-head span,
+.color-editor-head strong { color: var(--text); }
+.preference-menu button { color: var(--text); }
+.language-menu button { min-height: 43px; border-radius: 11px; }
+.language-menu button small { color: var(--muted); }
+.language-menu button:hover,
+.language-menu button.selected {
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+.theme-choice {
+  border: 1px solid transparent;
+  border-radius: 11px;
+  color: var(--text);
+}
+.theme-choice span { color: inherit; }
+.theme-choice:hover,
+.theme-choice.selected {
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--line));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+.color-setting,
+.color-editor,
+.hex-field {
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-2) 88%, transparent);
+  border-color: var(--line);
+}
+.color-setting > span,
+.hex-field { color: var(--muted); }
+.menu-close,
+.reset-preferences,
+.color-editor-actions button {
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+  border-color: var(--line);
+}
+.menu-close:hover,
+.reset-preferences:hover,
+.color-editor-actions button:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.app-shell :is(button,a,input,textarea,select):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 85%, white);
+  outline-offset: 3px;
+}
+.app-shell :is(input,textarea)::placeholder { color: var(--dim); opacity: 1; }
+.app-shell :is(p,small,.breadcrumbs,.page-footer,.card-meta) { text-wrap: pretty; }
+.app-shell { color: var(--text); }
+.app-shell :is(h1,h2,h3,h4,strong,label) { color: var(--text); }
+.app-shell :is(p,.muted,.description) { color: var(--muted); }
+
+/* Cinematic homepage: controls stay visible over both bright and dark parts of the artwork */
+.app-shell[data-page="home"] .topbar {
+  background: linear-gradient(180deg, #080c14a8 0%, #080c1440 70%, transparent 100%);
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+}
+.app-shell[data-page="home"] .breadcrumbs,
+.app-shell[data-page="home"] .breadcrumbs strong { color: #fff; }
+.app-shell[data-page="home"] .search-trigger,
+.app-shell[data-page="home"] .preference-trigger,
+.app-shell[data-page="home"] .icon-button,
+.app-shell[data-page="home"] .sign-in-button {
+  color: #fff;
+  border-color: #ffffff55;
+  background: #10172248;
+  box-shadow: inset 0 1px 0 #ffffff22, 0 6px 22px #00000020;
+  backdrop-filter: blur(18px) saturate(135%);
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+}
+.app-shell[data-page="home"] .search-trigger { color: #ffffffdf; }
+.app-shell[data-page="home"] .search-trigger kbd { color: #fff; border-color: #ffffff45; background: #00000028; }
+.app-shell[data-page="home"] .sign-in-button {
+  color: #fff;
+  background: #ffffff20;
+  border-color: #ffffff70;
+}
+.app-shell[data-page="home"] .search-trigger:hover,
+.app-shell[data-page="home"] .preference-trigger:hover,
+.app-shell[data-page="home"] .sign-in-button:hover {
+  background: #ffffff30;
+  border-color: #ffffffa0;
+}
+.app-shell[data-page="home"] .preference-menu,
+.app-shell[data-page="home"] .preference-menu * { color: var(--text); }
+.app-shell[data-page="home"] .preference-menu {
+  background: #111722f2;
+  border-color: #ffffff25;
+  box-shadow: 0 25px 75px #0009;
+}
+.app-shell[data-page="home"] .home-copy h1,
+.app-shell[data-page="home"] .home-copy > p,
+.app-shell[data-page="home"] .eyebrow { text-shadow: 0 2px 22px #0009; }
+@media (max-width: 760px) {
+  .topbar { padding-inline: 12px; gap: 7px; }
+  .topbar-actions { gap: 5px; }
+  .search-trigger { width: 39px; min-width: 39px; padding: 0; justify-content: center; }
+  .search-trigger > span:nth-child(2), .search-trigger kbd { display: none; }
+  .preference-trigger { min-width: 36px; min-height: 36px; padding-inline: 8px; }
+  .sign-in-button { min-height: 36px; padding-inline: 12px; font-size: 10px; }
+  .preference-menu { position: fixed; top: 64px; right: 10px; max-height: calc(100svh - 82px); }
+  [dir="rtl"] .preference-menu { right: auto; left: 10px; }
+}
+@media (max-width: 390px) {
+  .topbar-actions { gap: 4px; }
+  .preference-trigger { min-width: 33px; padding-inline: 6px; }
+  .sign-in-button { padding-inline: 9px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .search-trigger,.preference-trigger,.icon-button,.sign-in-button,.preference-menu {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: var(--surface);
+  }
+}
