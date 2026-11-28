@@ -67,8 +67,7 @@ export default function AIWorkspace() {
           ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
             displayName: new URL(baseUrl.trim()).hostname,
-            protocol: customProtocol,
-            authMode: customAuthMode,
+            ...(showAdvanced ? { protocol: customProtocol, authMode: customAuthMode } : {}),
           } : {}),
         }),
       });
@@ -85,7 +84,7 @@ export default function AIWorkspace() {
         baseUrl: result.provider.baseUrl ?? "", models: result.models ?? [],
         modelId: result.models?.[0]?.id ?? "", reasoning: "", healthy: true,
         protocol: result.provider.kind ?? "openai",
-        authMode: result.provider.id === "custom-openai" ? customAuthMode : undefined,
+        authMode: result.provider.id === "custom-openai" ? (result.provider.keyHeader === "google" ? "google-key" : result.provider.keyHeader) : undefined,
       };
       setConnections((items) => [...items, entry]);
       setActiveConnectionId(entry.id);
