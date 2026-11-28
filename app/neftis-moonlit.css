@@ -205,7 +205,7 @@ body { background:#0b1028!important; color:var(--moon-ink)!important; font-famil
   --moon-line:rgba(188,204,245,.25);
   --moon-line-strong:rgba(188,204,245,.43);
 }
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Instrument+Sans:wght@400;500;600;700&display=swap");
+
 .app-shell { font-family:var(--moon-sans)!important; }
 .app-shell h1,.app-shell h2,.app-shell h3,.app-shell .atlas-copy h1,.app-shell .section-heading h2,
 .app-shell .page-title,.app-shell .page-intro h1,.app-shell .learning-feature h2,
