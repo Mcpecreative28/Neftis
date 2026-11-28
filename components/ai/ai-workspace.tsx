@@ -63,6 +63,7 @@ export default function AIWorkspace() {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           apiKey: apiKey.trim(),
+          ...(!baseUrl.trim() && providerChoice !== "auto" ? { provider: providerChoice } : {}),
           ...(baseUrl.trim() ? { provider: "custom-openai" } : {}),
           ...(baseUrl.trim() ? {
             baseUrl: baseUrl.trim(),
@@ -193,6 +194,7 @@ export default function AIWorkspace() {
   <label className="ai-field ai-field-wide"><span>BASE URL</span><input type="url" value={baseUrl} onChange={(event) => setBaseUrl(event.target.value)} placeholder="https://api.example.com/v1" /><small>Masukkan alamat API dari penyedia token. Format OpenAI-compatible digunakan otomatis.</small></label>
   <button type="button" className="ai-advanced-toggle" aria-expanded={showAdvanced} onClick={() => setShowAdvanced((value) => !value)}>{showAdvanced ? "Sembunyikan pengaturan tambahan" : "Pengaturan tambahan"} <span>{showAdvanced ? "−" : "+"}</span></button>
   {showAdvanced && <>
+    <label className="ai-field ai-field-wide"><span>PROVIDER (OPSIONAL)</span><select value={providerChoice} onChange={(event) => setProviderChoice(event.target.value)}><option value="auto">Deteksi otomatis</option>{providerNames.filter((provider) => provider.id !== "custom-openai").map((provider) => <option key={provider.id} value={provider.id}>{provider.name}</option>)}</select><small>Jika Base URL diisi, Neftis mendeteksi gateway dari alamat tersebut. Pilihan ini untuk provider tanpa Base URL khusus.</small></label>
     <label className="ai-field"><span>FORMAT API</span><select value={customProtocol} onChange={(event) => setCustomProtocol(event.target.value as "openai" | "anthropic" | "google")}><option value="openai">OpenAI-compatible (default)</option><option value="anthropic">Anthropic Messages</option><option value="google">Gemini generateContent</option></select></label>
     <label className="ai-field"><span>HEADER API KEY</span><select value={customAuthMode} onChange={(event) => setCustomAuthMode(event.target.value as "bearer" | "x-api-key" | "google-key" | "none")}><option value="bearer">Authorization: Bearer (default)</option><option value="x-api-key">x-api-key</option><option value="google-key">x-goog-api-key</option><option value="none">Tanpa header</option></select></label>
   </>}
