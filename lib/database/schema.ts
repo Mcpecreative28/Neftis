@@ -1,18 +1,5 @@
 import { sql } from "drizzle-orm";
-import {
-  boolean,
-  foreignKey,
-  index,
-  integer,
-  jsonb,
-  pgSchema,
-  pgTable,
-  text,
-  timestamp,
-  unique,
-  uniqueIndex,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { boolean, index, integer, jsonb, pgSchema, pgTable, text, timestamp, unique, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 const neonAuth = pgSchema("neon_auth");
 
@@ -24,76 +11,51 @@ export const authUser = neonAuth.table("user", {
   image: text("image"),
   createdAt: timestamp("createdAt", { withTimezone: true, mode: "date" }).default(sql`CURRENT_TIMESTAMP`).notNull(),
   updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "date" }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-  role: text("role"),
-  banned: boolean("banned"),
-  banReason: text("banReason"),
+  role: text("role"), banned: boolean("banned"), banReason: text("banReason"),
   banExpires: timestamp("banExpires", { withTimezone: true, mode: "date" }),
 });
 
 export const userProfiles = pgTable("user_profiles", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: uuid("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
-  username: text("username"),
-  displayName: text("display_name"),
-  bio: text("bio"),
-  githubUsername: text("github_username"),
-  websiteUrl: text("website_url"),
-  locale: text("locale").default("id").notNull(),
-  timezone: text("timezone"),
+  username: text("username"), displayName: text("display_name"), bio: text("bio"),
+  githubUsername: text("github_username"), websiteUrl: text("website_url"),
+  locale: text("locale").default("id").notNull(), timezone: text("timezone"),
   onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
 }, (table) => [
   unique("user_profiles_user_id_unique").on(table.userId),
-  uniqueIndex("user_profiles_username_lower_unique").on(sql`lower(${table.username})`),
+  uniqueIndex("user_profiles_username_lower_unique").on(sql`lower(${table.username})`).where(sql`${table.username} is not null`),
   index("user_profiles_github_username_idx").on(table.githubUsername),
 ]);
 
 export const usageEvents = pgTable("usage_events", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: uuid("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
-  requestId: text("request_id").notNull(),
-  provider: text("provider").notNull(),
-  model: text("model").notNull(),
-  inputTokens: integer("input_tokens").default(0).notNull(),
-  outputTokens: integer("output_tokens").default(0).notNull(),
+  requestId: text("request_id").notNull(), provider: text("provider").notNull(), model: text("model").notNull(),
+  inputTokens: integer("input_tokens").default(0).notNull(), outputTokens: integer("output_tokens").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
-}, (table) => [
-  unique("usage_events_request_id_unique").on(table.requestId),
-  index("usage_events_user_created_idx").on(table.userId, table.createdAt),
-]);
+}, (table) => [unique("usage_events_request_id_unique").on(table.requestId), index("usage_events_user_created_idx").on(table.userId, table.createdAt)]);
 
 export const announcements = pgTable("announcements", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
-  slug: text("slug").notNull(),
-  title: text("title").notNull(),
-  excerpt: text("excerpt").notNull(),
-  body: text("body").notNull(),
-  status: text("status").default("draft").notNull(),
-  pinned: boolean("pinned").default(false).notNull(),
+  id: uuid("id").defaultRandom().primaryKey().notNull(), slug: text("slug").notNull(),
+  title: text("title").notNull(), excerpt: text("excerpt").notNull(), body: text("body").notNull(),
+  status: text("status").default("draft").notNull(), pinned: boolean("pinned").default(false).notNull(),
   publishedAt: timestamp("published_at", { withTimezone: true, mode: "date" }),
   authorUserId: uuid("author_user_id").notNull().references(() => authUser.id, { onDelete: "restrict" }),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
-}, (table) => [
-  unique("announcements_slug_unique").on(table.slug),
-  index("announcements_status_published_idx").on(table.status, table.publishedAt),
-]);
+}, (table) => [unique("announcements_slug_unique").on(table.slug), index("announcements_status_published_idx").on(table.status, table.publishedAt)]);
 
 export const notifications = pgTable("notifications", {
   id: uuid("id").defaultRandom().primaryKey().notNull(),
   userId: uuid("user_id").notNull().references(() => authUser.id, { onDelete: "cascade" }),
   announcementId: uuid("announcement_id").references(() => announcements.id, { onDelete: "set null" }),
-  type: text("type").default("system").notNull(),
-  title: text("title").notNull(),
-  body: text("body").notNull(),
-  href: text("href"),
-  readAt: timestamp("read_at", { withTimezone: true, mode: "date" }),
+  type: text("type").default("system").notNull(), title: text("title").notNull(), body: text("body").notNull(),
+  href: text("href"), readAt: timestamp("read_at", { withTimezone: true, mode: "date" }),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).defaultNow().notNull(),
-}, (table) => [
-  index("notifications_user_created_idx").on(table.userId, table.createdAt),
-  index("notifications_user_unread_idx").on(table.userId, table.readAt),
-]);
+}, (table) => [index("notifications_user_created_idx").on(table.userId, table.createdAt), index("notifications_user_unread_idx").on(table.userId, table.readAt)]);
 
 export const adminMembers = pgTable("admin_members", {
   userId: uuid("user_id").primaryKey().notNull().references(() => authUser.id, { onDelete: "cascade" }),
