@@ -353,9 +353,9 @@ export default function NeftisShell() {
                 </motion.section>
                 <div className="atlas-bottomline"><span>01 <b>THINK</b></span><span>02 <b>MAKE</b></span><span>03 <b>DISCOVER</b></span><span className="atlas-bottom-note">A PLACE TO FIND YOUR NEXT IDEA</span></div>
               </div>
-              <div className="section-heading"><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
-              <div className="atlas-space-list">{spaces.map((space) => <button key={space.id} className={`atlas-space-row ${space.tone}`} onClick={() => navigate(space.id)}><span className="atlas-space-no">{space.no}</span><span className="atlas-space-symbol"><NeftisIcon name={space.id} /></span><span className="atlas-space-copy"><small>{space.tag}</small><strong>{space.title}</strong><em>{space.desc}</em></span><span className="atlas-space-arrow">↗</span></button>)}</div>
-              <section className="home-principles">
+              <div className="section-heading" data-reveal><div><span className="section-kicker">{copy.section}</span><h2>{copy.begin}</h2></div><span className="section-count">01 / 04</span></div>
+              <div className="atlas-space-list" data-reveal>{spaces.map((space) => <button key={space.id} className={`atlas-space-row ${space.tone}`} onClick={() => navigate(space.id)}><span className="atlas-space-no">{space.no}</span><span className="atlas-space-symbol"><NeftisIcon name={space.id} /></span><span className="atlas-space-copy"><small>{space.tag}</small><strong>{space.title}</strong><em>{space.desc}</em></span><span className="atlas-space-arrow">↗</span></button>)}</div>
+              <section className="home-principles" data-reveal>
                 <div className="home-principles-heading"><span className="section-kicker">A SIMPLE WAY TO BEGIN</span><h2>Explore first.<br/><em>Make something useful.</em></h2><p>Neftis menghubungkan alat, pengetahuan, dan ruang berbagi dalam satu tempat yang bisa kamu jelajahi sesuai kebutuhan.</p></div>
                 <div className="home-principles-grid">
                   <article><span>01 / THINK</span><div className="principle-symbol">✳</div><h3>Think with AI</h3><p>Hubungkan layanan AI yang kamu pilih dan gunakan model sesuai kebutuhan.</p></article>
@@ -363,7 +363,7 @@ export default function NeftisShell() {
                   <article><span>03 / SHARE</span><div className="principle-symbol">◎</div><h3>Learn together</h3><p>Bangun pemahaman dan bagikan temuan yang bisa membantu orang lain.</p></article>
                 </div>
               </section>
-              <div className="lower-grid">
+              <div className="lower-grid" data-reveal>
                 <section className="panel activity-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.activity}</span><h3>{copy.recent}</h3></div><button className="text-link" onClick={() => navigate("achievements")}>View all ↗</button></div><div className="activity-list"><div className="empty-state"><span>◌</span><p>{copy.activityEmpty}</p></div></div></section>
                 <section className="panel signal-panel"><div className="panel-heading"><div><span className="section-kicker">{copy.community}</span><h3>{copy.fromCommunity}</h3></div><button className="text-link" onClick={() => navigate("community")}>Visit ↗</button></div><div className="signal-post"><span className="signal-tag">DISCUSSION / 001</span><h4>{copy.question}</h4><p>{copy.questionDesc}</p><div className="signal-foot"><span>COMMUNITY BOARD</span><span>↗</span></div></div></section>
               </div>
