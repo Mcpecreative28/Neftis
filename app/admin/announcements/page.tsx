@@ -15,7 +15,7 @@ async function publishAnnouncement(formData: FormData) {
   if (title.length < 4 || title.length > 120 || excerpt.length < 10 || excerpt.length > 240 || body.length < 20 || body.length > 12000) {
     redirect("/admin/announcements?error=validation");
   }
-  const [{ db }, { announcements, adminAuditLogs, notifications }, { sql }] = await Promise.all([
+  const [{ db }, { announcements, adminAuditLogs }, { sql }] = await Promise.all([
     import("@/lib/database"), import("@/lib/database/schema"), import("drizzle-orm"),
   ]);
   const slugBase = title.normalize("NFKD").toLowerCase().replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 72);
